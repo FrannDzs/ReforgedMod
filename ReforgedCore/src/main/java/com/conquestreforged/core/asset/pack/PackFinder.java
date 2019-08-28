@@ -2,6 +2,7 @@ package com.conquestreforged.core.asset.pack;
 
 import com.conquestreforged.core.asset.meta.VirtualMeta;
 import com.conquestreforged.core.proxy.Proxies;
+import com.conquestreforged.core.proxy.Proxy;
 import com.conquestreforged.core.util.Log;
 import net.minecraft.resources.IPackFinder;
 import net.minecraft.resources.IResourcePack;
@@ -46,7 +47,9 @@ public class PackFinder implements IPackFinder {
     }
 
     public void register() {
-        Proxies.get(type).getResourcePackList().addPackFinder(this);
+        Proxy proxy = Proxies.get(type);
+        proxy.getResourcePackList().addPackFinder(this);
+        resourcePacks.forEach(proxy.getResourceManager()::addResourcePack);
     }
 
     public static PackFinder getInstance(ResourcePackType type) {

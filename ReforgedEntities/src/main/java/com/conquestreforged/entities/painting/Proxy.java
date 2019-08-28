@@ -7,13 +7,17 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public interface Proxy {
 
-    AtomicReference<Proxy> instance = new AtomicReference<>(new CommonProxy());
+    AtomicReference<Proxy> instance = new AtomicReference<>();
 
     default void handlePaintingUse(ItemStack stack, String name, String artName) {}
 
     default void sendSyncPacket(PacketBuffer buffer) {}
 
     static Proxy get() {
-        return instance.get();
+        Proxy proxy = instance.get();
+        if (proxy == null) {
+            instance.set(new CommonProxy());
+        }
+        return proxy;
     };
 }

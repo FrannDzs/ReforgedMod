@@ -22,6 +22,9 @@ public class DelegateGroup extends ItemGroup {
     @Override
     @OnlyIn(Dist.CLIENT)
     public int getIndex() {
+        if (group.getIndex() >= ItemGroup.GROUPS.length) {
+            throw new IndexOutOfBoundsException(group.getTabLabel() + ":" + group.getIndex());
+        }
         return group.getIndex();
     }
 

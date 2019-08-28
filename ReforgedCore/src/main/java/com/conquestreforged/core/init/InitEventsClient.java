@@ -4,7 +4,6 @@ import com.conquestreforged.core.asset.lang.VirtualLang;
 import com.conquestreforged.core.asset.pack.PackFinder;
 import com.conquestreforged.core.asset.pack.VirtualResourcepack;
 import com.conquestreforged.core.block.data.BlockDataRegistry;
-import com.conquestreforged.core.item.group.manager.ItemGroupManager;
 import com.conquestreforged.core.proxy.Proxies;
 import com.conquestreforged.core.proxy.Side;
 import com.conquestreforged.core.proxy.impl.ClientProxy;
@@ -26,14 +25,17 @@ public class InitEventsClient {
 
     private static final List<IFutureReloadListener> reloadListeners = new LinkedList<>();
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void models(ModelRegistryEvent event) {
-        // ?
+        System.out.println("############# MODELS");
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void client(FMLClientSetupEvent event) {
+        System.out.println("############# CLIENT");
+
         Proxies.set(Side.CLIENT, new ClientProxy());
+        Side.CLIENT.getProxy().registerListeners();
 
         // init client virtual resources (assets)
         BlockDataRegistry.getNamespaces().forEach(namespace -> {
@@ -44,9 +46,6 @@ public class InitEventsClient {
         });
 
         PackFinder.getInstance(ResourcePackType.CLIENT_RESOURCES).register();
-
-        // init ItemGroup manager
-        ItemGroupManager.getInstance().init();
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
