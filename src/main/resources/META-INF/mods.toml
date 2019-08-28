@@ -1,0 +1,7 @@
+modLoader="javafml"
+loaderVersion="[25,)"
+[[mods]]
+    modId="conquest"
+    displayName="@NAME@"
+    version="@VERSION@"
+    description="@NAME@ Mod"

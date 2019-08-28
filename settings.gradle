@@ -1,0 +1,9 @@
+rootProject.name = "ReforgedMod"
+include "ReforgedCore"
+include "ReforgedBlocks"
+include "ReforgedClient"
+include "ReforgedEntities"
+
+rootProject.children.each { project ->
+    project.buildFileName = "module.gradle"
+}

@@ -1,0 +1,114 @@
+minecraft {
+    runs {
+        client {
+            workingDirectory project.file("run/client")
+            property "forge.logging.markers", "SCAN,REGISTRIES,REGISTRYDUMP"
+            property "forge.logging.console.level", "debug"
+            mods {
+                mod {
+                    source sourceSets.main
+                }
+            }
+        }
+        server {
+            workingDirectory project.file("run/server")
+            property "forge.logging.markers", "SCAN,REGISTRIES,REGISTRYDUMP"
+            property "forge.logging.console.level", "debug"
+            mods {
+                mod {
+                    source sourceSets.main
+                }
+            }
+        }
+    }
+}
+
+task collectProjectClasses(type: Copy, dependsOn: subprojects.tasks["classes"]) {
+    from { subprojects.collect { p -> file("$p.buildDir/classes/java/main") } }
+    into { file("$buildDir/classes/java/main") }
+}
+
+task collectProjectResources(dependsOn: subprojects.tasks["processResources"]) {
+    doFirst {
+        File targetDir = file("$buildDir/resources/main")
+
+        Map<String, List<File>> jsonLangs = new HashMap<>()
+        Map<String, List<File>> legacyLangs = new HashMap<>()
+
+        subprojects.each { p ->
+            File dir = file("$p.buildDir/resources/main")
+            fileTree(dir).each { f ->
+                String rel = f.path.substring(dir.path.length()).toLowerCase()
+
+                if (f.getName().endsWith(".lang")) {
+                    legacyLangs.computeIfAbsent(rel, { s -> new LinkedList<>() }).add(f)
+                    return
+                }
+
+                if (f.getName().equalsIgnoreCase("en_us.json")) {
+                    jsonLangs.computeIfAbsent(rel, { s -> new LinkedList<>() }).add(f)
+                    return
+                }
+
+                createFile(targetDir, rel).setBytes(f.getBytes())
+            }
+        }
+
+        jsonLangs.each { e -> mergeJsons(targetDir, e.getKey(), e.getValue()) }
+
+        legacyLangs.each { e -> lang2Json(targetDir, e.getKey(), e.getValue()) }
+    }
+}
+
+static def createFile(File dir, String path) {
+    File out = new File(dir, path)
+    out.getParentFile().mkdirs()
+    out.createNewFile()
+    return out
+}
+
+static def lang2Json(File dir, String path, List<File> files) {
+    File out = createFile(dir, path)
+    BufferedWriter writer = out.newWriter()
+    writer.append("{")
+    boolean first = true
+    files.each {f ->
+        f.readLines().each {line ->
+            String[] pair = line.split("=")
+            if (pair.length != 2) {
+                return
+            }
+            if (!first) {
+                writer.append(",")
+            }
+            writer.append("\n  \"").append(pair[0]).append("\": \"").append(pair[1]).append("\"")
+            first = false
+        }
+    }
+    writer.append("\n}")
+    writer.flush()
+    writer.close()
+}
+
+static def mergeJsons(File dir, String path, List<File> files) {
+    File out = createFile(dir, path)
+    BufferedWriter writer = out.newWriter()
+    writer.append("{")
+    boolean first = true
+    files.each { it.readLines().each { line ->
+        if (line.contains("{")) {
+            return
+        }
+        if (line.contains("}")) {
+            return
+        }
+        if (!first) {
+            writer.append(",")
+        }
+        writer.append(line)
+        first = false
+    }}
+    writer.append("\n}")
+    writer.flush()
+    writer.close()
+}
