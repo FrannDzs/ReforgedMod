@@ -23,7 +23,7 @@ import net.minecraft.world.IWorldReader;
                 @Model(name = "block/%s_vine_4", template = "block/vine_4"),
                 @Model(name = "block/%s_vine_4u", template = "block/vine_4u"),
                 @Model(name = "block/%s_vine_u", template = "block/vine_u"),
-                @Model(name = "block/%s_pane_ns", template = "block/parent_flatpane_ns")
+                @Model(name = "block/%s_pane_ns", template = "block/parent_flatpane_biome_ns")
         }
 )
 public class Vine extends VineBlock {
