@@ -39,7 +39,7 @@ public abstract class ConquestItemGroup extends ItemGroup {
         cached = Collections.emptyList();
     }
 
-    public int getOriginalIndex() {
+    public int getOrderIndex() {
         return index;
     }
 

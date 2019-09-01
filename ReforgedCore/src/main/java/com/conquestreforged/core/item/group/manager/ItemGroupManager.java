@@ -1,30 +1,42 @@
 package com.conquestreforged.core.item.group.manager;
 
 import com.conquestreforged.core.item.group.ConquestItemGroup;
-import com.google.common.collect.Sets;
+import com.conquestreforged.core.util.Log;
+import com.google.common.collect.Lists;
 import net.minecraft.item.ItemGroup;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.*;
 
+@Mod.EventBusSubscriber(value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ItemGroupManager {
 
     private static final ItemGroupManager instance = new ItemGroupManager();
-    private static final Set<ItemGroup> required = Sets.newHashSet(ItemGroup.SEARCH, ItemGroup.INVENTORY, ItemGroup.HOTBAR);
+    private static final List<ItemGroup> fixed = Lists.newArrayList(ItemGroup.SEARCH, ItemGroup.INVENTORY, ItemGroup.HOTBAR);
+
+    static {
+        fixed.sort(Comparator.comparing(ItemGroup::getIndex));
+    }
 
     private final Map<Class<?>, Set<ItemGroup>> conquestGroups = new HashMap<>();
     private final Map<GroupType, Set<ItemGroup>> groups = new EnumMap<>(GroupType.class);
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public static void init(FMLClientSetupEvent event) {
+        instance.storeVanillaGroups();
+        instance.storeModGroups();
+    }
 
     private ItemGroupManager() {
         for (GroupType type : GroupType.values()) {
             groups.put(type, new HashSet<>());
         }
-    }
-
-    public void init() {
-        storeVanillaGroups();
-        storeModGroups();
     }
 
     public void register(ConquestItemGroup group) {
@@ -39,24 +51,42 @@ public class ItemGroupManager {
 
     public void setVisibleItemGroups(GroupType... types) {
         List<ItemGroup> order = new ArrayList<>();
-
         for (GroupType type : types) {
             Set<? extends ItemGroup> groupList = groups.get(type);
             order.addAll(sorted(groupList));
         }
 
-        required.forEach(group -> addRequired(order, group));
+        order.removeAll(fixed);
+
+        for (ItemGroup required : fixed) {
+            int index = required.getIndex();
+            if (index < order.size()) {
+                order.add(index, required);
+            } else if (index == order.size()) {
+                order.add(required);
+            } else {
+                while (order.size() < index) {
+                    order.add(null);
+                }
+                order.set(index, required);
+            }
+        }
 
         ItemGroup.GROUPS = new ItemGroup[0];
         for (int i = 0; i < order.size(); i++) {
             ItemGroup group = order.get(i);
             if (group == null) {
                 new EmptyGroup();
-            } else if (required.contains(group)) {
+            } else if (fixed.contains(group) || i == group.getIndex()) {
                 addGroupSafe(i, group);
             } else {
                 new DelegateGroup(group);
             }
+        }
+
+        for (int i = 0; i < ItemGroup.GROUPS.length; i++) {
+            ItemGroup group = ItemGroup.GROUPS[i];
+            Log.debug("i:{}; index:{}; name:{}; class:{}", i, group.getIndex(), group.getTabLabel(), group.getClass());
         }
     }
 
@@ -90,23 +120,6 @@ public class ItemGroupManager {
         }
     }
 
-    private void addRequired(List<ItemGroup> groups, ItemGroup required) {
-        int index = groups.indexOf(required);
-        if (index == required.getIndex()) {
-            return;
-        }
-
-        if (index != -1) {
-            groups.remove(index);
-        }
-
-        while (groups.size() <= required.getIndex()) {
-            groups.add(null);
-        }
-
-        groups.set(required.getIndex(), required);
-    }
-
     public static ItemGroupManager getInstance() {
         return instance;
     }
@@ -119,12 +132,12 @@ public class ItemGroupManager {
 
     private static int sort(ItemGroup g1, ItemGroup g2) {
         if (g1 instanceof ConquestItemGroup && g2 instanceof ConquestItemGroup) {
-            return ((ConquestItemGroup) g1).getOriginalIndex() - ((ConquestItemGroup) g2).getOriginalIndex();
+            return ((ConquestItemGroup) g1).getOrderIndex() - ((ConquestItemGroup) g2).getOrderIndex();
         }
         return g1.getIndex() - g2.getIndex();
     }
 
-    private static synchronized int addGroupSafe(int index, ItemGroup newGroup) {
+    private static synchronized void addGroupSafe(int index, ItemGroup newGroup) {
         if (index == -1) {
             index = ItemGroup.GROUPS.length;
         }
@@ -134,6 +147,5 @@ public class ItemGroupManager {
             ItemGroup.GROUPS = tmp;
         }
         ItemGroup.GROUPS[index] = newGroup;
-        return index;
     }
 }

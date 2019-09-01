@@ -75,8 +75,12 @@ public class Render {
     }
 
     public static void beginSlot(int xPos, int yPos, float scale) {
+        beginSlot(xPos, yPos, 0, scale);
+    }
+
+    public static void beginSlot(int xPos, int yPos, int zPos, float scale) {
         GlStateManager.pushMatrix();
-        GlStateManager.translatef(xPos, yPos, 1);
+        GlStateManager.translatef(xPos, yPos, zPos);
         GlStateManager.scalef(scale, scale, scale);
         GlStateManager.alphaFunc(GL11.GL_NOTEQUAL, 0);
     }

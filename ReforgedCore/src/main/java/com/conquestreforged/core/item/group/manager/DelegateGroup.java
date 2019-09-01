@@ -21,15 +21,6 @@ public class DelegateGroup extends ItemGroup {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public int getIndex() {
-        if (group.getIndex() >= ItemGroup.GROUPS.length) {
-            throw new IndexOutOfBoundsException(group.getTabLabel() + ":" + group.getIndex());
-        }
-        return group.getIndex();
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
     public String getTabLabel() {
         return group.getTabLabel();
     }
@@ -98,19 +89,19 @@ public class DelegateGroup extends ItemGroup {
     @Override
     @OnlyIn(Dist.CLIENT)
     public int getColumn() {
-        return group.getColumn();
+        return super.getColumn();
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
     public boolean isOnTopRow() {
-        return group.isOnTopRow();
+        return super.isOnTopRow();
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
     public boolean isAlignedRight() {
-        return group.isAlignedRight();
+        return super.isAlignedRight();
     }
 
     @Override
@@ -139,7 +130,7 @@ public class DelegateGroup extends ItemGroup {
 
     @Override
     public int getTabPage() {
-        return group.getTabPage();
+        return super.getTabPage();
     }
 
     @Override

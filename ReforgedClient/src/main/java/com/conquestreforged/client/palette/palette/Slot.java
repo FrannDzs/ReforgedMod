@@ -51,11 +51,13 @@ public class Slot {
 
     public void render(int mx, int my) {
         if (!isEmpty()) {
-            Render.beginSlot(pos.x, pos.y, getScale(mx, my));
+            boolean hovered = mouseOver(mx, my);
+
+            Render.beginSlot(pos.x, pos.y, hovered ? 10 : 0, getScale(mx, my));
             Render.drawTexture(SLOT, -11, -11, 22, 22, 0, 0, 22, 22);
-            if (selected || mouseOver(mx, my)) {
-                int color = selected ? style.selectedColor : style.hoveredColor;
-                Render.drawHighlightedItemStack(stack, 0, 0, style.highlightScale, color);
+            if (selected || hovered) {
+//                int color = selected ? style.selectedColor : style.hoveredColor;
+                Render.drawItemStack(stack, -8, -8);
             } else {
                 Render.drawItemStack(stack, -8, -8);
             }
@@ -82,8 +84,8 @@ public class Slot {
             float d2 = pos.distance2(mx, my);
             float alpha = (rad2 - d2) / rad2;
             float scale = style.scale;
-            if (alpha > 0.25) {
-                scale += Math.min(Math.max(alpha * alpha * 1.05F, 0), 2F);
+            if (alpha > 0.3) {
+                scale += Math.min(Math.max(alpha * alpha * alpha * 1.05F, 0), 2.5F);
             }
             return scale;
         }
