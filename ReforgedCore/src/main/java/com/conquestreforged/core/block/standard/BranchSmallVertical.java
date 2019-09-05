@@ -27,6 +27,9 @@ import net.minecraft.world.IWorldReader;
                 @Model(name = "block/%s_branch_small_post", template = "block/parent_branch_small_post"),
                 @Model(name = "block/%s_branch_small_diagonal", template = "block/parent_branch_small_diagonal"),
                 @Model(name = "block/%s_branch_small_twigs", template = "block/parent_branch_small_twigs"),
+                @Model(name = "block/%s_branch_small_twigs_1", template = "block/parent_branch_small_twigs_1"),
+                @Model(name = "block/%s_branch_small_twigs_2", template = "block/parent_branch_small_twigs_2"),
+                @Model(name = "block/%s_branch_small_twigs_3", template = "block/parent_branch_small_twigs_3"),
         }
 )
 public class BranchSmallVertical extends BranchVertical {
