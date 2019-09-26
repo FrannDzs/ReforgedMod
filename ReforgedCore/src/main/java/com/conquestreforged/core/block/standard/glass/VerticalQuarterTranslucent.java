@@ -13,7 +13,7 @@ import net.minecraft.util.BlockRenderLayer;
                 @Model(name = "block/%s_vertical_quarter", template = "block/parent_vertical_quarter"),
         }
 )
-public class VerticalQuarterTranslucent extends VerticalQuarter {
+public class VerticalQuarterTranslucent extends VerticalQuarterCutout {
 
     public VerticalQuarterTranslucent(Properties properties) {
         super(properties);

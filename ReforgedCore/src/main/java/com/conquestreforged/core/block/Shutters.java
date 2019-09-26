@@ -8,6 +8,7 @@ import net.minecraft.fluid.Fluids;
 import net.minecraft.fluid.IFluidState;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.BooleanProperty;
+import net.minecraft.state.IntegerProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.BlockRenderLayer;
@@ -21,15 +22,16 @@ import net.minecraft.world.World;
 
 public class Shutters extends WaterloggedDirectionalShape {
 
-    private static final BooleanProperty OPEN = BlockStateProperties.OPEN;
     protected static final VoxelShape EAST_OPEN_AABB = Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 3.0D, 16.0D, 16.0D);
     protected static final VoxelShape WEST_OPEN_AABB = Block.makeCuboidShape(13.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D);
     protected static final VoxelShape SOUTH_OPEN_AABB = Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 3.0D);
     protected static final VoxelShape NORTH_OPEN_AABB = Block.makeCuboidShape(0.0D, 0.0D, 13.0D, 16.0D, 16.0D, 16.0D);
+    public static final IntegerProperty ACTIVATED = IntegerProperty.create("activated", 1, 5);
+
 
     public Shutters(Properties properties) {
         super(properties);
-        this.setDefaultState((this.stateContainer.getBaseState()).with(OPEN, false).with(WATERLOGGED, false));
+        this.setDefaultState((this.stateContainer.getBaseState()).with(WATERLOGGED, false));
     }
 
     @Override
@@ -63,21 +65,17 @@ public class Shutters extends WaterloggedDirectionalShape {
 
     @Override
     protected void addProperties(StateContainer.Builder<Block, BlockState> builder) {
-        builder.add(OPEN);
+        builder.add(ACTIVATED);
     }
 
     @Override
     public boolean onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
-        if (state.get(OPEN)) {
-            state = state.with(OPEN, false);
-            worldIn.setBlockState(pos, state, 10);
+        if (!player.abilities.allowEdit) {
+            return false;
         } else {
-            state = state.with(OPEN, true);
-            worldIn.setBlockState(pos, state, 10);
+            worldIn.setBlockState(pos, state.cycle(ACTIVATED), 3);
+            return true;
         }
-
-        worldIn.playEvent(player, state.get(OPEN) ? 1008 : 1014, pos, 0);
-        return true;
     }
 
     @Override

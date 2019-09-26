@@ -11,7 +11,7 @@ import net.minecraft.util.BlockRenderLayer;
         item = @Model(name = "item/%s", parent = "block/%s", template = "item/parent_cube", plural = true),
         block = @Model(name = "block/%s", template = "block/parent_cube", plural = true)
 )
-public class GlassTranslucent extends GlassBlock {
+public class GlassTranslucent extends Glass {
 
     public GlassTranslucent(Properties properties) {
         super(properties);

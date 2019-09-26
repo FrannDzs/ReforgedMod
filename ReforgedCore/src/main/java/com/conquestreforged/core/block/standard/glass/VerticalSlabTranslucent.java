@@ -13,7 +13,7 @@ import net.minecraft.util.BlockRenderLayer;
                 @Model(name = "block/%s_vertical_slab", template = "block/parent_vertical_slab"),
         }
 )
-public class VerticalSlabTranslucent extends VerticalSlab {
+public class VerticalSlabTranslucent extends VerticalSlabCutout {
 
     public VerticalSlabTranslucent(Properties properties) {
         super(properties);

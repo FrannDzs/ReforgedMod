@@ -12,6 +12,10 @@ import com.conquestreforged.core.asset.annotation.State;
                 @Model(name = "block/%s_gothic_arch_two", template = "block/parent_gothic_arch_two"),
                 @Model(name = "block/%s_gothic_arch_three", template = "block/parent_gothic_arch_three"),
                 @Model(name = "block/%s_gothic_arch_three_top", template = "block/parent_gothic_arch_three_top"),
+                @Model(name = "block/%s_gothic_arch_one_bottom", template = "block/parent_gothic_arch_one_bottom"),
+                @Model(name = "block/%s_gothic_arch_two_bottom", template = "block/parent_gothic_arch_two_bottom"),
+                @Model(name = "block/%s_gothic_arch_three_bottom", template = "block/parent_gothic_arch_three_bottom"),
+                @Model(name = "block/%s_gothic_arch_three_top_bottom", template = "block/parent_gothic_arch_three_top_bottom"),
         }
 )
 public class ArchGothic extends ArchRound {

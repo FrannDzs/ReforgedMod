@@ -3,13 +3,18 @@ package com.conquestreforged.core.block;
 import com.conquestreforged.core.asset.annotation.Assets;
 import com.conquestreforged.core.asset.annotation.Model;
 import com.conquestreforged.core.asset.annotation.State;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.PaneBlock;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.shapes.IBooleanFunction;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorldReader;
 
 @Assets(
         state = @State(name = "%s", template = "parent_pane"),
@@ -25,6 +30,8 @@ import net.minecraft.world.IBlockReader;
 )
 public class FourWayFull extends PaneBlock {
 
+    protected static final VoxelShape SHAPE = Block.makeCuboidShape(1.0D, 10.0D, 1.0D, 15.0D, 16.0D, 15.0D);
+
     public FourWayFull(Properties properties) {
         super(properties);
     }
@@ -36,6 +43,12 @@ public class FourWayFull extends PaneBlock {
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
-        return VoxelShapes.fullCube();
+        return SHAPE;
     }
+
+    @Override
+    public VoxelShape getRenderShape(BlockState state, IBlockReader worldIn, BlockPos pos) {
+        return VoxelShapes.empty();
+    }
+
 }

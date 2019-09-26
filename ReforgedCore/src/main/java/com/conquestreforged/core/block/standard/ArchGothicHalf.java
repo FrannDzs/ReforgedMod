@@ -14,6 +14,12 @@ import com.conquestreforged.core.asset.annotation.State;
                 @Model(name = "block/%s_gothic_arch_three_half_l", template = "block/parent_gothic_arch_three_half_l"),
                 @Model(name = "block/%s_gothic_arch_three_half_r", template = "block/parent_gothic_arch_three_half_r"),
                 @Model(name = "block/%s_gothic_arch_three_top_half", template = "block/parent_gothic_arch_three_top_half"),
+                @Model(name = "block/%s_gothic_arch_one_half_bottom", template = "block/parent_gothic_arch_one_half_bottom"),
+                @Model(name = "block/%s_gothic_arch_two_half_l_bottom", template = "block/parent_gothic_arch_two_half_l_bottom"),
+                @Model(name = "block/%s_gothic_arch_two_half_r_bottom", template = "block/parent_gothic_arch_two_half_r_bottom"),
+                @Model(name = "block/%s_gothic_arch_three_half_l_bottom", template = "block/parent_gothic_arch_three_half_l_bottom"),
+                @Model(name = "block/%s_gothic_arch_three_half_r_bottom", template = "block/parent_gothic_arch_three_half_r_bottom"),
+                @Model(name = "block/%s_gothic_arch_three_top_half_bottom", template = "block/parent_gothic_arch_three_top_half_bottom"),
         }
 )
 public class ArchGothicHalf extends ArchRoundHalf {

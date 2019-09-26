@@ -13,7 +13,7 @@ import net.minecraft.util.BlockRenderLayer;
                 @Model(name = "block/%s_vertical_slab_thin", template = "block/parent_vertical_slab_thin"),
         }
 )
-public class VerticalSlabThinTranslucent extends VerticalSlabThin {
+public class VerticalSlabThinTranslucent extends VerticalSlabThinCutout {
 
     public VerticalSlabThinTranslucent(Properties properties) {
         super(properties);

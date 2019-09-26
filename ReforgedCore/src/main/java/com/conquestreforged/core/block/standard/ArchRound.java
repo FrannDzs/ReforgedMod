@@ -13,6 +13,7 @@ import net.minecraft.fluid.IFluidState;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.StateContainer;
+import net.minecraft.state.properties.Half;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
@@ -30,11 +31,16 @@ import net.minecraft.world.IWorld;
                 @Model(name = "block/%s_round_arch_two", template = "block/parent_round_arch_two"),
                 @Model(name = "block/%s_round_arch_three", template = "block/parent_round_arch_three"),
                 @Model(name = "block/%s_round_arch_three_top", template = "block/parent_round_arch_three_top"),
+                @Model(name = "block/%s_round_arch_one_bottom", template = "block/parent_round_arch_one_bottom"),
+                @Model(name = "block/%s_round_arch_two_bottom", template = "block/parent_round_arch_two_bottom"),
+                @Model(name = "block/%s_round_arch_three_bottom", template = "block/parent_round_arch_three_bottom"),
+                @Model(name = "block/%s_round_arch_three_top_bottom", template = "block/parent_round_arch_three_top_bottom"),
         }
 )
 public class ArchRound extends HorizontalBlock implements Waterloggable {
 
     public static final EnumProperty<ArchShape> FORM = EnumProperty.create("shape", ArchShape.class);
+    public static final EnumProperty<Half> TYPE_UPDOWN = EnumProperty.create("type", Half.class);
 
     private static final VoxelShape ARCH_NORTH_SHAPE = VoxelShapes.or(Block.makeCuboidShape(0.0D, 0.0D, 8.0D, 16.0D, 16.0D, 16.0D), Block.makeCuboidShape(0.0D, 8.0D, 0.0D, 16.0D, 16.0D, 8.0D));
     private static final VoxelShape ARCH_WEST_SHAPE = VoxelShapes.or(Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 8.0D, 16.0D, 16.0D), Block.makeCuboidShape(8.0D, 8.0D, 0.0D, 16.0D, 16.0D, 16.0D));
@@ -45,7 +51,7 @@ public class ArchRound extends HorizontalBlock implements Waterloggable {
 
     public ArchRound(Properties properties) {
         super(properties);
-        this.setDefaultState((this.stateContainer.getBaseState()).with(FORM, ArchShape.ONE).with(HORIZONTAL_FACING, Direction.NORTH).with(WATERLOGGED, false));
+        this.setDefaultState((this.stateContainer.getBaseState()).with(TYPE_UPDOWN, Half.TOP).with(FORM, ArchShape.ONE).with(HORIZONTAL_FACING, Direction.NORTH).with(WATERLOGGED, false));
     }
 
     @Override
@@ -98,19 +104,19 @@ public class ArchRound extends HorizontalBlock implements Waterloggable {
             }
 
             if (counter == 0) {
-                return this.getDefaultState()
+                return stateIn
                         .with(HORIZONTAL_FACING, facing)
                         .with(FORM, ArchShape.ONE);
             } else if (counter == 1 && isThirdShape) {
-                return this.getDefaultState()
+                return stateIn
                         .with(HORIZONTAL_FACING, facing)
                         .with(FORM, ArchShape.THREE);
             } else if (counter == 1) {
-                return this.getDefaultState()
+                return stateIn
                         .with(HORIZONTAL_FACING, facing)
                         .with(FORM, ArchShape.TWO);
             } else if (counter >= 2) {
-                return this.getDefaultState()
+                return stateIn
                         .with(HORIZONTAL_FACING, facing)
                         .with(FORM, ArchShape.THREE_MIDDLE);
             } else {
@@ -170,6 +176,15 @@ public class ArchRound extends HorizontalBlock implements Waterloggable {
         int counter = 0;
         boolean isThirdShape = false;
         Direction facing = context.getPlacementHorizontalFacing().getOpposite();
+        Direction facingVertical = context.getFace();
+
+        BlockState state2;
+        if (facingVertical != Direction.DOWN && (facingVertical == Direction.UP || context.getHitVec().y <= 0.5D)) {
+            state2 = this.getDefaultState().with(TYPE_UPDOWN, Half.BOTTOM);
+        } else {
+            state2 = this.getDefaultState().with(TYPE_UPDOWN, Half.TOP);
+        }
+
 
         if (attachesTo(north)) {
             counter += 1;
@@ -201,22 +216,22 @@ public class ArchRound extends HorizontalBlock implements Waterloggable {
         }
 
         if (counter == 0) {
-            return this.getDefaultState()
+            return state2
                     .with(HORIZONTAL_FACING, facing)
                     .with(FORM, ArchShape.ONE)
                     .with(WATERLOGGED, ifluidstate.getFluid() == Fluids.WATER);
         } else if (counter == 1 && isThirdShape) {
-            return this.getDefaultState()
+            return state2
                     .with(HORIZONTAL_FACING, facing)
                     .with(FORM, ArchShape.THREE)
                     .with(WATERLOGGED, ifluidstate.getFluid() == Fluids.WATER);
         } else if (counter == 1) {
-            return this.getDefaultState()
+            return state2
                     .with(HORIZONTAL_FACING, facing)
                     .with(FORM, ArchShape.TWO)
                     .with(WATERLOGGED, ifluidstate.getFluid() == Fluids.WATER);
         } else {
-            return this.getDefaultState()
+            return state2
                     .with(HORIZONTAL_FACING, facing)
                     .with(FORM, ArchShape.THREE_MIDDLE)
                     .with(WATERLOGGED, ifluidstate.getFluid() == Fluids.WATER);
@@ -231,7 +246,7 @@ public class ArchRound extends HorizontalBlock implements Waterloggable {
 
     @Override
     protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-        builder.add(HORIZONTAL_FACING, FORM, WATERLOGGED);
+        builder.add(HORIZONTAL_FACING, FORM, TYPE_UPDOWN, WATERLOGGED);
     }
     private boolean attachesTo(BlockState state) {
         Block block = state.getBlock();

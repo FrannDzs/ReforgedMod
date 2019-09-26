@@ -24,6 +24,7 @@ import net.minecraft.world.IBlockReader;
         item = @Model(name = "item/%s_slab", parent = "block/%s_slab", template = "item/acacia_slab"),
         block = {
                 @Model(name = "block/%s_slab", template = "block/parent_slab"),
+                @Model(name = "block/%s_slab_top", template = "block/parent_slab_top"),
         },
         recipe = @Recipe(
                 name = "%s_slab",
