@@ -68,6 +68,24 @@ public class ArchRoundHalf extends HorizontalBlock implements Waterloggable {
     private static final VoxelShape ARCH_MIDDLE_WEST_SHAPE = Block.makeCuboidShape(8.0D, 8.0D, 0.0D, 16.0D, 16.0D, 16.0D);
     private static final VoxelShape ARCH_MIDDLE_EAST_SHAPE = Block.makeCuboidShape(0.0D, 8.0D, 0.0D, 8.0D, 16.0D, 16.0D);
 
+    private static final VoxelShape ARCH_NORTH_R_BOTTOM_SHAPE = VoxelShapes.or(Block.makeCuboidShape(0.0D, 0.0D, 8.0D, 16.0D, 8.0D, 16.0D), Block.makeCuboidShape(0.0D, 8.0D, 8.0D, 8.0D, 16.0D, 16.0D));
+    private static final VoxelShape ARCH_NORTH_L_BOTTOM_SHAPE = VoxelShapes.or(Block.makeCuboidShape(8.0D, 0.0D, 8.0D, 16.0D, 16.0D, 16.0D), Block.makeCuboidShape(0.0D, 0.0D, 8.0D, 8.0D, 8.0D, 16.0D));
+
+    private static final VoxelShape ARCH_WEST_L_BOTTOM_SHAPE = VoxelShapes.or(Block.makeCuboidShape(8.0D, 0.0D, 0.0D, 16.0D, 8.0D, 16.0D), Block.makeCuboidShape(8.0D, 8.0D, 8.0D, 16.0D, 16.0D, 16.0D));
+    private static final VoxelShape ARCH_WEST_R_BOTTOM_SHAPE = VoxelShapes.or(Block.makeCuboidShape(8.0D, 0.0D, 0.0D, 16.0D, 16.0D, 8.0D), Block.makeCuboidShape(8.0D, 0.0D, 8.0D, 16.0D, 8.0D, 16.0D));
+
+    private static final VoxelShape ARCH_EAST_R_BOTTOM_SHAPE = VoxelShapes.or(Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 8.0D, 8.0D, 16.0D), Block.makeCuboidShape(0.0D, 8.0D, 0.0D, 8.0D, 16.0D, 8.0D));
+    private static final VoxelShape ARCH_EAST_L_BOTTOM_SHAPE = VoxelShapes.or(Block.makeCuboidShape(0.0D, 0.0D, 8.0D, 8.0D, 16.0D, 16.0D), Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 8.0D, 8.0D, 8.0D));
+
+    private static final VoxelShape ARCH_SOUTH_L_BOTTOM_SHAPE = VoxelShapes.or(Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 8.0D, 8.0D), Block.makeCuboidShape(8.0D, 8.0D, 0.0D, 16.0D, 16.0D, 8.0D));
+    private static final VoxelShape ARCH_SOUTH_R_BOTTOM_SHAPE = VoxelShapes.or(Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 8.0D, 16.0D, 8.0D), Block.makeCuboidShape(8.0D, 0.0D, 0.0D, 16.0D, 8.0D, 8.0D));
+
+    private static final VoxelShape ARCH_MIDDLE_SOUTH_BOTTOM_SHAPE = Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 8.0D, 8.0D);
+    private static final VoxelShape ARCH_MIDDLE_NORTH_BOTTOM_SHAPE = Block.makeCuboidShape(0.0D, 0.0D, 8.0D, 16.0D, 8.0D, 16.0D);
+    private static final VoxelShape ARCH_MIDDLE_WEST_BOTTOM_SHAPE = Block.makeCuboidShape(8.0D, 0.0D, 0.0D, 16.0D, 8.0D, 16.0D);
+    private static final VoxelShape ARCH_MIDDLE_EAST_BOTTOM_SHAPE = Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 8.0D, 8.0D, 16.0D);
+
+
     public ArchRoundHalf(Properties properties) {
         super(properties);
         this.setDefaultState((this.stateContainer.getBaseState()).with(TYPE_UPDOWN, Half.TOP).with(FORM, HalfArchShape.ONE).with(HORIZONTAL_FACING, Direction.NORTH).with(WATERLOGGED, false));
@@ -140,54 +158,105 @@ public class ArchRoundHalf extends HorizontalBlock implements Waterloggable {
 
     @Override
     public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
-
-        if (state.get(FORM) == HalfArchShape.ONE) {
-            switch (state.get(HORIZONTAL_FACING)) {
-                case NORTH:
-                default:
-                    return NORTH_SHAPE;
-                case SOUTH:
-                    return SOUTH_SHAPE;
-                case WEST:
-                    return WEST_SHAPE;
-                case EAST:
-                    return EAST_SHAPE;
-            }
-        } else if (state.get(FORM) == HalfArchShape.TWO_L || state.get(FORM) == HalfArchShape.THREE_L) {
-            switch (state.get(HORIZONTAL_FACING)) {
-                case NORTH:
-                default:
-                    return ARCH_NORTH_L_SHAPE;
-                case SOUTH:
-                    return ARCH_SOUTH_L_SHAPE;
-                case WEST:
-                    return ARCH_WEST_L_SHAPE;
-                case EAST:
-                    return ARCH_EAST_L_SHAPE;
-            }
-        } else if (state.get(FORM) == HalfArchShape.TWO_R || state.get(FORM) == HalfArchShape.THREE_R) {
-            switch (state.get(HORIZONTAL_FACING)) {
-                case NORTH:
-                default:
-                    return ARCH_NORTH_R_SHAPE;
-                case SOUTH:
-                    return ARCH_SOUTH_R_SHAPE;
-                case WEST:
-                    return ARCH_WEST_R_SHAPE;
-                case EAST:
-                    return ARCH_EAST_R_SHAPE;
+        if (state.get(TYPE_UPDOWN) == Half.TOP) {
+            if (state.get(FORM) == HalfArchShape.ONE) {
+                switch (state.get(HORIZONTAL_FACING)) {
+                    case NORTH:
+                    default:
+                        return NORTH_SHAPE;
+                    case SOUTH:
+                        return SOUTH_SHAPE;
+                    case WEST:
+                        return WEST_SHAPE;
+                    case EAST:
+                        return EAST_SHAPE;
+                }
+            } else if (state.get(FORM) == HalfArchShape.TWO_L || state.get(FORM) == HalfArchShape.THREE_L) {
+                switch (state.get(HORIZONTAL_FACING)) {
+                    case NORTH:
+                    default:
+                        return ARCH_NORTH_L_SHAPE;
+                    case SOUTH:
+                        return ARCH_SOUTH_L_SHAPE;
+                    case WEST:
+                        return ARCH_WEST_L_SHAPE;
+                    case EAST:
+                        return ARCH_EAST_L_SHAPE;
+                }
+            } else if (state.get(FORM) == HalfArchShape.TWO_R || state.get(FORM) == HalfArchShape.THREE_R) {
+                switch (state.get(HORIZONTAL_FACING)) {
+                    case NORTH:
+                    default:
+                        return ARCH_NORTH_R_SHAPE;
+                    case SOUTH:
+                        return ARCH_SOUTH_R_SHAPE;
+                    case WEST:
+                        return ARCH_WEST_R_SHAPE;
+                    case EAST:
+                        return ARCH_EAST_R_SHAPE;
+                }
+            } else {
+                switch (state.get(HORIZONTAL_FACING)) {
+                    case NORTH:
+                    default:
+                        return ARCH_MIDDLE_NORTH_SHAPE;
+                    case SOUTH:
+                        return ARCH_MIDDLE_SOUTH_SHAPE;
+                    case WEST:
+                        return ARCH_MIDDLE_WEST_SHAPE;
+                    case EAST:
+                        return ARCH_MIDDLE_EAST_SHAPE;
+                }
             }
         } else {
-            switch (state.get(HORIZONTAL_FACING)) {
-                case NORTH:
-                default:
-                    return ARCH_MIDDLE_NORTH_SHAPE;
-                case SOUTH:
-                    return ARCH_MIDDLE_SOUTH_SHAPE;
-                case WEST:
-                    return ARCH_MIDDLE_WEST_SHAPE;
-                case EAST:
-                    return ARCH_MIDDLE_EAST_SHAPE;
+            if (state.get(FORM) == HalfArchShape.ONE) {
+                switch (state.get(HORIZONTAL_FACING)) {
+                    case NORTH:
+                    default:
+                        return NORTH_SHAPE;
+                    case SOUTH:
+                        return SOUTH_SHAPE;
+                    case WEST:
+                        return WEST_SHAPE;
+                    case EAST:
+                        return EAST_SHAPE;
+                }
+            } else if (state.get(FORM) == HalfArchShape.TWO_L || state.get(FORM) == HalfArchShape.THREE_L) {
+                switch (state.get(HORIZONTAL_FACING)) {
+                    case NORTH:
+                    default:
+                        return ARCH_NORTH_L_BOTTOM_SHAPE;
+                    case SOUTH:
+                        return ARCH_SOUTH_L_BOTTOM_SHAPE;
+                    case WEST:
+                        return ARCH_WEST_L_BOTTOM_SHAPE;
+                    case EAST:
+                        return ARCH_EAST_L_BOTTOM_SHAPE;
+                }
+            } else if (state.get(FORM) == HalfArchShape.TWO_R || state.get(FORM) == HalfArchShape.THREE_R) {
+                switch (state.get(HORIZONTAL_FACING)) {
+                    case NORTH:
+                    default:
+                        return ARCH_NORTH_R_BOTTOM_SHAPE;
+                    case SOUTH:
+                        return ARCH_SOUTH_R_BOTTOM_SHAPE;
+                    case WEST:
+                        return ARCH_WEST_R_BOTTOM_SHAPE;
+                    case EAST:
+                        return ARCH_EAST_R_BOTTOM_SHAPE;
+                }
+            } else {
+                switch (state.get(HORIZONTAL_FACING)) {
+                    case NORTH:
+                    default:
+                        return ARCH_MIDDLE_NORTH_BOTTOM_SHAPE;
+                    case SOUTH:
+                        return ARCH_MIDDLE_SOUTH_BOTTOM_SHAPE;
+                    case WEST:
+                        return ARCH_MIDDLE_WEST_BOTTOM_SHAPE;
+                    case EAST:
+                        return ARCH_MIDDLE_EAST_BOTTOM_SHAPE;
+                }
             }
         }
     }

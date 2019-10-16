@@ -22,12 +22,12 @@ public class Torch extends Block implements Waterloggable {
 
     public static final DirectionProperty FACING = DirectionalBlock.FACING;
     public static final IntegerProperty LIGHT_0_3 = IntegerProperty.create("light", 0, 3);
-    protected static final VoxelShape EAST_OPEN_AABB = Block.makeCuboidShape(0.0D, 3.0D, 5.5D, 5.0D, 13.0D, 10.5D);
-    protected static final VoxelShape WEST_OPEN_AABB = Block.makeCuboidShape(11.0D, 3.0D, 5.5D, 16.0D, 13.0D, 10.5D);
-    protected static final VoxelShape SOUTH_OPEN_AABB = Block.makeCuboidShape(5.5D, 3.0D, 0.0D, 10.5D, 13.0D, 5.0D);
-    protected static final VoxelShape NORTH_OPEN_AABB = Block.makeCuboidShape(5.5D, 3.0D, 11.0D, 10.5D, 13.0D, 16.0D);
-    protected static final VoxelShape BOTTOM_AABB = Block.makeCuboidShape(6.0D, 0.0D, 6.0D, 10.0D, 10.0D, 10.0D);
-    protected static final VoxelShape TOP_AABB = Block.makeCuboidShape(6.0D, 6.0D, 6.0D, 10.0D, 16.0D, 10.0D);
+    protected static final VoxelShape EAST_OPEN_AABB = Block.makeCuboidShape(0.0D, 0.0D, 4.0D, 10.0D, 16.0D, 11.0D);
+    protected static final VoxelShape WEST_OPEN_AABB = Block.makeCuboidShape(6.0D, 0.0D, 4.0D, 16.0D, 16.0D, 11.0D);
+    protected static final VoxelShape SOUTH_OPEN_AABB = Block.makeCuboidShape(4.0D, 0.0D, 0.0D, 11.0D, 16.0D, 10.0D);
+    protected static final VoxelShape NORTH_OPEN_AABB = Block.makeCuboidShape(4.0D, 0.0D, 6.0D, 11.0D, 16.0D, 16.0D);
+    protected static final VoxelShape BOTTOM_AABB = Block.makeCuboidShape(4.0D, 0.0D, 4.0D, 12.0D, 16.0D, 12.0D);
+    protected static final VoxelShape TOP_AABB = Block.makeCuboidShape(4.0D, 0.0D, 4.0D, 12.0D, 16.0D, 12.0D);
 
     public Torch(Properties properties) {
         super(properties);

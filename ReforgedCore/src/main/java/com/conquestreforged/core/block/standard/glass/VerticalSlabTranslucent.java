@@ -3,6 +3,7 @@ package com.conquestreforged.core.block.standard.glass;
 import com.conquestreforged.core.asset.annotation.Assets;
 import com.conquestreforged.core.asset.annotation.Model;
 import com.conquestreforged.core.asset.annotation.State;
+import com.conquestreforged.core.block.builder.Props;
 import com.conquestreforged.core.block.standard.VerticalSlab;
 import net.minecraft.util.BlockRenderLayer;
 
@@ -15,7 +16,7 @@ import net.minecraft.util.BlockRenderLayer;
 )
 public class VerticalSlabTranslucent extends VerticalSlabCutout {
 
-    public VerticalSlabTranslucent(Properties properties) {
+    public VerticalSlabTranslucent(Props properties) {
         super(properties);
     }
 

@@ -16,7 +16,10 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 
@@ -53,6 +56,15 @@ public class Shutters extends WaterloggedDirectionalShape {
                 case EAST:
                     return EAST_OPEN_AABB;
             }
+        }
+    }
+
+    @Override
+    public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+        if (state.get(ACTIVATED) == 1) {
+            return getShape(state);
+        } else {
+            return VoxelShapes.empty();
         }
     }
 

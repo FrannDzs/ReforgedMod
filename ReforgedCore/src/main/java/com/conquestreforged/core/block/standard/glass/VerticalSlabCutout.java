@@ -3,6 +3,7 @@ package com.conquestreforged.core.block.standard.glass;
 import com.conquestreforged.core.asset.annotation.Assets;
 import com.conquestreforged.core.asset.annotation.Model;
 import com.conquestreforged.core.asset.annotation.State;
+import com.conquestreforged.core.block.builder.Props;
 import com.conquestreforged.core.block.standard.VerticalCorner;
 import com.conquestreforged.core.block.standard.VerticalCornerThin;
 import com.conquestreforged.core.block.standard.VerticalSlab;
@@ -24,7 +25,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 )
 public class VerticalSlabCutout extends VerticalSlab {
 
-    public VerticalSlabCutout(Properties properties) {
+    public VerticalSlabCutout(Props properties) {
         super(properties);
     }
 

@@ -43,11 +43,19 @@ public class ArchRound extends HorizontalBlock implements Waterloggable {
     public static final EnumProperty<Half> TYPE_UPDOWN = EnumProperty.create("type", Half.class);
 
     private static final VoxelShape ARCH_NORTH_SHAPE = VoxelShapes.or(Block.makeCuboidShape(0.0D, 0.0D, 8.0D, 16.0D, 16.0D, 16.0D), Block.makeCuboidShape(0.0D, 8.0D, 0.0D, 16.0D, 16.0D, 8.0D));
+    private static final VoxelShape ARCH_NORTH_BOTTOM_SHAPE = VoxelShapes.or(Block.makeCuboidShape(0.0D, 0.0D, 8.0D, 16.0D, 16.0D, 16.0D), Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 8.0D, 8.0D));
+
     private static final VoxelShape ARCH_WEST_SHAPE = VoxelShapes.or(Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 8.0D, 16.0D, 16.0D), Block.makeCuboidShape(8.0D, 8.0D, 0.0D, 16.0D, 16.0D, 16.0D));
+    private static final VoxelShape ARCH_WEST_BOTTOM_SHAPE = VoxelShapes.or(Block.makeCuboidShape(8.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D), Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 8.0D, 8.0D, 16.0D));
+
     private static final VoxelShape ARCH_EAST_SHAPE = VoxelShapes.or(Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 8.0D), Block.makeCuboidShape(0.0D, 8.0D, 8.0D, 16.0D, 16.0D, 16.0D));
+    private static final VoxelShape ARCH_EAST_BOTTOM_SHAPE = VoxelShapes.or(Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 8.0D, 16.0D, 16.0D), Block.makeCuboidShape(8.0D, 0.0D, 0.0D, 16.0D, 8.0D, 16.0D));
+
     private static final VoxelShape ARCH_SOUTH_SHAPE = VoxelShapes.or(Block.makeCuboidShape(8.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D), Block.makeCuboidShape(0.0D, 8.0D, 0.0D, 8.0D, 16.0D, 16.0D));
+    private static final VoxelShape ARCH_SOUTH_BOTTOM_SHAPE = VoxelShapes.or(Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 8.0D), Block.makeCuboidShape(0.0D, 0.0D, 8.0D, 16.0D, 8.0D, 16.0D));
 
     private static final VoxelShape ARCH_MIDDLE_SHAPE = Block.makeCuboidShape(0.0D, 8.0D, 0.0D, 16.0D, 16.0D, 16.0D);
+    private static final VoxelShape ARCH_MIDDLE_BOTTOM_SHAPE = Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 8.0D, 16.0D);
 
     public ArchRound(Properties properties) {
         super(properties);
@@ -135,7 +143,9 @@ public class ArchRound extends HorizontalBlock implements Waterloggable {
     public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
         if (state.get(FORM) == ArchShape.ONE) {
             return VoxelShapes.fullCube();
-        } else if ((state.get(FORM) == ArchShape.TWO) || (state.get(FORM) == ArchShape.THREE)) {
+        } else if ((state.get(FORM) == ArchShape.THREE_MIDDLE) && (state.get(TYPE_UPDOWN) == Half.TOP)) {
+            return ARCH_MIDDLE_SHAPE;
+        } else if (state.get(TYPE_UPDOWN) == Half.TOP) {
             switch (state.get(HORIZONTAL_FACING)) {
                 case NORTH:
                 default:
@@ -147,8 +157,20 @@ public class ArchRound extends HorizontalBlock implements Waterloggable {
                 case EAST:
                     return ARCH_WEST_SHAPE;
             }
+        } else if ((state.get(FORM) == ArchShape.THREE_MIDDLE) && (state.get(TYPE_UPDOWN) == Half.BOTTOM)) {
+            return ARCH_MIDDLE_BOTTOM_SHAPE;
         } else {
-            return ARCH_MIDDLE_SHAPE;
+            switch (state.get(HORIZONTAL_FACING)) {
+                case NORTH:
+                default:
+                    return ARCH_NORTH_BOTTOM_SHAPE;
+                case SOUTH:
+                    return ARCH_SOUTH_BOTTOM_SHAPE;
+                case WEST:
+                    return ARCH_WEST_BOTTOM_SHAPE;
+                case EAST:
+                    return ARCH_EAST_BOTTOM_SHAPE;
+            }
         }
     }
 

@@ -12,7 +12,8 @@ import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
-import org.checkerframework.checker.nullness.qual.NonNull;
+
+import javax.annotation.Nonnull;
 
 /**
  * A directional, non full-cube shape that can be waterlogged
@@ -35,7 +36,7 @@ public abstract class WaterloggedDirectionalShape extends Shape implements Water
         return state.rotate(mirrorIn.toRotation(state.get(DIRECTION)));
     }
 
-    @NonNull
+    @Nonnull
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context) {
         Direction facing = context.getPlacementHorizontalFacing().getOpposite();

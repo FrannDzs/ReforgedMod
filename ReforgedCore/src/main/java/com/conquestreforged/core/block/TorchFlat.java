@@ -10,6 +10,7 @@ import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.IntegerProperty;
 import net.minecraft.state.StateContainer;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
@@ -18,14 +19,15 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 
-public class TorchNonDirectional extends Block implements Waterloggable {
+public class TorchFlat extends Block implements Waterloggable {
 
+    public static final DirectionProperty DIRECTION = BlockStateProperties.HORIZONTAL_FACING;
     public static final IntegerProperty LIGHT_0_3 = IntegerProperty.create("light", 0, 3);
-    protected static final VoxelShape BOTTOM_AABB = Block.makeCuboidShape(4.0D, 0.0D, 4.0D, 12.0D, 16.0D, 12.0D);
+    protected static final VoxelShape AABB = Block.makeCuboidShape(4.0D, 0.0D, 4.0D, 12.0D, 16.0D, 12.0D);
 
-    public TorchNonDirectional(Properties properties) {
+    public TorchFlat(Properties properties) {
         super(properties);
-        this.setDefaultState(this.stateContainer.getBaseState().with(LIGHT_0_3, 0).with(WATERLOGGED, false));
+        this.setDefaultState(this.stateContainer.getBaseState().with(DIRECTION, Direction.NORTH).with(LIGHT_0_3, 0).with(WATERLOGGED, false));
 
     }
 
@@ -43,20 +45,23 @@ public class TorchNonDirectional extends Block implements Waterloggable {
     }
 
     @Override
+    public BlockState getStateForPlacement(BlockItemUseContext context) {
+        return this.getDefaultState().with(DIRECTION, context.getPlacementHorizontalFacing().getOpposite());
+    }
+
+    @Override
     public BlockRenderLayer getRenderLayer() {
         return BlockRenderLayer.CUTOUT;
     }
 
     @Override
     public VoxelShape getShape(BlockState state, IBlockReader reader, BlockPos pos, ISelectionContext context) {
-        {
-            return BOTTOM_AABB;
-        }
+        return AABB;
     }
 
     @Override
     protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-        builder.add(LIGHT_0_3, WATERLOGGED);
+        builder.add(DIRECTION, LIGHT_0_3, WATERLOGGED);
     }
 
     @Override

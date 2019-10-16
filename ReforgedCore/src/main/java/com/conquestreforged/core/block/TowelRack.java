@@ -1,5 +1,6 @@
 package com.conquestreforged.core.block;
 
+import com.conquestreforged.core.block.base.WaterloggedDirectionalShape;
 import com.conquestreforged.core.block.standard.VerticalSlab;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -18,20 +19,19 @@ import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
-public class TowelRack extends VerticalSlab {
+public class TowelRack extends WaterloggedDirectionalShape {
 
     public static final BooleanProperty CAP = BlockStateProperties.EYE;
+    private static final VoxelShape EAST_SHAPE = Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 8.0D, 16.0D, 16.0D);
+    private static final VoxelShape WEST_SHAPE = Block.makeCuboidShape(8.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D);
+    private static final VoxelShape SOUTH_SHAPE = Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 8.0D);
+    private static final VoxelShape NORTH_SHAPE = Block.makeCuboidShape(0.0D, 0.0D, 16.0D, 16.0D, 16.0D, 8.0D);
 
     public TowelRack(Properties properties) {
         super(properties);
         this.setDefaultState((this.stateContainer.getBaseState())
                 .with(DIRECTION, Direction.NORTH)
                 .with(CAP,false));
-    }
-
-    @Override
-    public VoxelShape getShape(BlockState state) {
-        return VoxelShapes.fullCube();
     }
 
     @Override
@@ -51,6 +51,21 @@ public class TowelRack extends VerticalSlab {
             state = state.cycle(CAP);
             worldIn.setBlockState(pos, state, 3);
             return true;
+        }
+    }
+
+    @Override
+    public VoxelShape getShape(BlockState state) {
+        switch (state.get(DIRECTION)) {
+            case NORTH:
+            default:
+                return NORTH_SHAPE;
+            case SOUTH:
+                return SOUTH_SHAPE;
+            case WEST:
+                return WEST_SHAPE;
+            case EAST:
+                return EAST_SHAPE;
         }
     }
 

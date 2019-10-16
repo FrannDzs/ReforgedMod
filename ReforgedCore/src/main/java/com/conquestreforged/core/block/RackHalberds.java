@@ -1,5 +1,6 @@
 package com.conquestreforged.core.block;
 
+import com.conquestreforged.core.block.base.WaterloggedDirectionalShape;
 import com.conquestreforged.core.block.standard.VerticalSlab;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -11,13 +12,19 @@ import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 
-public class RackHalberds extends VerticalSlab {
+public class RackHalberds extends WaterloggedDirectionalShape {
 
     public static final BooleanProperty UP = BlockStateProperties.UP;
     public static final BooleanProperty DOWN = BlockStateProperties.DOWN;
+
+    private static final VoxelShape EAST_SHAPE = Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 8.0D, 16.0D, 16.0D);
+    private static final VoxelShape WEST_SHAPE = Block.makeCuboidShape(8.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D);
+    private static final VoxelShape SOUTH_SHAPE = Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 8.0D);
+    private static final VoxelShape NORTH_SHAPE = Block.makeCuboidShape(0.0D, 0.0D, 16.0D, 16.0D, 16.0D, 8.0D);
 
     public RackHalberds(Block.Properties properties) {
         super(properties);
@@ -54,6 +61,21 @@ public class RackHalberds extends VerticalSlab {
         boolean flag = this.canConnectTo(worldIn, currentPos.up());
         boolean flag1 = this.canConnectTo(worldIn, currentPos.down());
         return stateIn.with(UP, flag).with(DOWN, flag1);
+    }
+
+    @Override
+    public VoxelShape getShape(BlockState state) {
+        switch (state.get(DIRECTION)) {
+            case NORTH:
+            default:
+                return NORTH_SHAPE;
+            case SOUTH:
+                return SOUTH_SHAPE;
+            case WEST:
+                return WEST_SHAPE;
+            case EAST:
+                return EAST_SHAPE;
+        }
     }
 
     private boolean attachesTo(BlockState blockstate) {

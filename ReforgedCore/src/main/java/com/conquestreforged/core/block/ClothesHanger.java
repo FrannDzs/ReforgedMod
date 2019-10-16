@@ -1,5 +1,6 @@
 package com.conquestreforged.core.block;
 
+import com.conquestreforged.core.block.base.WaterloggedDirectionalShape;
 import com.conquestreforged.core.block.standard.VerticalSlab;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -11,11 +12,16 @@ import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.World;
 
-public class ClothesHanger extends VerticalSlab {
+public class ClothesHanger extends WaterloggedDirectionalShape {
 
     public static final IntegerProperty ACTIVATED = IntegerProperty.create("activated", 1, 4);
+    private static final VoxelShape EAST_SHAPE = Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 8.0D, 16.0D, 16.0D);
+    private static final VoxelShape WEST_SHAPE = Block.makeCuboidShape(8.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D);
+    private static final VoxelShape SOUTH_SHAPE = Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 8.0D);
+    private static final VoxelShape NORTH_SHAPE = Block.makeCuboidShape(0.0D, 0.0D, 16.0D, 16.0D, 16.0D, 8.0D);
 
     public ClothesHanger(Block.Properties properties) {
         super(properties);
@@ -38,6 +44,21 @@ public class ClothesHanger extends VerticalSlab {
         } else {
             worldIn.setBlockState(pos, state.cycle(ACTIVATED), 3);
             return true;
+        }
+    }
+
+    @Override
+    public VoxelShape getShape(BlockState state) {
+        switch (state.get(DIRECTION)) {
+            case NORTH:
+            default:
+                return NORTH_SHAPE;
+            case SOUTH:
+                return SOUTH_SHAPE;
+            case WEST:
+                return WEST_SHAPE;
+            case EAST:
+                return EAST_SHAPE;
         }
     }
 
