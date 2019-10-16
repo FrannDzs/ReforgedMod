@@ -3,7 +3,6 @@ package com.conquestreforged.core.block.standard.glass;
 import com.conquestreforged.core.asset.annotation.Assets;
 import com.conquestreforged.core.asset.annotation.Model;
 import com.conquestreforged.core.asset.annotation.State;
-import net.minecraft.block.GlassBlock;
 import net.minecraft.util.BlockRenderLayer;
 
 @Assets(

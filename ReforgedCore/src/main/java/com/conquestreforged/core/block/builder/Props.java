@@ -3,6 +3,7 @@ package com.conquestreforged.core.block.builder;
 import com.conquestreforged.core.block.factory.BlockFactory;
 import com.conquestreforged.core.block.factory.InitializationException;
 import com.conquestreforged.core.init.Context;
+import com.google.common.base.Preconditions;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
@@ -19,10 +20,29 @@ import java.util.function.Consumer;
 
 public class Props implements BlockFactory {
 
+    /**
+     * Used internally to create the Block.Properties builder which requires an instance of either:
+     * 1. a Block
+     * 2. a Material & MaterialColor
+     * 3. just a Material
+     */
+    private final Block block;
+    private final Material material;
+    private final MaterialColor color;
+
+    /**
+     * Certain Block constructor methods need a BlockState passing to them, ie a 'parent'.
+     * For example, Slabs need the full-block instance passing to them to act as the double-slab variant.
+     *
+     * In cases where the first Block created with the Factory requires a parent Block/BlockState,
+     * the 'parent' must be set manually before calling the register(..) methods.
+     *
+     * We otherwise assume the first Block created with this Factory is the parent.
+     * This Block should therefore NOT require a parent Block or BlockState in it's own constructor.
+     */
+    private BlockState parent = null;
+
     private BlockName name = null;
-    private BlockState base = null;
-    private Material material = null;
-    private MaterialColor color = null;
     private DyeColor dyeColor = null;
     private SoundType sound = null;
     private ItemGroup group = ItemGroup.SEARCH;
@@ -39,6 +59,24 @@ public class Props implements BlockFactory {
 
     private boolean manual = false;
 
+    private Props(Block block) {
+        this.block = block;
+        this.material = null;
+        this.color = null;
+    }
+
+    private Props(Material material) {
+        this.block = null;
+        this.material = material;
+        this.color = null;
+    }
+
+    private Props(Material material, MaterialColor color) {
+        this.block = null;
+        this.material = material;
+        this.color = color;
+    }
+
     @Override
     public Props getProps() {
         return this;
@@ -54,14 +92,10 @@ public class Props implements BlockFactory {
 
     @Override
     public BlockState getParent() throws InitializationException {
-        if (base == null) {
+        if (parent == null) {
             throw new InitializationException("Parent state is null");
         }
-        return base;
-    }
-
-    public BlockState block() {
-        return base;
+        return parent;
     }
 
     public DyeColor dye() {
@@ -91,6 +125,10 @@ public class Props implements BlockFactory {
         return floats;
     }
 
+    public boolean hasParent() {
+        return parent != null;
+    }
+
     public <T> T get(String key, Class<T> type) {
         Object o = extradata.get(key);
         if (o == null) {
@@ -111,6 +149,20 @@ public class Props implements BlockFactory {
         return this;
     }
 
+    /**
+     * Set the 'parent' (usually the full-block variant) of all subsequent Blocks created by this factory.
+     *
+     * If not set manually, the first Block instance created by this Factory will be set as the parent. In this case,
+     * it's critical that this first Block does not itself require a parent Block/BlockState in it's constructor.
+     *
+     * @param state The parent BlockState to use
+     * @return this Props instance (for chaining calls)
+     */
+    public Props parent(BlockState state) {
+        this.parent = state;
+        return this;
+    }
+
     public Props name(String namespace, String plural, String singular) {
         return name(BlockName.of(namespace, plural, singular));
     }
@@ -125,21 +177,6 @@ public class Props implements BlockFactory {
 
     public Props name(BlockName name) {
         this.name = name;
-        return this;
-    }
-
-    public Props block(BlockState base) {
-        this.base = base;
-        return this;
-    }
-
-    public Props material(Material material) {
-        this.material = material;
-        return this;
-    }
-
-    public Props color(MaterialColor color) {
-        this.color = color;
         return this;
     }
 
@@ -244,8 +281,8 @@ public class Props implements BlockFactory {
     private Block.Properties createBuilder() throws InitializationException {
         Block.Properties props;
 
-        if (base != null) {
-            props = Block.Properties.from(base.getBlock());
+        if (block != null) {
+            props = Block.Properties.from(block);
         } else if (color != null && material != null) {
             props = Block.Properties.create(material, color);
         } else if (material != null) {
@@ -257,16 +294,25 @@ public class Props implements BlockFactory {
         return props;
     }
 
-    public static Props create() {
-        return new Props();
+    public static Props create(Block block) {
+        Preconditions.checkNotNull(block, "Block must not be null");
+        return new Props(block);
     }
 
     public static Props create(BlockState state) {
-        return create().block(state);
+        Preconditions.checkNotNull(state, "BlockState must not be null");
+        return create(state.getBlock());
     }
 
-    public static Props create(Block block) {
-        return create(block.getDefaultState());
+    public static Props create(Material material) {
+        Preconditions.checkNotNull(material, "Material must not be null");
+        return new Props(material);
+    }
+
+    public static Props create(Material material, MaterialColor color) {
+        Preconditions.checkNotNull(material, "Material must not be null");
+        Preconditions.checkNotNull(color, "MaterialColor must not be null");
+        return new Props(material, color);
     }
 
     private static <V> void set(V value, V defValue, Consumer<V> consumer) {
