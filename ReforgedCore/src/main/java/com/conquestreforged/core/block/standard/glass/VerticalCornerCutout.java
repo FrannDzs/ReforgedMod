@@ -10,7 +10,6 @@ import com.conquestreforged.core.block.standard.VerticalSlabThin;
 import net.minecraft.block.AbstractGlassBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.GlassBlock;
-import net.minecraft.block.material.Material;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraftforge.api.distmarker.Dist;

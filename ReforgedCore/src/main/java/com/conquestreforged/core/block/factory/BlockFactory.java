@@ -50,8 +50,8 @@ public interface BlockFactory {
     default BlockData register(Block block, BlockName name, Props props) {
         BlockData data = new BlockData(block, name, props);
         BlockDataRegistry.registerBlock(data);
-        if (getProps().block() == null) {
-            getProps().block(data.getBlock().getDefaultState());
+        if (!getProps().hasParent()) {
+            getProps().parent(data.getBlock().getDefaultState());
         }
         return data;
     }
