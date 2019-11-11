@@ -5,8 +5,11 @@ import com.conquestreforged.core.asset.annotation.Model;
 import com.conquestreforged.core.asset.annotation.State;
 import com.conquestreforged.core.block.base.WaterloggedDirectionalShape;
 import com.conquestreforged.core.block.builder.Props;
+import com.conquestreforged.core.block.playertoggle.IToggle;
+import com.conquestreforged.core.block.playertoggle.ToggleProvider;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.fluid.IFluidState;
 import net.minecraft.item.BlockItemUseContext;
@@ -20,23 +23,19 @@ import net.minecraft.util.math.shapes.VoxelShape;
         state = @State(name = "%s_vertical_slab", template = "parent_vertical_slab"),
         item = @Model(name = "item/%s_vertical_slab", parent = "block/%s_vertical_slab_4", template = "item/parent_vertical_slab"),
         block = {
-                @Model(name = "block/%s_vertical_slab_1", template = "block/parent_vertical_slab_1"),
                 @Model(name = "block/%s_vertical_slab_2", template = "block/parent_vertical_slab_2"),
-                @Model(name = "block/%s_vertical_slab_3", template = "block/parent_vertical_slab_3"),
                 @Model(name = "block/%s_vertical_slab_4", template = "block/parent_vertical_slab_4"),
-                @Model(name = "block/%s_vertical_slab_5", template = "block/parent_vertical_slab_5"),
                 @Model(name = "block/%s_vertical_slab_6", template = "block/parent_vertical_slab_6"),
-                @Model(name = "block/%s_vertical_slab_7", template = "block/parent_vertical_slab_7"),
         }
 )
 public class VerticalSlab extends WaterloggedDirectionalShape {
 
-    public static final IntegerProperty LAYERS = IntegerProperty.create("layer", 1, 7);
+    public static final IntegerProperty LAYERS = IntegerProperty.create("layer", 1, 3);
 
-    private static final VoxelShape[] EAST_SHAPE = new VoxelShape[]{Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 2.0D, 16.0D, 16.0D), Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 4.0D, 16.0D, 16.0D), Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 6.0D, 16.0D, 16.0D), Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 8.0D, 16.0D, 16.0D), Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 10.0D, 16.0D, 16.0D), Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 12.0D, 16.0D, 16.0D), Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 14.0D, 16.0D, 16.0D)};
-    private static final VoxelShape[] WEST_SHAPE = new VoxelShape[]{Block.makeCuboidShape(14.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D), Block.makeCuboidShape(12.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D), Block.makeCuboidShape(10.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D), Block.makeCuboidShape(8.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D), Block.makeCuboidShape(6.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D), Block.makeCuboidShape(4.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D), Block.makeCuboidShape(2.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D)};
-    private static final VoxelShape[] SOUTH_SHAPE = new VoxelShape[]{Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 2.0D), Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 4.0D), Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 6.0D), Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 8.0D), Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 10.0D), Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 12.0D), Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 14.0D)};
-    private static final VoxelShape[] NORTH_SHAPE = new VoxelShape[]{Block.makeCuboidShape(0.0D, 0.0D, 16.0D, 16.0D, 16.0D, 14.0D), Block.makeCuboidShape(0.0D, 0.0D, 16.0D, 16.0D, 16.0D, 12.0D), Block.makeCuboidShape(0.0D, 0.0D, 16.0D, 16.0D, 16.0D, 10.0D), Block.makeCuboidShape(0.0D, 0.0D, 16.0D, 16.0D, 16.0D, 8.0D), Block.makeCuboidShape(0.0D, 0.0D, 16.0D, 16.0D, 16.0D, 6.0D), Block.makeCuboidShape(0.0D, 0.0D, 16.0D, 16.0D, 16.0D, 4.0D), Block.makeCuboidShape(0.0D, 0.0D, 16.0D, 16.0D, 16.0D, 2.0D) };
+    private static final VoxelShape[] EAST_SHAPE = new VoxelShape[]{Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 4.0D, 16.0D, 16.0D), Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 8.0D, 16.0D, 16.0D), Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 12.0D, 16.0D, 16.0D)};
+    private static final VoxelShape[] WEST_SHAPE = new VoxelShape[]{Block.makeCuboidShape(12.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D), Block.makeCuboidShape(8.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D), Block.makeCuboidShape(4.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D)};
+    private static final VoxelShape[] SOUTH_SHAPE = new VoxelShape[]{Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 4.0D), Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 8.0D), Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 12.0D)};
+    private static final VoxelShape[] NORTH_SHAPE = new VoxelShape[]{Block.makeCuboidShape(0.0D, 0.0D, 16.0D, 16.0D, 16.0D, 12.0D), Block.makeCuboidShape(0.0D, 0.0D, 16.0D, 16.0D, 16.0D, 8.0D), Block.makeCuboidShape(0.0D, 0.0D, 16.0D, 16.0D, 16.0D, 4.0D)};
     private Block fullBlock;
 
 
@@ -64,26 +63,40 @@ public class VerticalSlab extends WaterloggedDirectionalShape {
     @Override
     public boolean isReplaceable(BlockState state, BlockItemUseContext useContext) {
         int i = state.get(LAYERS);
-        if (useContext.getItem().getItem() == this.asItem() && i <= 7) {
-            if (useContext.replacingClickedOnBlock()) {
-                return useContext.getFace() == state.get(DIRECTION);
-            } else {
-                return true;
+        PlayerEntity playerEntity = useContext.getPlayer();
+        IToggle cap = playerEntity.getCapability(ToggleProvider.PLAYER_TOGGLE).orElseThrow(IllegalAccessError::new);
+        int togglenumber = cap.getToggle();
+        if (togglenumber == 0 || togglenumber == 3 || togglenumber == 6 || togglenumber == 7) {
+            if (useContext.getItem().getItem() == this.asItem() && i <= 3) {
+                if (useContext.replacingClickedOnBlock()) {
+                    return useContext.getFace() == state.get(DIRECTION);
+                } else {
+                    return true;
+                }
             }
         } else {
             return false;
         }
+        return false;
     }
 
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context) {
         BlockState blockstate = context.getWorld().getBlockState(context.getPos());
+        PlayerEntity playerEntity = context.getPlayer();
+        IToggle cap = playerEntity.getCapability(ToggleProvider.PLAYER_TOGGLE).orElseThrow(IllegalAccessError::new);
+        int togglenumber = cap.getToggle();
+        if (togglenumber == 1 || togglenumber == 4) {
+            return super.getStateForPlacement(context).with(LAYERS, 2);
+        }  else if (togglenumber == 2 || togglenumber == 5) {
+            return super.getStateForPlacement(context).with(LAYERS, 3);
+        }
         if (blockstate.getBlock() == this) {
             int i = blockstate.get(LAYERS);
-            if (i == 7) {
+            if (i == 3) {
                 return fullBlock.getDefaultState();
             }
-            return blockstate.with(LAYERS, Integer.valueOf(Math.min(7, i + 1)));
+            return blockstate.with(LAYERS, Integer.valueOf(Math.min(3, i + 1)));
         } else {
             return super.getStateForPlacement(context);
         }

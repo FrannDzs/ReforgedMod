@@ -1,6 +1,6 @@
 {
     "parent": "minecraft:item/painting",
     "textures": {
-        "layer0": "minecraft:items/painting"
+        "layer0": "minecraft:item/painting"
     }
 }

@@ -27,9 +27,9 @@ public class Glass extends GlassBlock {
     public boolean isSideInvisible(BlockState state, BlockState adjacentBlockState, Direction side) {
         if (adjacentBlockState.getBlock() instanceof GlassBlock) {
             return true;
-        } else if ((adjacentBlockState.getBlock() instanceof VerticalSlabCutout || adjacentBlockState.getBlock() instanceof VerticalSlabThinCutout) && (adjacentBlockState.get(DIRECTION) == side)) {
+        } else if ((adjacentBlockState.getBlock() instanceof VerticalSlabCutout) && (adjacentBlockState.get(DIRECTION) == side)) {
             return true;
-        } else if ((adjacentBlockState.getBlock() instanceof VerticalCornerCutout || adjacentBlockState.getBlock() instanceof VerticalCornerThinCutout) && (adjacentBlockState.get(DIRECTION) == side || adjacentBlockState.get(DIRECTION).rotateYCCW() == side)) {
+        } else if ((adjacentBlockState.getBlock() instanceof VerticalCornerCutout) && (adjacentBlockState.get(DIRECTION) == side || adjacentBlockState.get(DIRECTION).rotateYCCW() == side)) {
             return true;
         }
         return super.isSideInvisible(state, adjacentBlockState, side);

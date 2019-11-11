@@ -3,10 +3,9 @@ package com.conquestreforged.core.block.standard.glass;
 import com.conquestreforged.core.asset.annotation.Assets;
 import com.conquestreforged.core.asset.annotation.Model;
 import com.conquestreforged.core.asset.annotation.State;
+import com.conquestreforged.core.block.builder.Props;
 import com.conquestreforged.core.block.standard.VerticalCorner;
-import com.conquestreforged.core.block.standard.VerticalCornerThin;
 import com.conquestreforged.core.block.standard.VerticalSlab;
-import com.conquestreforged.core.block.standard.VerticalSlabThin;
 import net.minecraft.block.AbstractGlassBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.GlassBlock;
@@ -17,14 +16,16 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @Assets(
         state = @State(name = "%s_vertical_corner", template = "parent_vertical_corner_transparent"),
-        item = @Model(name = "item/%s_vertical_corner", parent = "block/%s_vertical_corner", template = "item/parent_vertical_corner"),
+        item = @Model(name = "item/%s_vertical_corner", parent = "block/%s_vertical_corner_4", template = "item/parent_vertical_corner"),
         block = {
-                @Model(name = "block/%s_vertical_corner", template = "block/parent_vertical_corner_transparent"),
+                @Model(name = "block/%s_vertical_corner_2", template = "block/parent_vertical_corner_transparent_2"),
+                @Model(name = "block/%s_vertical_corner_4", template = "block/parent_vertical_corner_transparent_4"),
+                @Model(name = "block/%s_vertical_corner_6", template = "block/parent_vertical_corner_transparent_6"),
         }
 )
 public class VerticalCornerCutout extends VerticalCorner {
 
-    public VerticalCornerCutout(Properties properties) {
+    public VerticalCornerCutout(Props properties) {
         super(properties);
     }
 
@@ -37,7 +38,7 @@ public class VerticalCornerCutout extends VerticalCorner {
     @OnlyIn(Dist.CLIENT)
     public boolean isSideInvisible(BlockState state, BlockState adjacentBlockState, Direction side) {
         if (side == Direction.UP || side == Direction.DOWN) {
-            if ( adjacentBlockState.getBlock() instanceof GlassBlock || (adjacentBlockState.getBlock() instanceof VerticalCornerCutout && state.get(DIRECTION) == adjacentBlockState.get(DIRECTION))) {
+            if ( adjacentBlockState.getBlock() instanceof GlassBlock || (adjacentBlockState.getBlock() instanceof VerticalCornerCutout && adjacentBlockState.get(LAYERS) >= state.get(LAYERS) && state.get(DIRECTION) == adjacentBlockState.get(DIRECTION))) {
                 return true;
             }
         }
@@ -46,14 +47,14 @@ public class VerticalCornerCutout extends VerticalCorner {
             if (side == Direction.NORTH || side == Direction.EAST) {
                 return false;
             } else if (adjacentBlockState.getBlock() instanceof AbstractGlassBlock
-                    || ((adjacentBlockState.getBlock() instanceof VerticalCorner || adjacentBlockState.getBlock() instanceof VerticalCornerThin) && side == Direction.SOUTH && (adjacentBlockState.get(DIRECTION) == Direction.WEST || adjacentBlockState.get(DIRECTION) == Direction.SOUTH ))) {
+                    || (((adjacentBlockState.getBlock() instanceof VerticalCorner && adjacentBlockState.get(LAYERS) >= state.get(LAYERS) && side == Direction.SOUTH && (adjacentBlockState.get(DIRECTION) == Direction.WEST || adjacentBlockState.get(DIRECTION) == Direction.SOUTH ))))) {
                 return true;
             } else if (adjacentBlockState.getBlock() instanceof AbstractGlassBlock
-                    || ((adjacentBlockState.getBlock() instanceof VerticalCorner || adjacentBlockState.getBlock() instanceof VerticalCornerThin) && side == Direction.WEST && (adjacentBlockState.get(DIRECTION) == Direction.WEST || adjacentBlockState.get(DIRECTION) == Direction.SOUTH ))) {
+                    || (((adjacentBlockState.getBlock() instanceof VerticalCorner && adjacentBlockState.get(LAYERS) >= state.get(LAYERS)  && side == Direction.WEST && (adjacentBlockState.get(DIRECTION) == Direction.WEST || adjacentBlockState.get(DIRECTION) == Direction.SOUTH ))))) {
                 return true;
-            } else if ((adjacentBlockState.getBlock() instanceof VerticalSlab || adjacentBlockState.getBlock() instanceof VerticalSlabThin) && side == Direction.SOUTH && adjacentBlockState.get(DIRECTION) == Direction.SOUTH) {
+            } else if (((adjacentBlockState.getBlock() instanceof VerticalSlab && adjacentBlockState.get(LAYERS) >= state.get(LAYERS)  && side == Direction.SOUTH && adjacentBlockState.get(DIRECTION) == Direction.SOUTH))) {
                 return true;
-            } else if ((adjacentBlockState.getBlock() instanceof VerticalSlab || adjacentBlockState.getBlock() instanceof VerticalSlabThin) && side == Direction.WEST && adjacentBlockState.get(DIRECTION) == Direction.WEST) {
+            } else if (((adjacentBlockState.getBlock() instanceof VerticalSlab && adjacentBlockState.get(LAYERS) >= state.get(LAYERS)  && side == Direction.WEST && adjacentBlockState.get(DIRECTION) == Direction.WEST))) {
                 return true;
             } else {
                 super.isSideInvisible(state, adjacentBlockState, side);
@@ -64,14 +65,14 @@ public class VerticalCornerCutout extends VerticalCorner {
             if (side == Direction.SOUTH || side == Direction.WEST) {
                 return false;
             } else if (adjacentBlockState.getBlock() instanceof AbstractGlassBlock
-                    || ((adjacentBlockState.getBlock() instanceof VerticalCorner || adjacentBlockState.getBlock() instanceof VerticalCornerThin) && side == Direction.NORTH && (adjacentBlockState.get(DIRECTION) == Direction.EAST || adjacentBlockState.get(DIRECTION) == Direction.NORTH ))) {
+                    || (((adjacentBlockState.getBlock() instanceof VerticalCorner && adjacentBlockState.get(LAYERS) >= state.get(LAYERS) && side == Direction.NORTH && (adjacentBlockState.get(DIRECTION) == Direction.EAST || adjacentBlockState.get(DIRECTION) == Direction.NORTH ))))) {
                 return true;
             } else if (adjacentBlockState.getBlock() instanceof AbstractGlassBlock
-                    || ((adjacentBlockState.getBlock() instanceof VerticalCorner || adjacentBlockState.getBlock() instanceof VerticalCornerThin) && side == Direction.EAST && (adjacentBlockState.get(DIRECTION) == Direction.EAST || adjacentBlockState.get(DIRECTION) == Direction.SOUTH ))) {
+                    || (((adjacentBlockState.getBlock() instanceof VerticalCorner && adjacentBlockState.get(LAYERS) >= state.get(LAYERS) && side == Direction.EAST && (adjacentBlockState.get(DIRECTION) == Direction.EAST || adjacentBlockState.get(DIRECTION) == Direction.SOUTH ))))) {
                 return true;
-            } else if ((adjacentBlockState.getBlock() instanceof VerticalSlab || adjacentBlockState.getBlock() instanceof VerticalSlabThin) && side == Direction.NORTH && adjacentBlockState.get(DIRECTION) == Direction.NORTH) {
+            } else if (((adjacentBlockState.getBlock() instanceof VerticalSlab && adjacentBlockState.get(LAYERS) >= state.get(LAYERS) && side == Direction.NORTH && adjacentBlockState.get(DIRECTION) == Direction.NORTH))) {
                 return true;
-            } else if ((adjacentBlockState.getBlock() instanceof VerticalSlab || adjacentBlockState.getBlock() instanceof VerticalSlabThin) && side == Direction.EAST && adjacentBlockState.get(DIRECTION) == Direction.EAST) {
+            } else if (((adjacentBlockState.getBlock() instanceof VerticalSlab && adjacentBlockState.get(LAYERS) >= state.get(LAYERS)  && side == Direction.EAST && adjacentBlockState.get(DIRECTION) == Direction.EAST))) {
                 return true;
             } else {
                 super.isSideInvisible(state, adjacentBlockState, side);
@@ -82,14 +83,14 @@ public class VerticalCornerCutout extends VerticalCorner {
             if (side == Direction.SOUTH || side == Direction.EAST) {
                 return false;
             } else if (adjacentBlockState.getBlock() instanceof AbstractGlassBlock
-                    || ((adjacentBlockState.getBlock() instanceof VerticalCorner || adjacentBlockState.getBlock() instanceof VerticalCornerThin) && side == Direction.NORTH && (adjacentBlockState.get(DIRECTION) == Direction.EAST || adjacentBlockState.get(DIRECTION) == Direction.NORTH ))) {
+                    || (((adjacentBlockState.getBlock() instanceof VerticalCorner && adjacentBlockState.get(LAYERS) >= state.get(LAYERS) && side == Direction.NORTH && (adjacentBlockState.get(DIRECTION) == Direction.EAST || adjacentBlockState.get(DIRECTION) == Direction.NORTH ))))) {
                 return true;
             } else if (adjacentBlockState.getBlock() instanceof AbstractGlassBlock
-                    || ((adjacentBlockState.getBlock() instanceof VerticalCorner || adjacentBlockState.getBlock() instanceof VerticalCornerThin) && side == Direction.WEST && (adjacentBlockState.get(DIRECTION) == Direction.WEST || adjacentBlockState.get(DIRECTION) == Direction.NORTH ))) {
+                    || (((adjacentBlockState.getBlock() instanceof VerticalCorner && adjacentBlockState.get(LAYERS) >= state.get(LAYERS) && side == Direction.WEST && (adjacentBlockState.get(DIRECTION) == Direction.WEST || adjacentBlockState.get(DIRECTION) == Direction.NORTH ))))) {
                 return true;
-            } else if ((adjacentBlockState.getBlock() instanceof VerticalSlab || adjacentBlockState.getBlock() instanceof VerticalSlabThin) && side == Direction.NORTH && adjacentBlockState.get(DIRECTION) == Direction.NORTH) {
+            } else if (((adjacentBlockState.getBlock() instanceof VerticalSlab && adjacentBlockState.get(LAYERS) >= state.get(LAYERS) && side == Direction.NORTH && adjacentBlockState.get(DIRECTION) == Direction.NORTH))) {
                 return true;
-            } else if ((adjacentBlockState.getBlock() instanceof VerticalSlab || adjacentBlockState.getBlock() instanceof VerticalSlabThin) && side == Direction.WEST && adjacentBlockState.get(DIRECTION) == Direction.WEST) {
+            } else if (((adjacentBlockState.getBlock() instanceof VerticalSlab && adjacentBlockState.get(LAYERS) >= state.get(LAYERS) && side == Direction.WEST && adjacentBlockState.get(DIRECTION) == Direction.WEST))) {
                 return true;
             } else {
                 super.isSideInvisible(state, adjacentBlockState, side);
@@ -100,14 +101,14 @@ public class VerticalCornerCutout extends VerticalCorner {
             if (side == Direction.NORTH || side == Direction.WEST) {
                 return false;
             } else if (adjacentBlockState.getBlock() instanceof AbstractGlassBlock
-                    || ((adjacentBlockState.getBlock() instanceof VerticalCorner || adjacentBlockState.getBlock() instanceof VerticalCornerThin) && side == Direction.SOUTH && (adjacentBlockState.get(DIRECTION) == Direction.WEST || adjacentBlockState.get(DIRECTION) == Direction.SOUTH ))) {
+                    || ((adjacentBlockState.getBlock() instanceof VerticalCorner && adjacentBlockState.get(LAYERS) >= state.get(LAYERS) && side == Direction.SOUTH && (adjacentBlockState.get(DIRECTION) == Direction.WEST || adjacentBlockState.get(DIRECTION) == Direction.SOUTH )))) {
                 return true;
             } else if (adjacentBlockState.getBlock() instanceof AbstractGlassBlock
-                    || ((adjacentBlockState.getBlock() instanceof VerticalCorner || adjacentBlockState.getBlock() instanceof VerticalCornerThin) && side == Direction.EAST && (adjacentBlockState.get(DIRECTION) == Direction.EAST || adjacentBlockState.get(DIRECTION) == Direction.SOUTH ))) {
+                    || ((adjacentBlockState.getBlock() instanceof VerticalCorner && adjacentBlockState.get(LAYERS) >= state.get(LAYERS) && side == Direction.EAST && (adjacentBlockState.get(DIRECTION) == Direction.EAST || adjacentBlockState.get(DIRECTION) == Direction.SOUTH )))) {
                 return true;
-            } else if ((adjacentBlockState.getBlock() instanceof VerticalSlab || adjacentBlockState.getBlock() instanceof VerticalSlabThin) && side == Direction.SOUTH && adjacentBlockState.get(DIRECTION) == Direction.SOUTH) {
+            } else if ((adjacentBlockState.getBlock() instanceof VerticalSlab && adjacentBlockState.get(LAYERS) >= state.get(LAYERS) && side == Direction.SOUTH && adjacentBlockState.get(DIRECTION) == Direction.SOUTH)) {
                 return true;
-            } else if ((adjacentBlockState.getBlock() instanceof VerticalSlab || adjacentBlockState.getBlock() instanceof VerticalSlabThin) && side == Direction.EAST && adjacentBlockState.get(DIRECTION) == Direction.EAST) {
+            } else if ((adjacentBlockState.getBlock() instanceof VerticalSlab && adjacentBlockState.get(LAYERS) >= state.get(LAYERS) && side == Direction.EAST && adjacentBlockState.get(DIRECTION) == Direction.EAST)) {
                 return true;
             } else {
                 super.isSideInvisible(state, adjacentBlockState, side);
