@@ -55,7 +55,7 @@ public class BeamHorizontal extends DirectionalShape {
 
         return super.getStateForPlacement(context)
                 .with(DIRECTION, facing)
-                .with(ACTIVATED, 0);
+                .with(ACTIVATED, 1);
     }
 
     @Override

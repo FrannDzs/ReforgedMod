@@ -8,24 +8,25 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
-@Mod("conquest")
-@Mod.EventBusSubscriber(modid = "conquest")
 public class Toggle {
-    public Toggle() {
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(Toggle::onCommonSetup);
+    @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
+    public static class ModEvents {
+
+        @SubscribeEvent
+        public static void onCommonSetup(FMLCommonSetupEvent event) {
+            CapabilityManager.INSTANCE.register(IToggle.class, new ToggleStorage(), PlayerToggle::new);
+        }
     }
 
-    @SubscribeEvent
-    public static void onCommonSetup(FMLCommonSetupEvent event) {
-        CapabilityManager.INSTANCE.register(IToggle.class, new ToggleStorage(), PlayerToggle::new);
-    }
+    @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
+    public static class ForgeEvents {
 
-    @SubscribeEvent
-    public static void onAttachCapabilitiesEvent(AttachCapabilitiesEvent<Entity> event) {
-        if (event.getObject() instanceof PlayerEntity) {
-            event.addCapability(new ResourceLocation("conquest", "toggle"), new ToggleProvider());
+        @SubscribeEvent
+        public static void onAttachCapabilitiesEvent(AttachCapabilitiesEvent<Entity> event) {
+            if (event.getObject() instanceof PlayerEntity) {
+                event.addCapability(new ResourceLocation("conquest", "toggle"), new ToggleProvider());
+            }
         }
     }
 }

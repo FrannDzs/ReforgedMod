@@ -3,6 +3,7 @@ package com.conquestreforged.core.block;
 import com.conquestreforged.core.asset.annotation.Assets;
 import com.conquestreforged.core.asset.annotation.Model;
 import com.conquestreforged.core.asset.annotation.State;
+import com.conquestreforged.core.block.builder.Props;
 import com.conquestreforged.core.block.standard.Layer;
 import net.minecraft.block.Block;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -13,7 +14,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 @Assets(
-        state = @State(name = "%s_layer", template = "snow"),
+        state = @State(name = "%s_layer", template = "parent_layer"),
         item = @Model(name = "item/%s_layer", parent = "block/%s_layer_height2", template = "item/snow"),
         block = {
                 @Model(name = "block/%s_layer_height2", template = "block/snow_height2"),
@@ -22,13 +23,12 @@ import net.minecraft.world.World;
                 @Model(name = "block/%s_layer_height8", template = "block/snow_height8"),
                 @Model(name = "block/%s_layer_height10", template = "block/snow_height10"),
                 @Model(name = "block/%s_layer_height12", template = "block/snow_height12"),
-                @Model(name = "block/%s_layer_height14", template = "block/snow_height14"),
-                @Model(name = "block/%s_layer_height16", template = "block/snow_block"),
+                @Model(name = "block/%s_layer_height14", template = "block/snow_height14")
         }
 )
 public class DamageBlockLayer extends Layer {
 
-    public DamageBlockLayer(Block.Properties properties) {
+    public DamageBlockLayer(Props properties) {
         super(properties);
     }
 
