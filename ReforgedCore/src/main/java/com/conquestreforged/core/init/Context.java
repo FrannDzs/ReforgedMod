@@ -1,5 +1,6 @@
 package com.conquestreforged.core.init;
 
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModLoadingContext;
 
@@ -18,6 +19,10 @@ public class Context {
 
     public synchronized String getNamespace() {
         return namespace;
+    }
+
+    public synchronized ResourceLocation newResourceLocation(String path) {
+        return new ResourceLocation(namespace, path);
     }
 
     public synchronized void setNamespace(String namespace) {

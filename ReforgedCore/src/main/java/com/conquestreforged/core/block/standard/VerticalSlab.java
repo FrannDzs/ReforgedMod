@@ -5,17 +5,14 @@ import com.conquestreforged.core.asset.annotation.Model;
 import com.conquestreforged.core.asset.annotation.State;
 import com.conquestreforged.core.block.base.WaterloggedDirectionalShape;
 import com.conquestreforged.core.block.builder.Props;
-import com.conquestreforged.core.block.playertoggle.IToggle;
-import com.conquestreforged.core.block.playertoggle.ToggleProvider;
+import com.conquestreforged.core.capability.utils.Caps;
+import com.conquestreforged.core.capability.Capabilities;
+import com.conquestreforged.core.capability.toggle.Toggle;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.fluid.IFluidState;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.IntegerProperty;
 import net.minecraft.state.StateContainer;
-import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.shapes.VoxelShape;
 
@@ -61,21 +58,17 @@ public class VerticalSlab extends WaterloggedDirectionalShape {
     }
 
     @Override
-    public boolean isReplaceable(BlockState state, BlockItemUseContext useContext) {
+    public boolean isReplaceable(BlockState state, BlockItemUseContext context) {
         int i = state.get(LAYERS);
-        PlayerEntity playerEntity = useContext.getPlayer();
-        IToggle cap = playerEntity.getCapability(ToggleProvider.PLAYER_TOGGLE).orElseThrow(IllegalAccessError::new);
-        int togglenumber = cap.getToggle();
-        if (togglenumber == 0 || togglenumber == 3 || togglenumber == 6 || togglenumber == 7) {
-            if (useContext.getItem().getItem() == this.asItem() && i <= 3) {
-                if (useContext.replacingClickedOnBlock()) {
-                    return useContext.getFace() == state.get(DIRECTION);
+        int toggle = Caps.forPlayer(context, Capabilities.TOGGLE, Toggle::getIndex, -1);
+        if (toggle == 0 || toggle == 3 || toggle == 6 || toggle == 7) {
+            if (context.getItem().getItem() == this.asItem() && i <= 3) {
+                if (context.replacingClickedOnBlock()) {
+                    return context.getFace() == state.get(DIRECTION);
                 } else {
                     return true;
                 }
             }
-        } else {
-            return false;
         }
         return false;
     }
@@ -83,12 +76,10 @@ public class VerticalSlab extends WaterloggedDirectionalShape {
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context) {
         BlockState blockstate = context.getWorld().getBlockState(context.getPos());
-        PlayerEntity playerEntity = context.getPlayer();
-        IToggle cap = playerEntity.getCapability(ToggleProvider.PLAYER_TOGGLE).orElseThrow(IllegalAccessError::new);
-        int togglenumber = cap.getToggle();
-        if (togglenumber == 1 || togglenumber == 4) {
+        int toggle = Caps.forPlayer(context, Capabilities.TOGGLE, Toggle::getIndex, -1);
+        if (toggle == 1 || toggle == 4) {
             return super.getStateForPlacement(context).with(LAYERS, 2);
-        }  else if (togglenumber == 2 || togglenumber == 5) {
+        } else if (toggle == 2 || toggle == 5) {
             return super.getStateForPlacement(context).with(LAYERS, 3);
         }
         if (blockstate.getBlock() == this) {

@@ -3,15 +3,14 @@ package com.conquestreforged.core.block.standard;
 import com.conquestreforged.core.asset.annotation.*;
 import com.conquestreforged.core.block.base.WaterloggedShape;
 import com.conquestreforged.core.block.builder.Props;
-import com.conquestreforged.core.block.playertoggle.IToggle;
-import com.conquestreforged.core.block.playertoggle.ToggleProvider;
+import com.conquestreforged.core.capability.utils.Caps;
+import com.conquestreforged.core.capability.Capabilities;
+import com.conquestreforged.core.capability.toggle.Toggle;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.fluid.IFluidState;
 import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.ItemStack;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.IntegerProperty;
 import net.minecraft.state.StateContainer;
@@ -65,24 +64,15 @@ public class Slab extends WaterloggedShape {
 
     @Override
     public boolean isReplaceable(BlockState state, BlockItemUseContext context) {
-        ItemStack item = context.getItem();
-        PlayerEntity playerEntity = context.getPlayer();
-        IToggle cap = playerEntity.getCapability(ToggleProvider.PLAYER_TOGGLE).orElseThrow(IllegalAccessError::new);
-        int togglenumber = cap.getToggle();
-        if (togglenumber == 0) {
-            if (item.getItem() == this.asItem()) {
-                if (context.replacingClickedOnBlock()) {
-                    Direction facing = context.getFace();
-                    if (state.get(TYPE_UPDOWN) == Half.BOTTOM) {
-                        return facing == Direction.UP;
-                    } else {
-                        return facing == Direction.DOWN;
-                    }
+        int toggle = Caps.forPlayer(context, Capabilities.TOGGLE, Toggle::getIndex, -1);
+        if (toggle == 0 && context.getItem().getItem() == this.asItem()) {
+            if (context.replacingClickedOnBlock()) {
+                Direction facing = context.getFace();
+                if (state.get(TYPE_UPDOWN) == Half.BOTTOM) {
+                    return facing == Direction.UP;
                 } else {
-                    return true;
+                    return facing == Direction.DOWN;
                 }
-            } else {
-                return false;
             }
         }
         return false;
@@ -107,31 +97,35 @@ public class Slab extends WaterloggedShape {
     public BlockState getStateForPlacement(BlockItemUseContext context) {
         BlockPos blockpos = context.getPos();
         BlockState state = context.getWorld().getBlockState(context.getPos());
-        PlayerEntity playerEntity = context.getPlayer();
-        IToggle cap = playerEntity.getCapability(ToggleProvider.PLAYER_TOGGLE).orElseThrow(IllegalAccessError::new);
-        IFluidState fluid = context.getWorld().getFluidState(context.getPos());
-        BlockState state2 = this.getDefaultState().with(TYPE_UPDOWN, Half.BOTTOM).with(WATERLOGGED, fluid.getFluid() == Fluids.WATER);
-        int togglenumber = cap.getToggle();
-        if (togglenumber == 1) {
-            state2 = state2.with(LAYERS, 2);
-        } else if (togglenumber == 2) {
-            state2 = state2.with(LAYERS, 3);
-        } else if (togglenumber == 3) {
-            state2 = state2.with(LAYERS, 4);
-        } else if (togglenumber == 4) {
-            state2 = state2.with(LAYERS, 5);
-        } else if (togglenumber == 5) {
-            state2 = state2.with(LAYERS, 6);
-        } else if (togglenumber == 6) {
-            state2 = state2.with(LAYERS, 7);
-        }
         if (state.getBlock() == this) {
             int i = state.get(LAYERS);
             if (i == 7) {
                 return fullBlock.getDefaultState();
             }
-            return state.with(LAYERS, Integer.valueOf(Math.min(7, i + 1)));
+            return state.with(LAYERS, Math.min(7, i + 1));
         } else {
+            int toggle = Caps.forPlayer(context, Capabilities.TOGGLE, Toggle::getIndex, -1);
+            IFluidState fluid = context.getWorld().getFluidState(context.getPos());
+            BlockState state2 = this.getDefaultState().with(TYPE_UPDOWN, Half.BOTTOM).with(WATERLOGGED, fluid.getFluid() == Fluids.WATER);
+            if (toggle == 1) {
+                state2 = state2.with(LAYERS, 2);
+            } else if (toggle == 2) {
+                state2 = state2.with(LAYERS, 3);
+            } else if (toggle == 3) {
+                state2 = state2.with(LAYERS, 4);
+            } else if (toggle == 4) {
+                state2 = state2.with(LAYERS, 5);
+            } else if (toggle == 5) {
+                state2 = state2.with(LAYERS, 6);
+            } else if (toggle == 6) {
+                state2 = state2.with(LAYERS, 7);
+            }
+
+            // TODO can't the above if's be replaced with something like this?
+//            if (toggle > 0 && toggle < 6) {
+//                state2 = state2.with(LAYERS, toggle + 1);
+//            }
+
             Direction facing = context.getFace();
             return facing != Direction.DOWN && (facing == Direction.UP || !(context.getHitVec().y - (double)blockpos.getY() > 0.5D)) ? state2 : state2.with(TYPE_UPDOWN, Half.TOP);
         }

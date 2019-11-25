@@ -6,29 +6,21 @@ import com.conquestreforged.core.asset.annotation.Model;
 import com.conquestreforged.core.asset.annotation.State;
 import com.conquestreforged.core.block.base.WaterloggedShape;
 import com.conquestreforged.core.block.builder.Props;
-import com.conquestreforged.core.block.playertoggle.IToggle;
-import com.conquestreforged.core.block.playertoggle.ToggleProvider;
-import com.conquestreforged.core.block.properties.Waterloggable;
+import com.conquestreforged.core.capability.utils.Caps;
+import com.conquestreforged.core.capability.Capabilities;
+import com.conquestreforged.core.capability.toggle.Toggle;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.SnowBlock;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.fluid.IFluidState;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.IntegerProperty;
 import net.minecraft.state.StateContainer;
-import net.minecraft.state.properties.Half;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.IWorldReader;
-import net.minecraft.world.World;
-
-import java.util.Random;
 
 @Assets(
         state = @State(name = "%s_layer", template = "parent_layer"),
@@ -58,23 +50,18 @@ public class Layer extends WaterloggedShape {
 
     @Override
     public boolean isReplaceable(BlockState state, BlockItemUseContext context) {
-        ItemStack item = context.getItem();
-        PlayerEntity playerEntity = context.getPlayer();
-        IToggle cap = playerEntity.getCapability(ToggleProvider.PLAYER_TOGGLE).orElseThrow(IllegalAccessError::new);
-        int togglenumber = cap.getToggle();
-        if (togglenumber == 0) {
-            if (item.getItem() == this.asItem()) {
-                if (context.replacingClickedOnBlock()) {
-                    Direction facing = context.getFace();
-                    return facing == Direction.UP;
-                } else {
-                    return true;
-                }
-            } else {
-                return false;
-            }
+        if (!context.replacingClickedOnBlock()) {
+            return false;
         }
-        return false;
+
+        ItemStack item = context.getItem();
+        if (item.getItem() != this.asItem()) {
+            return false;
+        }
+
+        int toggle = Caps.forPlayer(context, Capabilities.TOGGLE, Toggle::getIndex, -1);
+
+        return toggle == 0 && context.getFace() == Direction.UP;
     }
 
     @Override
@@ -91,31 +78,35 @@ public class Layer extends WaterloggedShape {
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context) {
         BlockState state = context.getWorld().getBlockState(context.getPos());
-        PlayerEntity playerEntity = context.getPlayer();
-        IToggle cap = playerEntity.getCapability(ToggleProvider.PLAYER_TOGGLE).orElseThrow(IllegalAccessError::new);
-        IFluidState fluid = context.getWorld().getFluidState(context.getPos());
-        BlockState state2 = this.getDefaultState().with(WATERLOGGED, fluid.getFluid() == Fluids.WATER);
-        int togglenumber = cap.getToggle();
-        if (togglenumber == 1) {
-            state2 = state2.with(LAYERS, 2);
-        } else if (togglenumber == 2) {
-            state2 = state2.with(LAYERS, 3);
-        } else if (togglenumber == 3) {
-            state2 = state2.with(LAYERS, 4);
-        } else if (togglenumber == 4) {
-            state2 = state2.with(LAYERS, 5);
-        } else if (togglenumber == 5) {
-            state2 = state2.with(LAYERS, 6);
-        } else if (togglenumber == 6) {
-            state2 = state2.with(LAYERS, 7);
-        }
+        int toggle = Caps.forPlayer(context, Capabilities.TOGGLE, Toggle::getIndex, -1);
         if (state.getBlock() == this) {
             int i = state.get(LAYERS);
             if (i == 7) {
                 return fullBlock.getDefaultState();
             }
-            return state.with(LAYERS, Integer.valueOf(Math.min(7, i + 1)));
+            return state.with(LAYERS, Math.min(7, i + 1));
         } else {
+            IFluidState fluid = context.getWorld().getFluidState(context.getPos());
+            BlockState state2 = this.getDefaultState().with(WATERLOGGED, fluid.getFluid() == Fluids.WATER);
+            if (toggle == 1) {
+                state2 = state2.with(LAYERS, 2);
+            } else if (toggle == 2) {
+                state2 = state2.with(LAYERS, 3);
+            } else if (toggle == 3) {
+                state2 = state2.with(LAYERS, 4);
+            } else if (toggle == 4) {
+                state2 = state2.with(LAYERS, 5);
+            } else if (toggle == 5) {
+                state2 = state2.with(LAYERS, 6);
+            } else if (toggle == 6) {
+                state2 = state2.with(LAYERS, 7);
+            }
+
+            // TODO can't the above if's be replaced with something like this?
+//            if (toggle > 0 && toggle < 6) {
+//                state2 = state2.with(LAYERS, toggle + 1);
+//            }
+
             return state2;
         }
     }

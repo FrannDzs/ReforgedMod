@@ -14,24 +14,24 @@ buildscript {
 allprojects {
     apply from: file("$rootDir/build-module.gradle")
 }
-
-apply from: file("build-main.gradle")
-
-classes {
-    dependsOn(collectProjectClasses)
-}
-
-processResources {
-    dependsOn(collectProjectResources)
-    filesMatching("**/mods.toml") {
-        filter(ReplaceTokens, tokens: [
-                NAME: project.name,
-                VERSION: mod_version,
-                MCVERSION: mc_version
-        ])
-    }
-}
-
-testClasses {
-    dependsOn.clear()
-}
+//
+//apply from: file("build-main.gradle")
+//
+//classes {
+//    dependsOn(collectProjectClasses)
+//}
+//
+//processResources {
+//    dependsOn(collectProjectResources)
+//    filesMatching("**/mods.toml") {
+//        filter(ReplaceTokens, tokens: [
+//                NAME: project.name,
+//                VERSION: mod_version,
+//                MCVERSION: mc_version
+//        ])
+//    }
+//}
+//
+//testClasses {
+////    dependsOn.clear()
+//}

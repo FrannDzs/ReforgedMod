@@ -2,8 +2,8 @@ package com.conquestreforged.client;
 
 import com.conquestreforged.client.palette.PaletteBindListener;
 import com.conquestreforged.client.search.SearchBindListener;
+import com.conquestreforged.client.toggle.ToggleBindListener;
 import com.conquestreforged.core.client.input.Bindings;
-import com.conquestreforged.core.block.playertoggle.ToggleBindListener;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;

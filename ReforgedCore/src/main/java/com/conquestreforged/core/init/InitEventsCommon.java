@@ -2,7 +2,6 @@ package com.conquestreforged.core.init;
 
 import com.conquestreforged.core.asset.pack.VirtualResourcepack;
 import com.conquestreforged.core.block.data.BlockDataRegistry;
-import com.conquestreforged.core.block.playertoggle.Message;
 import com.conquestreforged.core.util.Log;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -30,7 +29,6 @@ public class InitEventsCommon {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void common(FMLCommonSetupEvent event) {
-        Message.registerMessages();
         // init common virtual resources (data)
         BlockDataRegistry.getNamespaces().forEach(namespace -> {
             VirtualResourcepack.Builder builder = VirtualResourcepack.builder(namespace).type(ResourcePackType.SERVER_DATA);
