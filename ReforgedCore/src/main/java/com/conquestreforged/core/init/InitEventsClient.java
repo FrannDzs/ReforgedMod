@@ -7,6 +7,7 @@ import com.conquestreforged.core.block.data.BlockDataRegistry;
 import com.conquestreforged.core.proxy.Proxies;
 import com.conquestreforged.core.proxy.Side;
 import com.conquestreforged.core.proxy.impl.ClientProxy;
+import com.conquestreforged.core.util.Log;
 import net.minecraft.resources.IFutureReloadListener;
 import net.minecraft.resources.ResourcePackType;
 import net.minecraftforge.api.distmarker.Dist;
@@ -27,12 +28,12 @@ public class InitEventsClient {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void models(ModelRegistryEvent event) {
-        System.out.println("############# MODELS");
+        Log.debug("REGISTER MODELS");
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void client(FMLClientSetupEvent event) {
-        System.out.println("############# CLIENT");
+        Log.debug("SETUP CLIENT");
 
         Proxies.set(Side.CLIENT, new ClientProxy());
         Side.CLIENT.getProxy().registerListeners();

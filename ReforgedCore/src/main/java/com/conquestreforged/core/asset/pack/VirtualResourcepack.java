@@ -149,12 +149,12 @@ public class VirtualResourcepack extends ResourcePack {
 
     public static class Builder {
 
+        private final String namespace;
         private final List<VirtualResource> resources = new LinkedList<>();
-        private final String name;
         private ResourcePackType type = ResourcePackType.CLIENT_RESOURCES;
 
-        private Builder(String name) {
-            this.name = name;
+        private Builder(String namespace) {
+            this.namespace = namespace;
         }
 
         public Builder type(ResourcePackType type) {
@@ -170,12 +170,12 @@ public class VirtualResourcepack extends ResourcePack {
         public VirtualResourcepack build() {
             Map<String, VirtualResource> map = new HashMap<>();
             // first so can be overridden
-            map.put("pack.mcmeta", new VirtualMeta(name, "conquest"));
+            map.put("pack.mcmeta", new VirtualMeta(namespace, namespace));
             // add resources second
             resources.forEach(r -> map.put(r.getPath(), r));
 
             String suffix = type == ResourcePackType.CLIENT_RESOURCES ? "_virtual_assets" : "_virtual_data";
-            return new VirtualResourcepack(type, name + suffix, map);
+            return new VirtualResourcepack(type, namespace + suffix, map);
         }
     }
 }

@@ -3,7 +3,7 @@ package com.conquestreforged.core.block.standard;
 import com.conquestreforged.core.asset.annotation.*;
 import com.conquestreforged.core.block.base.WaterloggedShape;
 import com.conquestreforged.core.block.builder.Props;
-import com.conquestreforged.core.capability.utils.Caps;
+import com.conquestreforged.core.capability.Caps;
 import com.conquestreforged.core.capability.Capabilities;
 import com.conquestreforged.core.capability.toggle.Toggle;
 import net.minecraft.block.Block;

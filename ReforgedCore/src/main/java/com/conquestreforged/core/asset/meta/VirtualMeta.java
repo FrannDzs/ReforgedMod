@@ -17,7 +17,7 @@ public class VirtualMeta implements VirtualResource {
     private final String description;
     private final String namespace;
 
-    public VirtualMeta(String description, String namespace) {
+    public VirtualMeta(String namespace, String description) {
         this.description = description;
         this.namespace = namespace;
     }

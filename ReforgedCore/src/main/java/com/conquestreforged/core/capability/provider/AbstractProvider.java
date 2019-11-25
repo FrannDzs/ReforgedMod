@@ -1,4 +1,4 @@
-package com.conquestreforged.core.capability.utils;
+package com.conquestreforged.core.capability.provider;
 
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.Direction;
@@ -20,6 +20,7 @@ public abstract class AbstractProvider<V> implements Provider {
         this.optional = LazyOptional.of(this::getValue);
     }
 
+    @Nonnull
     @Override
     public V getValue() {
         return value;

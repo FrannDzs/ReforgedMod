@@ -3,7 +3,7 @@ package com.conquestreforged.core.capability;
 import com.conquestreforged.core.capability.toggle.Toggle;
 import com.conquestreforged.core.capability.toggle.ToggleProvider;
 import com.conquestreforged.core.capability.toggle.ToggleStorage;
-import com.conquestreforged.core.capability.utils.Provider;
+import com.conquestreforged.core.capability.provider.Provider;
 import com.conquestreforged.core.util.Dummy;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.common.capabilities.Capability;

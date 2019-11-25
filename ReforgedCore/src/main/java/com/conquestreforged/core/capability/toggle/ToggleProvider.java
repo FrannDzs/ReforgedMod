@@ -1,6 +1,6 @@
 package com.conquestreforged.core.capability.toggle;
 
-import com.conquestreforged.core.capability.utils.AbstractProvider;
+import com.conquestreforged.core.capability.provider.AbstractProvider;
 import com.conquestreforged.core.capability.Capabilities;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;

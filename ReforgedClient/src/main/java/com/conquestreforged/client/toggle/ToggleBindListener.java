@@ -1,6 +1,6 @@
 package com.conquestreforged.client.toggle;
 
-import com.conquestreforged.core.capability.utils.Caps;
+import com.conquestreforged.core.capability.Caps;
 import com.conquestreforged.core.capability.Capabilities;
 import com.conquestreforged.core.capability.toggle.Toggle;
 import com.conquestreforged.core.capability.toggle.ToggleHandler;

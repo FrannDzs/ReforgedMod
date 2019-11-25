@@ -1,4 +1,4 @@
-package com.conquestreforged.core.capability.utils;
+package com.conquestreforged.core.capability;
 
 import net.minecraft.item.ItemUseContext;
 import net.minecraftforge.common.capabilities.Capability;
