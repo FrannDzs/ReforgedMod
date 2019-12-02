@@ -1,7 +1,6 @@
 package com.conquestreforged.core.networking;
 
 import com.conquestreforged.core.capability.toggle.Toggle;
-import com.conquestreforged.core.capability.toggle.ToggleHandler;
 import com.conquestreforged.core.init.Context;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -21,10 +20,6 @@ public class Channels {
 
     @SubscribeEvent
     public static void common(FMLCommonSetupEvent event) {
-        Channels.register(Channels.TOGGLE, Toggle.class, new ToggleHandler());
-    }
-
-    private static <T> void register(SimpleChannel channel, Class<T> type, MessageHandler<T> handler) {
-        channel.registerMessage(ChannelHelper.nextId(channel), type, handler::encode, handler::decode, handler::handle);
+        // register stuff
     }
 }

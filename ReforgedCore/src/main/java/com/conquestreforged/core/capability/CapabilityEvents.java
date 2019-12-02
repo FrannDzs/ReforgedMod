@@ -13,10 +13,10 @@ public class CapabilityEvents {
 
     @SubscribeEvent
     public static void onAttachCapabilities(AttachCapabilitiesEvent<Entity> event) {
-        for (ProviderFactory<?> factory : Capabilities.getCapabilities(event.getObject().getClass())) {
+        for (ProviderFactory<?> factory : CapabilityHelper.getCapabilities(event.getObject().getClass())) {
             Provider<?> provider = factory.create();
             event.addCapability(provider.getRegistryName(), provider);
-            Log.debug("Adding capability: {}, to: {}", provider.getRegistryName(), event.getObject());
+            Log.debug("Adding capability: {} to: {}", provider.getRegistryName(), event.getObject());
         }
     }
 }
