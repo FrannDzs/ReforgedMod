@@ -1,6 +1,6 @@
 package com.conquestreforged.core.capability;
 
-import com.conquestreforged.core.capability.provider.Provider;
+import com.conquestreforged.core.capability.provider.ProviderFactory;
 import com.conquestreforged.core.capability.toggle.Toggle;
 import com.conquestreforged.core.capability.toggle.ToggleStorage;
 import com.conquestreforged.core.util.Dummy;
@@ -23,7 +23,7 @@ public class Capabilities {
     @CapabilityInject(Toggle.class)
     public static final Capability<Toggle> TOGGLE = Dummy.dummy();
 
-    private static final CapabilityRegister registrar = new CapabilityRegister();
+    private static final CapabilityRegistrar registrar = new CapabilityRegistrar();
 
     @SubscribeEvent
     public static void common(FMLCommonSetupEvent event) {
@@ -32,7 +32,7 @@ public class Capabilities {
         registrar.registerSimple(PlayerEntity.class, Toggle.class, new ToggleStorage(), () -> TOGGLE);
     }
 
-    public static synchronized <T extends ICapabilityProvider> List<Provider<?>> getCapabilities(T holder) {
-        return registrar.getCapabilities(holder);
+    public static synchronized <T extends ICapabilityProvider> List<ProviderFactory<?>> getCapabilities(Class<T> type) {
+        return registrar.getCapabilities(type);
     }
 }
