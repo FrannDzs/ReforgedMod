@@ -14,6 +14,7 @@ public class CapabilityEvents {
     public static void onAttachCapabilities(AttachCapabilitiesEvent<Entity> event) {
         Log.debug("Attaching capabilities to {}", event.getObject());
         for (Provider<?> provider : Capabilities.getCapabilities(event.getObject())) {
+            Log.debug(" - adding capability: {}", provider.getRegistryName());
             event.addCapability(provider.getRegistryName(), provider);
         }
     }
