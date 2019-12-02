@@ -1,7 +1,7 @@
 package com.conquestreforged.core.capability.provider;
 
 @FunctionalInterface
-public interface ProviderFactory<T> {
+public interface ValueFactory<T> {
 
-    Provider<T> create();
+    Value<T> create();
 }

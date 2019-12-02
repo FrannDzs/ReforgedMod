@@ -4,6 +4,10 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.common.capabilities.Capability;
 
+/**
+ * Like Handler but encodes/decodes the network packets to/from nbt
+ * using the Handler's write/read methods
+ */
 public interface NBTHandler<T> extends Handler<T> {
 
     T create();

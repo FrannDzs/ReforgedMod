@@ -1,8 +1,8 @@
 package com.conquestreforged.core.capability;
 
 import com.conquestreforged.core.capability.handler.Handler;
-import com.conquestreforged.core.capability.provider.ProviderFactory;
-import com.conquestreforged.core.capability.provider.SimpleProvider;
+import com.conquestreforged.core.capability.provider.ValueFactory;
+import com.conquestreforged.core.capability.provider.SimpleValue;
 import com.conquestreforged.core.networking.ChannelHelper;
 import com.conquestreforged.core.networking.MessageHandler;
 import net.minecraftforge.common.capabilities.Capability;
@@ -18,8 +18,8 @@ import java.util.function.Supplier;
 
 public class CapabilityHelper {
 
-    private static final Map<Class<?>, List<ProviderFactory<?>>> cache = new HashMap<>();
-    private static final Map<Class<?>, List<ProviderFactory<?>>> factories = new HashMap<>();
+    private static final Map<Class<?>, List<ValueFactory<?>>> cache = new HashMap<>();
+    private static final Map<Class<?>, List<ValueFactory<?>>> factories = new HashMap<>();
 
     /**
      * Register the capability and associated networking handler
@@ -31,7 +31,7 @@ public class CapabilityHelper {
      * @param handler - the handler for encoding/decoding packets and reading/writing nbt
      */
     public static <T> void register(Supplier<Capability<T>> capability, SimpleChannel channel, Class<? extends ICapabilityProvider> holder, Class<T> type, Handler<T> handler) {
-        register(channel, holder, type, handler, SimpleProvider.factory(handler.getName(), capability));
+        register(channel, holder, type, handler, SimpleValue.factory(handler.getName(), capability));
     }
 
     /**
@@ -43,7 +43,7 @@ public class CapabilityHelper {
      * @param handler - the handler for encoding/decoding packets and reading/writing nbt
      * @param factory - the capability provider factory
      */
-    public static <T> void register(SimpleChannel channel, Class<? extends ICapabilityProvider> holder, Class<T> type, Handler<T> handler, ProviderFactory<T> factory) {
+    public static <T> void register(SimpleChannel channel, Class<? extends ICapabilityProvider> holder, Class<T> type, Handler<T> handler, ValueFactory<T> factory) {
         register(channel, holder, type, handler, handler, factory);
     }
 
@@ -57,7 +57,7 @@ public class CapabilityHelper {
      * @param handler - handles reading/writing the value to network packets
      * @param factory - the capability provider factory
      */
-    public static <T> void register(SimpleChannel channel, Class<? extends ICapabilityProvider> holder, Class<T> type, Capability.IStorage<T> storage, MessageHandler<T> handler, ProviderFactory<T> factory) {
+    public static <T> void register(SimpleChannel channel, Class<? extends ICapabilityProvider> holder, Class<T> type, Capability.IStorage<T> storage, MessageHandler<T> handler, ValueFactory<T> factory) {
         // register the capability
         CapabilityManager.INSTANCE.register(type, storage, type::newInstance);
 
@@ -75,13 +75,13 @@ public class CapabilityHelper {
      * @return A list of ProviderFactories which can be used to create CapabilityProviders to be attached
      *          the given holder type
      */
-    public static synchronized <T extends ICapabilityProvider> List<ProviderFactory<?>> getCapabilities(Class<T> holder) {
+    public static synchronized <T extends ICapabilityProvider> List<ValueFactory<?>> getCapabilities(Class<T> holder) {
         return cache.computeIfAbsent(holder, CapabilityHelper::compute);
     }
 
-    private static synchronized List<ProviderFactory<?>> compute(Class<?> type) {
-        List<ProviderFactory<?>> list = new LinkedList<>();
-        for (Map.Entry<Class<?>, List<ProviderFactory<?>>> entry : factories.entrySet()) {
+    private static synchronized List<ValueFactory<?>> compute(Class<?> type) {
+        List<ValueFactory<?>> list = new LinkedList<>();
+        for (Map.Entry<Class<?>, List<ValueFactory<?>>> entry : factories.entrySet()) {
             if (entry.getKey().isAssignableFrom(type)) {
                 list.addAll(entry.getValue());
             }

@@ -1,7 +1,6 @@
 package com.conquestreforged.core.capability.provider;
 
 import com.conquestreforged.core.init.Context;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
@@ -11,14 +10,14 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
-public class SimpleProvider<V> implements Provider<V> {
+public class SimpleValue<V> implements Value<V> {
 
     private final V value;
     private final ResourceLocation name;
     private final Capability<V> capability;
     private final LazyOptional<V> optional;
 
-    public SimpleProvider(ResourceLocation name, Capability<V> capability) {
+    public SimpleValue(ResourceLocation name, Capability<V> capability) {
         this.name = name;
         this.capability = capability;
         this.value = capability.getDefaultInstance();
@@ -26,8 +25,14 @@ public class SimpleProvider<V> implements Provider<V> {
     }
 
     @Nonnull
-    private V getValue() {
+    @Override
+    public V getValue() {
         return value;
+    }
+
+    @Override
+    public Capability<V> getCapability() {
+        return capability;
     }
 
     @Override
@@ -41,18 +46,8 @@ public class SimpleProvider<V> implements Provider<V> {
         return capability.orEmpty(cap, optional);
     }
 
-    @Override
-    public CompoundNBT serializeNBT() {
-        return (CompoundNBT) capability.getStorage().writeNBT(capability, value, null);
-    }
-
-    @Override
-    public void deserializeNBT(CompoundNBT nbt) {
-        capability.getStorage().readNBT(capability, value, null, nbt);
-    }
-
-    public static <T> ProviderFactory<T> factory(String name, Supplier<Capability<T>> capability) {
+    public static <T> ValueFactory<T> factory(String name, Supplier<Capability<T>> capability) {
         ResourceLocation registryName = Context.getInstance().newResourceLocation(name);
-        return () -> new SimpleProvider<>(registryName, capability.get());
+        return () -> new SimpleValue<>(registryName, capability.get());
     }
 }
