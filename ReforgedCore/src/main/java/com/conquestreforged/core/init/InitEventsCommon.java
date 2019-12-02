@@ -35,5 +35,11 @@ public class InitEventsCommon {
             BlockDataRegistry.getData(namespace).forEach(data -> data.addServerResources(builder));
             builder.build();
         });
+
+        BlockStats stats = new BlockStats();
+        Log.info("Block Stats:");
+        Log.info("(Total) Blocks: {}, States: {}", stats.totalBlocks, stats.totalStates);
+        Log.info("(Vanilla) Blocks: {}, States: {}", stats.vanillaBlocks, stats.vanillaStates);
+        Log.info("(Conquest) Blocks: {}, States: {}", stats.conquestBlocks, stats.conquestStates);
     }
 }

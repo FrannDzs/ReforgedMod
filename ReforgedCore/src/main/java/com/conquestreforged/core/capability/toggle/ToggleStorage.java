@@ -6,10 +6,7 @@ import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.Capability.IStorage;
 
-import javax.annotation.Nullable;
-
 public class ToggleStorage implements IStorage<Toggle> {
-    @Nullable
     @Override
     public INBT writeNBT(Capability<Toggle> capability, Toggle instance, Direction side) {
         CompoundNBT tag = new CompoundNBT();

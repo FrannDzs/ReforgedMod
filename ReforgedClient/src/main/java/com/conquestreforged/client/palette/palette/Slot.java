@@ -56,8 +56,8 @@ public class Slot {
             Render.beginSlot(pos.x, pos.y, hovered ? 10 : 0, getScale(mx, my));
             Render.drawTexture(SLOT, -11, -11, 22, 22, 0, 0, 22, 22);
             if (selected || hovered) {
-//                int color = selected ? style.selectedColor : style.hoveredColor;
-                Render.drawItemStack(stack, -8, -8);
+                int color = selected ? style.selectedColor : style.hoveredColor;
+                Render.drawHighlightedItemStack(stack, -8, -8, 1.5F, color);
             } else {
                 Render.drawItemStack(stack, -8, -8);
             }

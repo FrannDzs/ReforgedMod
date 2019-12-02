@@ -131,7 +131,7 @@ public class Render {
 
         GlStateManager.pushMatrix();
         GlStateManager.translatef(x, y, 0);
-        Minecraft.getInstance().getItemRenderer().renderItemIntoGUI(stack, -8, -8);
+        Minecraft.getInstance().getItemRenderer().renderItemIntoGUI(stack, 0, 0);
         GlStateManager.popMatrix();
     }
 

@@ -13,7 +13,7 @@ public class CapabilityEvents {
     @SubscribeEvent
     public static void onAttachCapabilities(AttachCapabilitiesEvent<Entity> event) {
         Log.debug("Attaching capabilities to {}", event.getObject());
-        for (Provider provider : Capabilities.getCapabilities(event.getObject())) {
+        for (Provider<?> provider : Capabilities.getCapabilities(event.getObject())) {
             event.addCapability(provider.getRegistryName(), provider);
         }
     }

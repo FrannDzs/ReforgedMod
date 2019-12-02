@@ -1,9 +1,6 @@
 package com.conquestreforged.client.toggle;
 
-import com.conquestreforged.core.capability.Caps;
 import com.conquestreforged.core.capability.Capabilities;
-import com.conquestreforged.core.capability.toggle.Toggle;
-import com.conquestreforged.core.capability.toggle.ToggleHandler;
 import com.conquestreforged.core.client.input.BindEvent;
 import com.conquestreforged.core.client.input.BindListener;
 import com.conquestreforged.core.networking.Channels;
@@ -16,8 +13,15 @@ public class ToggleBindListener implements BindListener {
             return;
         }
 
-        Channels.TOGGLE.sendToServer(new ToggleHandler());
-        int index = Caps.get(e.player.get(), Capabilities.TOGGLE, Toggle::getIndex, 0);
-        Minecraft.getInstance().ingameGUI.setOverlayMessage(Integer.toString(index), false);
+        e.player.get().getCapability(Capabilities.TOGGLE).ifPresent(toggle -> {
+            // increment the toggle value 0-8
+            toggle.increment();
+
+            // send the new toggle state to server
+            Channels.TOGGLE.sendToServer(toggle);
+
+            // display client toggle state
+            Minecraft.getInstance().ingameGUI.setOverlayMessage(Integer.toString(toggle.getIndex()), false);
+        });
     }
 }
