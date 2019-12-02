@@ -1,12 +1,13 @@
 package com.conquestreforged.core.capability.provider;
 
 import com.google.common.base.Preconditions;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.NonNullSupplier;
 
-public interface Provider<T> extends ICapabilityProvider {
+public interface Provider<T> extends ICapabilitySerializable<CompoundNBT> {
 
     ResourceLocation getRegistryName();
 

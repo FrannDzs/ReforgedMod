@@ -16,7 +16,7 @@ public class CapabilityEvents {
         for (ProviderFactory<?> factory : CapabilityHelper.getCapabilities(event.getObject().getClass())) {
             Provider<?> provider = factory.create();
             event.addCapability(provider.getRegistryName(), provider);
-            Log.debug("Adding capability: {} to: {}", provider.getRegistryName(), event.getObject());
+            Log.debug("Adding capability: '{}' to: {}", provider.getRegistryName(), event.getObject());
         }
     }
 }

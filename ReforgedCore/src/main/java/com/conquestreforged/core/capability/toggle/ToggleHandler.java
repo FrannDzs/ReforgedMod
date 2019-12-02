@@ -2,8 +2,6 @@ package com.conquestreforged.core.capability.toggle;
 
 import com.conquestreforged.core.capability.Capabilities;
 import com.conquestreforged.core.capability.handler.Handler;
-import com.conquestreforged.core.capability.handler.NBTHandler;
-import com.conquestreforged.core.networking.MessageHandler;
 import com.conquestreforged.core.util.Log;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -13,10 +11,14 @@ import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.network.NetworkEvent;
 
-import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
 public class ToggleHandler implements Handler<Toggle> {
+
+    @Override
+    public String getName() {
+        return "toggle";
+    }
 
     @Override
     public INBT writeNBT(Capability<Toggle> capability, Toggle instance, Direction side) {

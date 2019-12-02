@@ -31,7 +31,7 @@ public class CapabilityHelper {
      * @param handler - the handler for encoding/decoding packets and reading/writing nbt
      */
     public static <T> void register(Supplier<Capability<T>> capability, SimpleChannel channel, Class<? extends ICapabilityProvider> holder, Class<T> type, Handler<T> handler) {
-        register(channel, holder, type, handler, () -> new SimpleProvider<>(capability.get()));
+        register(channel, holder, type, handler, SimpleProvider.factory(handler.getName(), capability));
     }
 
     /**
