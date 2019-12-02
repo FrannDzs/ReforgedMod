@@ -30,8 +30,8 @@ public class CapabilityHelper {
      * @param type - the capability value type
      * @param handler - the handler for encoding/decoding packets and reading/writing nbt
      */
-    public static <T> void register(Supplier<Capability<T>> capability, SimpleChannel channel, Class<? extends ICapabilityProvider> holder, Class<T> type, Handler<T> handler) {
-        register(channel, holder, type, handler, SimpleValue.factory(handler.getName(), capability));
+    public static <T> void register(String name, Supplier<Capability<T>> capability, SimpleChannel channel, Class<? extends ICapabilityProvider> holder, Class<T> type, Handler<T> handler) {
+        register(channel, holder, type, handler, SimpleValue.factory(name, capability));
     }
 
     /**

@@ -16,22 +16,17 @@ import java.util.function.Supplier;
 public class ToggleHandler implements Handler<Toggle> {
 
     @Override
-    public String getName() {
-        return "toggle";
-    }
-
-    @Override
     public INBT writeNBT(Capability<Toggle> capability, Toggle instance, Direction side) {
         Log.debug("Writing toggle data to nbt: index={}", instance.getIndex());
         CompoundNBT tag = new CompoundNBT();
-        tag.putInt("toggle", instance.getIndex());
+        tag.putInt("index", instance.getIndex());
         return tag;
     }
 
     @Override
     public void readNBT(Capability<Toggle> capability, Toggle instance, Direction side, INBT nbt) {
         CompoundNBT tag = (CompoundNBT) nbt;
-        instance.setIndex(tag.getInt("toggle"));
+        instance.setIndex(tag.getInt("index"));
         Log.debug("Reading toggle data from nbt: index={}", instance.getIndex());
     }
 

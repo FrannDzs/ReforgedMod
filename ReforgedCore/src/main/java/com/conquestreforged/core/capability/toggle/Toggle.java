@@ -1,20 +1,17 @@
 package com.conquestreforged.core.capability.toggle;
 
-import net.minecraftforge.common.capabilities.CapabilityProvider;
-
-public class Toggle extends CapabilityProvider<Toggle> {
+public class Toggle {
 
     public static final String PROTOCOL_NAME = "toggle";
     public static final String PROTOCOL_VERSION = "1";
 
-    private int index = 0;
+    private int index;
 
     public Toggle() {
-        super(Toggle.class);
+        this(0);
     }
 
     public Toggle(int index) {
-        super(Toggle.class);
         this.index = index;
     }
 

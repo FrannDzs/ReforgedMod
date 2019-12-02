@@ -5,5 +5,4 @@ import net.minecraftforge.common.capabilities.Capability;
 
 public interface Handler<T> extends Capability.IStorage<T>, MessageHandler<T> {
 
-    String getName();
 }
