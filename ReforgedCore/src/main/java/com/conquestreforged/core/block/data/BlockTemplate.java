@@ -12,6 +12,7 @@ import com.conquestreforged.core.asset.template.TemplateCache;
 import com.conquestreforged.core.asset.template.TemplateResource;
 import com.conquestreforged.core.block.builder.BlockName;
 import com.conquestreforged.core.block.builder.Textures;
+import com.conquestreforged.core.util.Log;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
@@ -127,6 +128,7 @@ public class BlockTemplate {
 
     private void addRecipe(VirtualResourcepack.Builder builder, BlockName name) {
         if (recipes == null || recipes.length != 1) {
+            Log.debug("No recipe template for {}", name);
             return;
         }
 

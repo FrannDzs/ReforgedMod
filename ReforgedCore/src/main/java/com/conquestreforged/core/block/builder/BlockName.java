@@ -16,6 +16,11 @@ public class BlockName {
         return namespace;
     }
 
+    @Override
+    public String toString() {
+        return namespace + ":" + singular;
+    }
+
     public String namespaceFormat(String format, boolean plural) {
         if (format.indexOf(':') != -1) {
             return format(format, plural);

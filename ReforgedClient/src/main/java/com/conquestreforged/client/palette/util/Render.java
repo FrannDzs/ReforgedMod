@@ -3,6 +3,7 @@ package com.conquestreforged.client.palette.util;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -94,45 +95,56 @@ public class Render {
         AbstractGui.blit(left, top, u, v, width, height, width, height);
     }
 
-    public static void drawItemStack(ItemStack stack, int x, int y) {
-        if (stack == null) {
-            return;
-        }
-
-        Minecraft.getInstance().getItemRenderer().renderItemIntoGUI(stack, x, y);
+    public static void drawCenteredString(int x, int y, int color, String string) {
+        FontRenderer renderer = Minecraft.getInstance().fontRenderer;
+        int offsetX = renderer.getStringWidth(string) / 2;
+        renderer.drawStringWithShadow(string, x - offsetX, y, color);
     }
 
     public static void drawOverlays(ItemStack stack, int x, int y) {
-        if (stack == null) {
-            return;
-        }
-
-        GlStateManager.pushMatrix();
-        GlStateManager.translatef(x, y, 0);
-        Minecraft.getInstance().getItemRenderer().renderItemOverlays(Minecraft.getInstance().fontRenderer, stack, -8, -8);
-        GlStateManager.popMatrix();
+        drawOverlays(stack, x, y, 0, 1);
     }
 
-    public static void drawHighlightedItemStack(ItemStack stack, int x, int y, float scale, int color) {
-        if (stack == null) {
-            return;
+    public static void drawOverlays(ItemStack stack, int x, int y, int z, float scale) {
+        if (stack != null) {
+            GlStateManager.pushMatrix();
+            GlStateManager.scalef(scale, scale, scale);
+            GlStateManager.translatef(x, y, z);
+            Minecraft.getInstance().getItemRenderer().renderItemOverlays(Minecraft.getInstance().fontRenderer, stack, 0, 0);
+            GlStateManager.popMatrix();
         }
+    }
 
-        GlStateManager.pushMatrix();
-        GlStateManager.translatef(x, y, 0);
-        GlStateManager.scalef(scale, scale, 0);
-        GlStateManager.enableColorMaterial();
-        GlStateManager.setupSolidRenderingTextureCombine(color);
-        GlStateManager.disableBlend();
-        Minecraft.getInstance().getItemRenderer().renderItemIntoGUI(stack, -8, -8);
-        GlStateManager.tearDownSolidRenderingTextureCombine();
-        GlStateManager.disableColorMaterial();
-        GlStateManager.popMatrix();
+    public static void drawItemStack(ItemStack stack, int x, int y) {
+        drawItemStack(stack, x, y, 0);
+    }
 
-        GlStateManager.pushMatrix();
-        GlStateManager.translatef(x, y, 0);
-        Minecraft.getInstance().getItemRenderer().renderItemIntoGUI(stack, 0, 0);
-        GlStateManager.popMatrix();
+    public static void drawItemStack(ItemStack stack, int x, int y, int z) {
+        if (stack != null) {
+            GlStateManager.pushMatrix();
+            GlStateManager.translatef(x, y, z);
+            Minecraft.getInstance().getItemRenderer().renderItemIntoGUI(stack, 0, 0);
+            GlStateManager.popMatrix();
+        }
+    }
+
+    public static void drawItemStackHighlight(ItemStack stack, int x, int y, float scale, int color) {
+        drawItemStackHighlight(stack, x, y, 0, scale, color);
+    }
+
+    public static void drawItemStackHighlight(ItemStack stack, int x, int y, int z, float scale, int color) {
+        if (stack != null) {
+            GlStateManager.pushMatrix();
+            GlStateManager.scalef(scale, scale, 0);
+            GlStateManager.translatef(x, y, z);
+            GlStateManager.enableColorMaterial();
+            GlStateManager.setupSolidRenderingTextureCombine(color);
+            GlStateManager.disableBlend();
+            Minecraft.getInstance().getItemRenderer().renderItemIntoGUI(stack, 0, 0);
+            GlStateManager.tearDownSolidRenderingTextureCombine();
+            GlStateManager.disableColorMaterial();
+            GlStateManager.popMatrix();
+        }
     }
 
     public static void beginTooltips() {

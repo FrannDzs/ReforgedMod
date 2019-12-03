@@ -9,15 +9,12 @@ import com.conquestreforged.core.item.family.Family;
 import com.conquestreforged.core.item.family.FamilyRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -36,7 +33,6 @@ public class Palette {
     private final Style radialStyle;
     private final Slot centerSlot;
     private final List<Slot> radialSlots;
-    private final List<Slot> allSlots = new LinkedList<>();
 
     private int centerX;
     private int centerY;
@@ -62,6 +58,8 @@ public class Palette {
         // render the hexagon texture
         renderBackgroundTexture();
 
+
+        // get the closest slot to the mouse cursor
         Slot closest = getClosestSlot(mx, my);
 
         // render radial and center slots
@@ -72,12 +70,10 @@ public class Palette {
 
         // render the name of the item under the mouse
         if (closest.mouseOver(mx, my)) {
-            FontRenderer renderer = Minecraft.getInstance().fontRenderer;
+            int left = centerX;
+            int top = centerY + (RADIUS + 44) - 15;
             String text = closest.getStack().getDisplayName().getFormattedText();
-            int length = renderer.getStringWidth(text);
-            int half = length / 2;
-            int cy = centerY + (RADIUS + 44) - 15;
-            renderer.drawStringWithShadow(text, centerX - half, cy, 0xFFFFFF);
+            Render.drawCenteredString(left, top, 0xFFFFFF, text);
         }
     }
 
@@ -142,14 +138,14 @@ public class Palette {
 
     private void renderBackgroundTexture() {
         int rad = RADIUS + 44;
-        int dim = (RADIUS + 44) * 2;
+        int diam = (RADIUS + 44) * 2;
         int left = centerX - rad;
         int top = centerY - rad;
-        Render.drawTexture(WHEEL, left, top, dim, dim, 0, 0, dim, dim);
+        Render.drawTexture(WHEEL, left, top, diam, diam, 0, 0, diam, diam);
     }
 
     private void renderRadialSlots(int mx, int my, Slot closest) {
-        int index = radialSlots.indexOf(closest);
+        int index = getSlotIndex(closest);
         if (index == -1) {
             index = 0;
         }
@@ -180,6 +176,10 @@ public class Palette {
         } else {
             return index;
         }
+    }
+
+    private int getSlotIndex(Slot slot) {
+        return radialSlots.indexOf(slot);
     }
 
     public static Optional<Palette> create(ItemStack stack) {

@@ -1,5 +1,6 @@
 package com.conquestreforged.core.init;
 
+import com.conquestreforged.core.ReforgedCore;
 import com.conquestreforged.core.asset.pack.VirtualResourcepack;
 import com.conquestreforged.core.block.data.BlockDataRegistry;
 import com.conquestreforged.core.util.Log;
@@ -11,6 +12,8 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+
+import java.io.File;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public class InitEventsCommon {
@@ -30,10 +33,12 @@ public class InitEventsCommon {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void common(FMLCommonSetupEvent event) {
         // init common virtual resources (data)
+        File dir = new File("ConquestReforged");
         BlockDataRegistry.getNamespaces().forEach(namespace -> {
             VirtualResourcepack.Builder builder = VirtualResourcepack.builder(namespace).type(ResourcePackType.SERVER_DATA);
             BlockDataRegistry.getData(namespace).forEach(data -> data.addServerResources(builder));
-            builder.build();
+            VirtualResourcepack pack = builder.build();
+            export(pack, dir);
         });
 
         BlockStats stats = new BlockStats();
@@ -41,5 +46,19 @@ public class InitEventsCommon {
         Log.info("(Total) Blocks: {}, States: {}", stats.totalBlocks, stats.totalStates);
         Log.info("(Vanilla) Blocks: {}, States: {}", stats.vanillaBlocks, stats.vanillaStates);
         Log.info("(Conquest) Blocks: {}, States: {}", stats.conquestBlocks, stats.conquestStates);
+    }
+
+    private static void export(VirtualResourcepack pack, File dir) {
+        if (ReforgedCore.getInstance().dumpAssets()) {
+            try {
+                if (ReforgedCore.getInstance().prettyAssets()) {
+                    pack.exportPretty(dir);
+                } else {
+                    pack.export(dir);
+                }
+            } catch (Throwable t) {
+                t.printStackTrace();
+            }
+        }
     }
 }

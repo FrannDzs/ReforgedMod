@@ -117,7 +117,7 @@ public class VirtualResourcepack extends ResourcePack {
 
     public void exportPretty(File dir) throws IOException {
         if (!dir.exists() && !dir.mkdirs()) {
-            throw new IOException();
+            throw new IOException("Could not create directory: " + dir);
         }
 
         Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
