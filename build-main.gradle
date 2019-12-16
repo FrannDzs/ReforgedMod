@@ -4,6 +4,7 @@ minecraft {
             workingDirectory project.file("run/client")
             property "forge.logging.markers", "SCAN,REGISTRIES,REGISTRYDUMP"
             property "forge.logging.console.level", "debug"
+            jvmArgs "-Xmx6G", "-Xms4G"
             mods {
                 mod {
                     source sourceSets.main
@@ -14,6 +15,7 @@ minecraft {
             workingDirectory project.file("run/server")
             property "forge.logging.markers", "SCAN,REGISTRIES,REGISTRYDUMP"
             property "forge.logging.console.level", "debug"
+            jvmArgs "-Xmx6G", "-Xms4G"
             mods {
                 mod {
                     source sourceSets.main
