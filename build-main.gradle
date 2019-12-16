@@ -38,7 +38,7 @@ task collectProjectResources(dependsOn: subprojects.tasks["processResources"]) {
         subprojects.each { p ->
             File dir = file("$p.buildDir/resources/main")
             fileTree(dir).each { f ->
-                String rel = f.path.substring(dir.path.length()).toLowerCase()
+                String rel = f.path.substring(dir.path.length())
 
                 if (f.getName().endsWith(".lang")) {
                     legacyLangs.computeIfAbsent(rel, { s -> new LinkedList<>() }).add(f)

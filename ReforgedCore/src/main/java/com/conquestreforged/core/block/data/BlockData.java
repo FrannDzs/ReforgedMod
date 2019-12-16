@@ -65,13 +65,13 @@ public class BlockData {
 
     public void addClientResources(VirtualResourcepack.Builder builder) {
         if (!props.isManual()) {
-            template.addClientResources(builder, blockName, props.textures());
+            template.addClientResources(builder, blockName, props.textures(), registryName);
         }
     }
 
     public void addServerResources(VirtualResourcepack.Builder builder) {
         if (!props.isManual()) {
-            template.addServerResources(builder, blockName);
+            template.addServerResources(builder, blockName, registryName);
         }
     }
 }

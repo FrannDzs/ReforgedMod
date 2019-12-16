@@ -18,6 +18,8 @@ import com.google.gson.JsonPrimitive;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.resources.ResourcePackType;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.model.data.EmptyModelData;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
@@ -48,20 +50,23 @@ public class BlockTemplate {
         return new ResourceLocation(name.getNamespace(), name.format(state.name(), plural));
     }
 
-    public void addClientResources(VirtualResourcepack.Builder builder, BlockName name, Textures textures) {
-        addState(builder, name);
-        addItem(builder, name);
-        addModel(builder, name, textures);
+    public void addClientResources(VirtualResourcepack.Builder builder, BlockName name, Textures textures, ResourceLocation regName) {
+        addState(builder, name, regName);
+        addItem(builder, name, regName);
+        addModel(builder, name, textures, regName);
     }
 
-    public void addServerResources(VirtualResourcepack.Builder builder, BlockName name) {
-        addRecipe(builder, name);
+    public void addServerResources(VirtualResourcepack.Builder builder, BlockName name, ResourceLocation regName) {
+        addRecipe(builder, name, regName);
     }
 
-    private void addState(VirtualResourcepack.Builder builder, BlockName name) {
+    private void addState(VirtualResourcepack.Builder builder, BlockName name, ResourceLocation regName) {
         if (state == null) {
+            Log.debug("No state template for {}", regName);
             return;
         }
+
+        Log.debug("Generating state for {}", regName);
 
         String templateName = state.template();
         String virtualName = name.namespaceFormat(state.name(), state.plural());
@@ -80,11 +85,13 @@ public class BlockTemplate {
         ));
     }
 
-    private void addModel(VirtualResourcepack.Builder builder, BlockName name, Textures textures) {
+    private void addModel(VirtualResourcepack.Builder builder, BlockName name, Textures textures, ResourceLocation regName) {
         if (blockModels == null) {
+            Log.debug("No model template for {}", regName);
             return;
         }
 
+        Log.debug("Generating model(s) for {}", regName);
         for (Model model : blockModels) {
             String templateName = model.template();
             String virtualName = name.namespaceFormat(model.name(), model.plural());
@@ -103,11 +110,13 @@ public class BlockTemplate {
         }
     }
 
-    private void addItem(VirtualResourcepack.Builder builder, BlockName name) {
+    private void addItem(VirtualResourcepack.Builder builder, BlockName name, ResourceLocation regName) {
         if (itemModel == null) {
+            Log.debug("No item model template for {}", regName);
             return;
         }
 
+        Log.debug("Generating item model for {}", regName);
         String templateName = itemModel.template();
         String itemModelName = name.namespaceFormat(itemModel.name(), plural);
         String parentModelName = name.namespaceFormat(itemModel.parent(), plural);
@@ -126,9 +135,9 @@ public class BlockTemplate {
         ));
     }
 
-    private void addRecipe(VirtualResourcepack.Builder builder, BlockName name) {
+    private void addRecipe(VirtualResourcepack.Builder builder, BlockName name, ResourceLocation regName) {
         if (recipes == null || recipes.length != 1) {
-            Log.debug("No recipe template for {}", name);
+            Log.debug("No recipe template for {}", regName);
             return;
         }
 
@@ -144,6 +153,12 @@ public class BlockTemplate {
         String templatePath = Locations.recipePath(new ResourceLocation(templateName));
         String virtualPath = Locations.recipePath(new ResourceLocation(recipeName));
         JsonOverride overrides = getOverrides(name, ingredients);
+        if (overrides == EmptyOverride.EMPTY) {
+            Log.error("Unable to generate recipe for {} (invalid ingredients)", regName);
+            return;
+        }
+
+        Log.debug("Generating recipe for {}", regName);
         JsonTemplate template = TemplateCache.getInstance().get(templatePath);
         builder.add(new TemplateResource(
                 ResourcePackType.SERVER_DATA,
@@ -182,18 +197,38 @@ public class BlockTemplate {
 
         if (ingredients.length == 1) {
             String find = ingredients[0].template();
-            String replace = name.namespaceFormat(ingredients[0].name(), ingredients[0].plural());
+            String replace = getIngredient(name, ingredients[0]);
+            if (replace.isEmpty()) {
+                return EmptyOverride.EMPTY;
+            }
             return new SingleOverride("item", new JsonPrimitive(find), new JsonPrimitive(replace));
         }
 
         Map<JsonElement, JsonElement> overrides = new HashMap<>(ingredients.length);
         for (Ingredient ingredient : ingredients) {
             String find = new ResourceLocation(ingredient.template()).toString();
-            String replace = name.namespaceFormat(ingredient.name(), ingredient.plural());
+            String replace = getIngredient(name, ingredient);
+            if (replace.isEmpty()) {
+                return EmptyOverride.EMPTY;
+            }
             overrides.put(new JsonPrimitive(find), new JsonPrimitive(replace));
         }
 
         return new MapOverride("item", overrides);
+    }
+
+    private String getIngredient(BlockName name, Ingredient ingredient) {
+        String itemName = name.format(ingredient.name(), ingredient.plural());
+        if (ForgeRegistries.ITEMS.containsKey(new ResourceLocation(name.getNamespace(), itemName))) {
+            Log.debug(" Found ingredient {}:{}", name.getNamespace(), itemName);
+            return name.getNamespace() + ':' + itemName;
+        }
+        if (ForgeRegistries.ITEMS.containsKey(new ResourceLocation(itemName))) {
+            Log.debug(" Found vanilla ingredient minecraft:{}", itemName);
+            return "minecraft:" + itemName;
+        }
+        Log.error(" Unknown ingredient {}", itemName);
+        return "";
     }
 
     private <T> T[] push(T[] t, T value) {
