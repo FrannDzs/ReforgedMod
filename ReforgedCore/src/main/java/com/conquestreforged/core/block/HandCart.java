@@ -1,8 +1,6 @@
 package com.conquestreforged.core.block;
 
-import com.conquestreforged.core.block.properties.HalfArchShape;
 import com.conquestreforged.core.block.properties.HandCartShape;
-import com.conquestreforged.core.block.properties.ParallelConnectionShape;
 import com.conquestreforged.core.block.properties.Waterloggable;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -12,7 +10,6 @@ import net.minecraft.fluid.IFluidState;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.StateContainer;
-import net.minecraft.state.properties.Half;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;

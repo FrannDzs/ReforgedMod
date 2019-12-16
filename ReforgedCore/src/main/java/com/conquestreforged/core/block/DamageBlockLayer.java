@@ -5,7 +5,6 @@ import com.conquestreforged.core.asset.annotation.Model;
 import com.conquestreforged.core.asset.annotation.State;
 import com.conquestreforged.core.block.builder.Props;
 import com.conquestreforged.core.block.standard.Layer;
-import net.minecraft.block.Block;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;

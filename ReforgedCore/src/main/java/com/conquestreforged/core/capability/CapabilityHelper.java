@@ -1,8 +1,8 @@
 package com.conquestreforged.core.capability;
 
 import com.conquestreforged.core.capability.handler.Handler;
-import com.conquestreforged.core.capability.provider.ValueFactory;
 import com.conquestreforged.core.capability.provider.SimpleValue;
+import com.conquestreforged.core.capability.provider.ValueFactory;
 import com.conquestreforged.core.networking.ChannelHelper;
 import com.conquestreforged.core.networking.MessageHandler;
 import net.minecraftforge.common.capabilities.Capability;

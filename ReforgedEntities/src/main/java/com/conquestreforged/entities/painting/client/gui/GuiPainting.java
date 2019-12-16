@@ -4,7 +4,6 @@ import com.conquestreforged.entities.painting.Proxy;
 import com.conquestreforged.entities.painting.art.Art;
 import com.conquestreforged.entities.painting.art.ModArt;
 import com.conquestreforged.entities.painting.art.VanillaArt;
-import com.conquestreforged.entities.painting.client.ClientProxy;
 import com.conquestreforged.entities.painting.entity.ArtType;
 import com.conquestreforged.entities.painting.entity.TextureType;
 import com.mojang.blaze3d.platform.GlStateManager;

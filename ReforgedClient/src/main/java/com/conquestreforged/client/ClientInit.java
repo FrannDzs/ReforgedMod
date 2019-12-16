@@ -2,12 +2,11 @@ package com.conquestreforged.client;
 
 import com.conquestreforged.client.palette.PaletteBindListener;
 import com.conquestreforged.client.search.SearchBindListener;
-import com.conquestreforged.client.texture.ItemGroup;
 import com.conquestreforged.client.texture.GroupManager;
+import com.conquestreforged.client.texture.ItemGroup;
 import com.conquestreforged.client.texture.TextureGroup;
 import com.conquestreforged.client.toggle.ToggleBindListener;
 import com.conquestreforged.core.client.input.Bindings;
-import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.TickEvent;

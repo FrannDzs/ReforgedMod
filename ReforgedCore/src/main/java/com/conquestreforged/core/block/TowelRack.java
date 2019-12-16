@@ -1,7 +1,6 @@
 package com.conquestreforged.core.block;
 
 import com.conquestreforged.core.block.base.WaterloggedDirectionalShape;
-import com.conquestreforged.core.block.standard.VerticalSlab;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -15,7 +14,6 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 

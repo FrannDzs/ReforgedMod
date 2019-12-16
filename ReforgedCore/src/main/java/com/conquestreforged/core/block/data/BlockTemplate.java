@@ -18,7 +18,6 @@ import com.google.gson.JsonPrimitive;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.resources.ResourcePackType;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.lang.annotation.Annotation;

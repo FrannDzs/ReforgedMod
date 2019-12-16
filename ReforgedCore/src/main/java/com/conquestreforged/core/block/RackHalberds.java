@@ -1,7 +1,6 @@
 package com.conquestreforged.core.block;
 
 import com.conquestreforged.core.block.base.WaterloggedDirectionalShape;
-import com.conquestreforged.core.block.standard.VerticalSlab;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.fluid.Fluids;
