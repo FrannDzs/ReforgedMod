@@ -33,12 +33,10 @@ public class InitEventsCommon {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void common(FMLCommonSetupEvent event) {
         // init common virtual resources (data)
-        File dir = new File("ConquestReforged");
         BlockDataRegistry.getNamespaces().forEach(namespace -> {
             VirtualResourcepack.Builder builder = VirtualResourcepack.builder(namespace).type(ResourcePackType.SERVER_DATA);
             BlockDataRegistry.getData(namespace).forEach(data -> data.addServerResources(builder));
-            VirtualResourcepack pack = builder.build();
-            export(pack, dir);
+            builder.build();
         });
 
         BlockStats stats = new BlockStats();
