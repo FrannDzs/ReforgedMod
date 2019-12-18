@@ -19,9 +19,9 @@ classes {
     dependsOn(collectProjectClasses)
 }
 
-
 processResources {
     dependsOn(collectProjectResources)
+
     filesMatching("**/mods.toml") {
         expand(
                 "name": project.name,
@@ -29,6 +29,10 @@ processResources {
                 "mc_version": mc_version
         )
     }
+}
+
+build {
+    dependsOn(combinedJar)
 }
 
 testClasses {

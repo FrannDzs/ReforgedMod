@@ -62,6 +62,20 @@ task collectProjectResources(dependsOn: subprojects.tasks["processResources"]) {
     }
 }
 
+task collectResourcePack(type: Copy) {
+    from fileTree("ReforgedRP") {
+        exclude "TO_BE_ADDED", "**.ini", "**.md"
+    }
+    into "$buildDir/resources/resourcepack"
+}
+
+task combinedJar(dependsOn: collectResourcePack, type: Jar) {
+    classifier = "combined"
+    duplicatesStrategy = "exclude"
+    from sourceSets.main.output
+    from fileTree("$buildDir/resources/resourcepack")
+}
+
 static def createFile(File dir, String path) {
     File out = new File(dir, path)
     out.getParentFile().mkdirs()

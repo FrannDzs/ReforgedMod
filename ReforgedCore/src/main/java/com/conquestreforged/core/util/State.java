@@ -62,7 +62,7 @@ public class State {
         return with(state, property, value);
     }
 
-    private static <T extends Comparable<T>> BlockState with(BlockState state, IProperty<T> property, String value) {
+    public static <T extends Comparable<T>> BlockState with(BlockState state, IProperty<T> property, String value) {
         return property.parseValue(value).map(t -> state.with(property, t)).orElse(state);
     }
 }
