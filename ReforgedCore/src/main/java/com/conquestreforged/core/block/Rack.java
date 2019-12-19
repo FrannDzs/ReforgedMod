@@ -24,17 +24,6 @@ public class Rack extends WaterloggedDirectionalShape {
         return BlockRenderLayer.CUTOUT;
     }
 
-    private boolean attachesTo(BlockState blockstate) {
-        Block block = blockstate.getBlock();
-        return !Block.cannotAttach(block) && (!(block != this && !(block instanceof Rack)));
-    }
-
-    private boolean canConnectTo(IWorld worldIn, BlockPos pos) {
-        BlockState BlockState = worldIn.getBlockState(pos);
-        Block block = BlockState.getBlock();
-        return !Block.cannotAttach(block) && (!(block != this && !(block instanceof Rack)));
-    }
-
     @Override
     public VoxelShape getShape(BlockState state) {
         switch (state.get(DIRECTION)) {

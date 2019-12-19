@@ -28,14 +28,14 @@ public class BeamVertical extends DirectionalShape {
 
     public static final BooleanProperty ACTIVATED = BooleanProperty.create("activated");
 
-    private static final VoxelShape SHAPE_NORTH_OFF = Block.makeCuboidShape(0.0D, 0.0D, 5.0D, 4.0D, 16.0D, 11.0D);
-    private static final VoxelShape SHAPE_SOUTH_OFF = Block.makeCuboidShape(12.0D, 0.0D, 5.0D, 16.0D, 16.0D, 11.0D);
-    private static final VoxelShape SHAPE_WEST_OFF = Block.makeCuboidShape(5.0D, 0.0D, 12.0D, 11.0D, 16.0D, 16.0D);
-    private static final VoxelShape SHAPE_EAST_OFF = Block.makeCuboidShape(5.0D, 0.0D, 0.0D, 11.0D, 16.0D, 4.0D);
-    private static final VoxelShape SHAPE_NORTH_ON = Block.makeCuboidShape(0.0D, 0.0D, 5.0D, 1.0D, 16.0D, 11.0D);
-    private static final VoxelShape SHAPE_SOUTH_ON = Block.makeCuboidShape(0.0D, 0.0D, 5.0D, 1.0D, 16.0D, 11.0D);
-    private static final VoxelShape SHAPE_WEST_ON = Block.makeCuboidShape(5.0D, 0.0D, 0.0D, 11.0D, 16.0D, 16.0D);
-    private static final VoxelShape SHAPE_EAST_ON = Block.makeCuboidShape(5.0D, 0.0D, 0.0D, 11.0D, 16.0D, 16.0D);
+    private static final VoxelShape SHAPE_WEST_OFF = Block.makeCuboidShape(0.0D, 0.0D, 5.0D, 4.0D, 16.0D, 11.0D);
+    private static final VoxelShape SHAPE_EAST_OFF = Block.makeCuboidShape(12.0D, 0.0D, 5.0D, 16.0D, 16.0D, 11.0D);
+    private static final VoxelShape SHAPE_NORTH_OFF = Block.makeCuboidShape(5.0D, 0.0D, 12.0D, 11.0D, 16.0D, 16.0D);
+    private static final VoxelShape SHAPE_SOUTH_OFF = Block.makeCuboidShape(5.0D, 0.0D, 0.0D, 11.0D, 16.0D, 4.0D);
+    private static final VoxelShape SHAPE_WEST_ON = Block.makeCuboidShape(0.0D, 0.0D, 5.0D, 16.0D, 16.0D, 11.0D);
+    private static final VoxelShape SHAPE_EAST_ON = Block.makeCuboidShape(0.0D, 0.0D, 5.0D, 16.0D, 16.0D, 11.0D);
+    private static final VoxelShape SHAPE_SOUTH_ON = Block.makeCuboidShape(5.0D, 0.0D, 0.0D, 11.0D, 16.0D, 16.0D);
+    private static final VoxelShape SHAPE_NORTH_ON = Block.makeCuboidShape(5.0D, 0.0D, 0.0D, 11.0D, 16.0D, 16.0D);
 
     public BeamVertical(Properties properties) {
         super(properties);
@@ -43,7 +43,7 @@ public class BeamVertical extends DirectionalShape {
 
     @Override
     public VoxelShape getShape(BlockState state) {
-        if (state.get(ACTIVATED)) {
+        if (!state.get(ACTIVATED)) {
             switch (state.get(DIRECTION)) {
                 case NORTH:
                 default:

@@ -14,7 +14,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 
 @Assets(
-        state = @State(name = "%s", template = "parent_pane"),
+        state = @State(name = "%s", template = "parent_pane_old"),
         item = @Model(name = "item/%s", parent = "block/%s_pane_ns", template = "item/parent_pane"),
         block = {
                 @Model(name = "block/%s_pane_n", template = "block/parent_flatpane_n"),

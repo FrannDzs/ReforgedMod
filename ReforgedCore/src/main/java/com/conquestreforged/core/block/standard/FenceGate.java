@@ -4,6 +4,7 @@ import com.conquestreforged.core.asset.annotation.*;
 import com.conquestreforged.core.block.properties.Waterloggable;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.FenceGateBlock;
 import net.minecraft.block.HorizontalBlock;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluids;
@@ -43,7 +44,7 @@ import net.minecraft.world.World;
                 }
         )
 )
-public class FenceGate extends HorizontalBlock implements Waterloggable {
+public class FenceGate extends FenceGateBlock implements Waterloggable {
 
     private static final BooleanProperty OPEN = BlockStateProperties.OPEN;
     private static final BooleanProperty IN_WALL = BlockStateProperties.IN_WALL;
@@ -151,7 +152,7 @@ public class FenceGate extends HorizontalBlock implements Waterloggable {
 
     @Override
     protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-        builder.add(HORIZONTAL_FACING, OPEN, IN_WALL, WATERLOGGED);
+        builder.add(HORIZONTAL_FACING, OPEN, IN_WALL, POWERED, WATERLOGGED);
     }
 
     @Override
