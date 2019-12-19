@@ -1,3 +1,6 @@
 [submodule "ReforgedBlocks"]
 	path = ReforgedBlocks
 	url = https://github.com/HIPPOKLEIDES/ConquestReforgedBlocksTest.git
+[submodule "ReforgedRP"]
+	path = ReforgedRP
+	url = https://github.com/HIPPOKLEIDES/Conquest-Reforged-Resourcepack.git
