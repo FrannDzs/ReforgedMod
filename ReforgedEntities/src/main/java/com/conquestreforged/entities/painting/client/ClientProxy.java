@@ -1,6 +1,7 @@
 package com.conquestreforged.entities.painting.client;
 
 import com.conquestreforged.core.util.RegUtil;
+import com.conquestreforged.entities.ModEntities;
 import com.conquestreforged.entities.ModItems;
 import com.conquestreforged.entities.painting.CommonProxy;
 import com.conquestreforged.entities.painting.NetworkHandler;
@@ -12,6 +13,7 @@ import com.conquestreforged.entities.painting.entity.PaintingEntity;
 import com.conquestreforged.entities.painting.entity.TextureType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.PaintingType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -23,7 +25,7 @@ import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
-@Mod.EventBusSubscriber(value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
+//@Mod.EventBusSubscriber(value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ClientProxy extends CommonProxy {
 
     @Override
@@ -59,7 +61,7 @@ public class ClientProxy extends CommonProxy {
 
     @SubscribeEvent
     public static void registerRenders(FMLClientSetupEvent event) {
-        RenderingRegistry.registerEntityRenderingHandler(PaintingEntity.class, PaintingRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(ModEntities.PAINTING, PaintingRenderer::new);
         registerModel(ModItems.conquestPainting, "conquest:painting");
         registerModel(ModItems.vanillaPainting, "minecraft:painting");
     }

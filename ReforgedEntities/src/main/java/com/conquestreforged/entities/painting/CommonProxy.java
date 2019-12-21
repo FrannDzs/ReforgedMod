@@ -13,7 +13,7 @@ import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 /**
  * @author dags <dags@dags.me>
  */
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
+//@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public class CommonProxy implements Proxy {
 
     public final NetworkHandler netHandler = new NetworkHandler();

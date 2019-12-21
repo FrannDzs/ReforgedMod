@@ -81,8 +81,8 @@ public class GuiPainting extends Screen {
         int centerY = height / 2;
         hoveredIndex = -1;
 
-        GlStateManager.enableAlphaTest();
-        GlStateManager.enableTexture();
+//        GlStateManager.enableAlphaTest();
+//        GlStateManager.enableTexture();
         Minecraft.getInstance().getTextureManager().bindTexture(texture);
 
         for (int i = 5; i >= 0; i--) {
@@ -161,7 +161,7 @@ public class GuiPainting extends Screen {
         handleMouse(mx, my, tl, tt, tw, th, index);
 
         float alpha = Math.min(1F, 0.2F + Math.max(0, 1F - (Math.abs(di) / 2F)));
-        GlStateManager.color4f(alpha, alpha, alpha, 1F);
+//        GlStateManager.color4f(alpha, alpha, alpha, 1F);
         AbstractGui.blit(tl, tt, art.u(), art.v(), art.width(), art.height(), tw, th, art.textureWidth(), art.textureHeight());
 
 //        GuiUtils.drawTexturedModalRect(tl, tt, art.u(), art.v(), art.width(), art.height(), 1F);

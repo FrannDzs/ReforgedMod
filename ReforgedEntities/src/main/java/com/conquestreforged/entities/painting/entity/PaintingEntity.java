@@ -127,7 +127,7 @@ public class PaintingEntity extends HangingEntity implements IEntityAdditionalSp
 
     @Override
     public void setPositionAndRotationDirect(double x, double y, double z, float a, float b, int c, boolean d) {
-        BlockPos pos = this.hangingPosition.add(x - this.posX, y - this.posY, z - this.posZ);
+        BlockPos pos = this.hangingPosition.add(x - this.serverPosX, y - this.serverPosY, z - this.serverPosZ);
         this.setPosition((double) pos.getX(), (double) pos.getY(), (double) pos.getZ());
     }
 

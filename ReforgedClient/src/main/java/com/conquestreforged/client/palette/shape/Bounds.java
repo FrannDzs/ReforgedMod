@@ -1,6 +1,7 @@
 package com.conquestreforged.client.palette.shape;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -31,13 +32,13 @@ public class Bounds {
     }
 
     public void draw(float red, float green, float blue, float opacity, float ticks) {
-        GlStateManager.color4f(red, green, blue, opacity);
+        RenderSystem.color4f(red, green, blue, opacity);
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
         for (List<Point> points : bounds) {
             buffer.begin(GL11.GL_POLYGON, DefaultVertexFormats.POSITION);
             for (Point point : points) {
-                buffer.pos(point.x, point.y, 0).endVertex();
+                buffer.func_225584_a_(point.x, point.y, 0).endVertex();
             }
             tessellator.draw();
         }

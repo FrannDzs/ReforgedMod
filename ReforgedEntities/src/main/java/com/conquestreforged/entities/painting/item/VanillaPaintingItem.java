@@ -18,6 +18,7 @@ public class VanillaPaintingItem extends PaintingItem {
         super("vanilla_painting");
     }
 
+    @SuppressWarnings("EntityConstructor")
     @Override
     protected HangingEntity createEntity(World world, BlockPos pos, Direction side, String paintType, String paintArt) {
         return new PaintingEntity(EntityType.PAINTING, world) {{
