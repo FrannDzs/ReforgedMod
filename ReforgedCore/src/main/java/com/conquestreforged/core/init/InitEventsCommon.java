@@ -1,6 +1,5 @@
 package com.conquestreforged.core.init;
 
-import com.conquestreforged.core.ReforgedCore;
 import com.conquestreforged.core.asset.pack.VirtualResourcepack;
 import com.conquestreforged.core.block.data.BlockDataRegistry;
 import com.conquestreforged.core.util.Log;
@@ -12,8 +11,6 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-
-import java.io.File;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public class InitEventsCommon {
@@ -44,19 +41,7 @@ public class InitEventsCommon {
         Log.info("(Total) Blocks: {}, States: {}", stats.totalBlocks, stats.totalStates);
         Log.info("(Vanilla) Blocks: {}, States: {}", stats.vanillaBlocks, stats.vanillaStates);
         Log.info("(Conquest) Blocks: {}, States: {}", stats.conquestBlocks, stats.conquestStates);
-    }
 
-    private static void export(VirtualResourcepack pack, File dir) {
-        if (ReforgedCore.getInstance().dumpAssets()) {
-            try {
-                if (ReforgedCore.getInstance().prettyAssets()) {
-                    pack.exportPretty(dir);
-                } else {
-                    pack.export(dir);
-                }
-            } catch (Throwable t) {
-                t.printStackTrace();
-            }
-        }
+//        PackFinder.export(new File("data"), true);
     }
 }

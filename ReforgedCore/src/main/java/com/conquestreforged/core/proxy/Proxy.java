@@ -28,6 +28,7 @@ public interface Proxy extends OptionalValue {
             IReloadableResourceManager reloadable = (IReloadableResourceManager) manager;
             register(reloadable);
         }
+
         return this;
     }
 
@@ -35,7 +36,6 @@ public interface Proxy extends OptionalValue {
         IResourceManager manager = getResourceManager();
         if (manager instanceof FallbackResourceManager) {
             ((FallbackResourceManager) manager).addResourcePack(pack);
-            return;
         }
         if (manager instanceof SimpleReloadableResourceManager) {
             ((SimpleReloadableResourceManager) manager).addResourcePack(pack);

@@ -25,7 +25,7 @@ public class VirtualMeta implements VirtualResource {
     public JsonObject toJson() {
         JsonObject pack = new JsonObject();
         pack.addProperty("description", description);
-        pack.addProperty("pack_format", 4);
+        pack.addProperty("pack_format", 5);
 
         JsonObject meta = new JsonObject();
         meta.add("pack", pack);

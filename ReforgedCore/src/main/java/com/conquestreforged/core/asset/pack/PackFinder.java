@@ -10,6 +10,7 @@ import net.minecraft.resources.ResourcePackInfo;
 import net.minecraft.resources.ResourcePackType;
 import net.minecraft.resources.data.PackMetadataSection;
 
+import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +35,7 @@ public class PackFinder implements IPackFinder {
 
     @Override
     public <T extends ResourcePackInfo> void addPackInfosToMap(Map<String, T> map, ResourcePackInfo.IFactory<T> factory) {
-        Log.info("Adding virtual pack: {}", type);
+        Log.info("Adding virtual packs: {}", type);
         for (VirtualResourcepack pack : resourcePacks) {
             String name = pack.getName();
             boolean client = type == ResourcePackType.CLIENT_RESOURCES;
@@ -43,6 +44,7 @@ public class PackFinder implements IPackFinder {
             ResourcePackInfo.Priority priority = ResourcePackInfo.Priority.BOTTOM;
             T info = factory.create(name, client, supplier, pack, metadata, priority);
             map.put(name, info);
+            Log.info("Added virtual pack: {}", name);
         }
     }
 
@@ -62,5 +64,19 @@ public class PackFinder implements IPackFinder {
                 consumer.accept(finder.type, pack);
             }
         }
+    }
+
+    public static void export(File dir, boolean pretty) {
+        iterate((type, pack) -> {
+            try {
+                if (pretty) {
+                    pack.exportPretty(dir);
+                } else {
+                    pack.export(dir);
+                }
+            } catch (Throwable t) {
+                t.printStackTrace();
+            }
+        });
     }
 }
