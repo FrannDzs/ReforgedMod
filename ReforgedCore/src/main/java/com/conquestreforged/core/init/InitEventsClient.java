@@ -3,17 +3,21 @@ package com.conquestreforged.core.init;
 import com.conquestreforged.core.asset.lang.VirtualLang;
 import com.conquestreforged.core.asset.pack.PackFinder;
 import com.conquestreforged.core.asset.pack.VirtualResourcepack;
+import com.conquestreforged.core.block.data.BlockData;
 import com.conquestreforged.core.block.data.BlockDataRegistry;
 import com.conquestreforged.core.proxy.Proxies;
 import com.conquestreforged.core.proxy.Side;
 import com.conquestreforged.core.proxy.impl.ClientProxy;
 import com.conquestreforged.core.util.Log;
+import net.minecraft.block.Block;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.resources.ResourcePackType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class InitEventsClient {
@@ -34,5 +38,10 @@ public class InitEventsClient {
         });
 
         PackFinder.getInstance(ResourcePackType.CLIENT_RESOURCES).register();
+    }
+
+    @SubscribeEvent
+    public static void init(FMLClientSetupEvent event) {
+        BlockDataRegistry.BLOCK_DATA.forEach(BlockData::addRenders);
     }
 }

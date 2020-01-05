@@ -20,8 +20,8 @@ public class BlockData {
 
     private Item item = null;
 
-    public BlockData(Block block, BlockName blockName, Props props) {
-        this.template = BlockTemplateCache.getInstance().get(block.getClass());
+    public BlockData(Block block, BlockTemplate template, BlockName blockName, Props props) {
+        this.template = template;
         this.registryName = template.getRegistryName(blockName);
         this.blockName = blockName;
         this.block = block;
@@ -66,7 +66,6 @@ public class BlockData {
     public void addClientResources(VirtualResourcepack.Builder builder) {
         if (!props.isManual()) {
             template.addClientResources(builder, blockName, props.textures(), registryName);
-            template.registerRenders(block);
         }
     }
 
@@ -74,5 +73,9 @@ public class BlockData {
         if (!props.isManual()) {
             template.addServerResources(builder, blockName, registryName);
         }
+    }
+
+    public void addRenders() {
+        template.registerRenders(block);
     }
 }

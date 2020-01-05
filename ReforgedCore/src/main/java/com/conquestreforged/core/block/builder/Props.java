@@ -1,8 +1,10 @@
 package com.conquestreforged.core.block.builder;
 
+import com.conquestreforged.core.block.data.BlockTemplate;
 import com.conquestreforged.core.block.factory.BlockFactory;
 import com.conquestreforged.core.block.factory.InitializationException;
 import com.conquestreforged.core.init.Context;
+import com.conquestreforged.core.util.RenderLayer;
 import com.google.common.base.Preconditions;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -54,6 +56,7 @@ public class Props implements BlockFactory {
     private boolean variableOpacity = false;
     private boolean blocksMovement = true;
     private boolean floats = true;
+    private boolean solid = true;
     private Textures.Builder textures;
     private Map<String, Object> extradata = Collections.emptyMap();
 
@@ -221,6 +224,11 @@ public class Props implements BlockFactory {
         return this;
     }
 
+    public Props solid(boolean solid) {
+        this.solid = solid;
+        return this;
+    }
+
     public Props floats(boolean floats) {
         this.floats = floats;
         return this;
@@ -253,6 +261,13 @@ public class Props implements BlockFactory {
         return this;
     }
 
+    public Props template(BlockTemplate template) {
+        if (template.getRenderLayer().isCutout()) {
+            solid(false);
+        }
+        return this;
+    }
+
     public Props group(ItemGroup group) {
         this.group = group;
         return this;
@@ -274,6 +289,12 @@ public class Props implements BlockFactory {
         setBool(randomTick, false, builder::tickRandomly);
         setBool(variableOpacity, false, builder::variableOpacity);
         setBool(blocksMovement, true, builder::doesNotBlockMovement);
+        set(solid, true, b -> {
+            if (!b) {
+                // not solid
+                builder.func_226896_b_();
+            }
+        });
         setFloats(resistance, hardness, builder::hardnessAndResistance);
         return builder;
     }

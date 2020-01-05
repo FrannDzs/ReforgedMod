@@ -48,6 +48,13 @@ public class BlockTemplate {
         this.plural = state != null && state.plural();
     }
 
+    public RenderLayer getRenderLayer() {
+        if (render == null) {
+            return RenderLayer.UNDEFINED;
+        }
+        return render.value();
+    }
+
     public ResourceLocation getRegistryName(BlockName name) {
         if (state == null) {
             return new ResourceLocation(name.getNamespace(), name.format("%s", plural));
