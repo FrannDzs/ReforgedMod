@@ -32,9 +32,13 @@ public class TypeList implements Iterable<Class<? extends Block>>, Comparator<Bl
 
     @SafeVarargs
     public static TypeList of(Class<? extends Block>... types) {
-        List<Class<? extends Block>> list = new ArrayList<>();
-        Collections.addAll(list, types);
-        return new TypeList(list);
+        if (types.length == 0) {
+            throw new RuntimeException("No Types provided!");
+        }
+        if (types.length == 1) {
+            return new TypeList(Collections.singletonList(types[0]));
+        }
+        return new TypeList(Arrays.asList(types));
     }
 
     @Override
@@ -50,7 +54,7 @@ public class TypeList implements Iterable<Class<? extends Block>>, Comparator<Bl
     private int getIndex(Object o) {
         int max = -1;
         for (int i = 0; i < types.size(); i++) {
-            Class type = types.get(i);
+            Class<?> type = types.get(i);
             if (type.isInstance(o)) {
                 max = Math.max(max, i);
             }

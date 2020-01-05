@@ -49,7 +49,7 @@ public class PackFinder implements IPackFinder {
     public void register() {
         Proxy proxy = Proxies.get(type);
         proxy.getResourcePackList().addPackFinder(this);
-        resourcePacks.forEach(proxy.getResourceManager()::addResourcePack);
+        resourcePacks.forEach(proxy::registerResourcePack);
     }
 
     public static PackFinder getInstance(ResourcePackType type) {

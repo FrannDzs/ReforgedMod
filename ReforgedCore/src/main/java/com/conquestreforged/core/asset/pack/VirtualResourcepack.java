@@ -58,8 +58,10 @@ public class VirtualResourcepack extends ResourcePack {
     }
 
     @Override
-    public Collection<ResourceLocation> getAllResourceLocations(ResourcePackType type, String pathIn, int maxDepth, Predicate<String> filter) {
-        String prefix = type.getDirectoryName() + "/";
+    // getAllResourceLocations
+    public Collection<ResourceLocation> func_225637_a_(ResourcePackType type, String namespace, String path, int maxDepth, Predicate<String> filter) {
+        String prefix = type.getDirectoryName() + "/" + namespace + "/";
+
         return resources.keySet().stream()
                 .filter(s -> s.startsWith(prefix))
                 .map(s -> {
@@ -67,8 +69,8 @@ public class VirtualResourcepack extends ResourcePack {
                     int i = s1.indexOf('/');
                     if (i >= 0) {
                         String s2 = s1.substring(i + 1);
-                        if (s2.startsWith(pathIn + "/")) {
-                            String[] astring = s2.substring(pathIn.length() + 2).split("/");
+                        if (s2.startsWith(path + "/")) {
+                            String[] astring = s2.substring(path.length() + 2).split("/");
                             if (astring.length >= maxDepth + 1 && filter.test(s2)) {
                                 String s3 = s1.substring(0, i);
                                 return new ResourceLocation(s3, s2);

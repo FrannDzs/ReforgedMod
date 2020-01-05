@@ -1,5 +1,7 @@
 package com.conquestreforged.core.asset.annotation;
 
+import com.conquestreforged.core.util.RenderLayer;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -25,4 +27,6 @@ public @interface Assets {
     Model[] block() default {};
 
     Recipe[] recipe() default {};
+
+    Render render() default @Render(RenderLayer.UNDEFINED);
 }

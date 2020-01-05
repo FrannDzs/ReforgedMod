@@ -3,9 +3,7 @@ package com.conquestreforged.core.proxy;
 import com.conquestreforged.core.item.crafting.RecipeHelper;
 import com.conquestreforged.core.util.OptionalValue;
 import net.minecraft.item.crafting.RecipeManager;
-import net.minecraft.resources.IReloadableResourceManager;
-import net.minecraft.resources.IResourceManager;
-import net.minecraft.resources.ResourcePackList;
+import net.minecraft.resources.*;
 
 public interface Proxy extends OptionalValue {
 
@@ -31,6 +29,17 @@ public interface Proxy extends OptionalValue {
             register(reloadable);
         }
         return this;
+    }
+
+    default void registerResourcePack(IResourcePack pack) {
+        IResourceManager manager = getResourceManager();
+        if (manager instanceof FallbackResourceManager) {
+            ((FallbackResourceManager) manager).addResourcePack(pack);
+            return;
+        }
+        if (manager instanceof SimpleReloadableResourceManager) {
+            ((SimpleReloadableResourceManager) manager).addResourcePack(pack);
+        }
     }
 
     default boolean isAbsent() {

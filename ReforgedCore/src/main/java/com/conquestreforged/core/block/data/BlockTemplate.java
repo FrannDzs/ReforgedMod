@@ -12,14 +12,18 @@ import com.conquestreforged.core.asset.template.TemplateCache;
 import com.conquestreforged.core.asset.template.TemplateResource;
 import com.conquestreforged.core.block.builder.BlockName;
 import com.conquestreforged.core.block.builder.Textures;
+import com.conquestreforged.core.client.render.RenderLayerHelper;
 import com.conquestreforged.core.util.Log;
+import com.conquestreforged.core.util.RenderLayer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
+import net.minecraft.block.Block;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.resources.ResourcePackType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import javax.annotation.Nullable;
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -31,6 +35,7 @@ public class BlockTemplate {
     private final Model itemModel;
     private final Model[] blockModels;
     private final Recipe[] recipes;
+    private final Render render;
     private final boolean plural;
 
     BlockTemplate(Class<?> type) {
@@ -39,6 +44,7 @@ public class BlockTemplate {
         this.itemModel = assets != null ? assets.item() : null;
         this.blockModels = assets != null ? assets.block() : null;
         this.recipes = assets != null ? assets.recipe() : null;
+        this.render = BlockTemplate.getRender(type, assets);
         this.plural = state != null && state.plural();
     }
 
@@ -53,6 +59,13 @@ public class BlockTemplate {
         addState(builder, name, regName);
         addItem(builder, name, regName);
         addModel(builder, name, textures, regName);
+    }
+
+    public void registerRenders(Block block) {
+        if (render != null) {
+            RenderLayer layer = render.value();
+            RenderLayerHelper.getInstance().register(block, layer);
+        }
     }
 
     public void addServerResources(VirtualResourcepack.Builder builder, BlockName name, ResourceLocation regName) {
@@ -234,6 +247,26 @@ public class BlockTemplate {
         T[] array = Arrays.copyOf(t, t.length + 1);
         array[array.length - 1] = value;
         return array;
+    }
+
+    private static Render getRender(Class<?> type, @Nullable Assets assets) {
+        while (type != Object.class) {
+            // annotation on the class overrides any in the assets annotation
+            Render render = type.getAnnotation(Render.class);
+            if (render != null) {
+                return render;
+            }
+
+            // if assets exists and render has been defined, use it
+            if (assets != null && assets.render().value() != RenderLayer.UNDEFINED) {
+                return assets.render();
+            }
+
+            // get super class & it's Asset annotation
+            type = type.getSuperclass();
+            assets = type.getAnnotation(Assets.class);
+        }
+        return null;
     }
 
     private static Ingredient createIngredient(String name, String template, boolean plrual) {

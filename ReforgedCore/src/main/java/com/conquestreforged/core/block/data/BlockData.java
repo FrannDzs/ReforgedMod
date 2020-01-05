@@ -66,6 +66,7 @@ public class BlockData {
     public void addClientResources(VirtualResourcepack.Builder builder) {
         if (!props.isManual()) {
             template.addClientResources(builder, blockName, props.textures(), registryName);
+            template.registerRenders(block);
         }
     }
 
