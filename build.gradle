@@ -36,5 +36,5 @@ build {
 }
 
 testClasses {
-//    dependsOn.clear()
+
 }
