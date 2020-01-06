@@ -1,10 +1,10 @@
 package com.conquestreforged.core.block.builder;
 
 import com.conquestreforged.core.block.data.BlockTemplate;
+import com.conquestreforged.core.block.data.ColorType;
 import com.conquestreforged.core.block.factory.BlockFactory;
 import com.conquestreforged.core.block.factory.InitializationException;
 import com.conquestreforged.core.init.Context;
-import com.conquestreforged.core.util.RenderLayer;
 import com.google.common.base.Preconditions;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -57,6 +57,8 @@ public class Props implements BlockFactory {
     private boolean blocksMovement = true;
     private boolean floats = true;
     private boolean solid = true;
+
+    private ColorType colorType = ColorType.NONE;
     private Textures.Builder textures;
     private Map<String, Object> extradata = Collections.emptyMap();
 
@@ -99,6 +101,10 @@ public class Props implements BlockFactory {
             throw new InitializationException("Parent state is null");
         }
         return parent;
+    }
+
+    public ColorType getColorType() {
+        return colorType;
     }
 
     public DyeColor dye() {
@@ -231,6 +237,21 @@ public class Props implements BlockFactory {
 
     public Props floats(boolean floats) {
         this.floats = floats;
+        return this;
+    }
+
+    public Props grassColor() {
+        colorType = ColorType.GRASS;
+        return this;
+    }
+
+    public Props foliageColor() {
+        colorType = ColorType.FOLIAGE;
+        return this;
+    }
+
+    public Props waterColor() {
+        colorType = ColorType.WATER;
         return this;
     }
 

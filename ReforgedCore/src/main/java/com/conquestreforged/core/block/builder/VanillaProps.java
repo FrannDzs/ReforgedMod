@@ -21,8 +21,16 @@ public class VanillaProps {
         return Props.create(Blocks.OAK_LOG).group(ItemGroup.BUILDING_BLOCKS);
     }
 
+    public static Props sand() {
+        return Props.create(Blocks.SAND).group(ItemGroup.BUILDING_BLOCKS);
+    }
+
+    public static Props gravel() {
+        return Props.create(Blocks.GRAVEL).group(ItemGroup.BUILDING_BLOCKS);
+    }
+
     public static Props grass() {
-        return Props.create(Blocks.GRASS_BLOCK).group(ItemGroup.BUILDING_BLOCKS);
+        return Props.create(Blocks.GRASS_BLOCK).group(ItemGroup.BUILDING_BLOCKS).grassColor();
     }
 
     public static Props glass() {
@@ -50,6 +58,34 @@ public class VanillaProps {
     }
 
     public static Props leaves() {
-        return Props.create(Blocks.OAK_LEAVES).group(ItemGroup.BUILDING_BLOCKS);
+        return Props.create(Blocks.OAK_LEAVES).group(ItemGroup.BUILDING_BLOCKS).foliageColor();
+    }
+
+    /**
+     * Stone props but uses grass color
+     */
+    public static Props grassyStone() {
+        return stone().grassColor();
+    }
+
+    /**
+     * Earth props but uses grass color
+     */
+    public static Props grassyEarth() {
+        return earth().grassColor();
+    }
+
+    /**
+     * Sand props but uses grass color
+     */
+    public static Props grassySand() {
+        return sand().grassColor();
+    }
+
+    /**
+     * Gravel props but uses grass color
+     */
+    public static Props grassyGravel() {
+        return sand().grassColor();
     }
 }
