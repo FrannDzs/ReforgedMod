@@ -1,6 +1,7 @@
 package com.conquestreforged.client.palette.util;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.FontRenderer;
@@ -15,64 +16,64 @@ import org.lwjgl.opengl.GL11;
 public class Render {
 
     public static void cleanup() {
-        GlStateManager.depthMask(true);
-        GlStateManager.enableDepthTest();
-        GlStateManager.enableAlphaTest();
-        GlStateManager.enableBlend();
-        GlStateManager.color4f(1.0f, 1.0f, 1.0f, 1.0f);
-        GlStateManager.clearColor(1.0f, 1.0f, 1.0f, 1.0f);
+        RenderSystem.depthMask(true);
+        RenderSystem.enableDepthTest();
+        RenderSystem.enableAlphaTest();
+        RenderSystem.enableBlend();
+        RenderSystem.color4f(1.0f, 1.0f, 1.0f, 1.0f);
+        RenderSystem.clearColor(1.0f, 1.0f, 1.0f, 1.0f);
     }
 
     public static void beginMask(ResourceLocation texture, int left, int top, int width, int height, float u, float v, float umax, float vmax) {
-        GlStateManager.color4f(1, 1, 1, 1);
-        GlStateManager.enableTexture();
-        GlStateManager.enableDepthTest();
-        GlStateManager.depthMask(true);
-        GlStateManager.depthFunc(GL11.GL_ALWAYS);
-        GlStateManager.colorMask(false, false, false, true);
-        GlStateManager.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.SRC_ALPHA);
+        RenderSystem.color4f(1, 1, 1, 1);
+        RenderSystem.enableTexture();
+        RenderSystem.enableDepthTest();
+        RenderSystem.depthMask(true);
+        RenderSystem.depthFunc(GL11.GL_ALWAYS);
+        RenderSystem.colorMask(false, false, false, true);
+        RenderSystem.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.SRC_ALPHA);
 
-        GlStateManager.pushMatrix();
-        GlStateManager.translatef(0, 0, 1);
+        RenderSystem.pushMatrix();
+        RenderSystem.translatef(0, 0, 1);
         drawTexture(texture, left, top, width, height, u, v, umax, vmax);
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
 
-        GlStateManager.disableTexture();
-        GlStateManager.depthMask(false);
-        GlStateManager.depthFunc(GL11.GL_GREATER);
-        GlStateManager.colorMask(true, true, true, false);
-        GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.DST_ALPHA);
+        RenderSystem.disableTexture();
+        RenderSystem.depthMask(false);
+        RenderSystem.depthFunc(GL11.GL_GREATER);
+        RenderSystem.colorMask(true, true, true, false);
+        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.DST_ALPHA);
     }
 
     public static void endMask() {
-        GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-        GlStateManager.colorMask(true, true, true, true);
-        GlStateManager.depthMask(true);
-        GlStateManager.depthFunc(GL11.GL_LEQUAL);
-        GlStateManager.disableDepthTest();
-        GlStateManager.enableAlphaTest();
-        GlStateManager.enableTexture();
+        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+        RenderSystem.colorMask(true, true, true, true);
+        RenderSystem.depthMask(true);
+        RenderSystem.depthFunc(GL11.GL_LEQUAL);
+        RenderSystem.disableDepthTest();
+        RenderSystem.enableAlphaTest();
+        RenderSystem.enableTexture();
     }
 
     public static void beginItems() {
-        GlStateManager.clear(GL11.GL_DEPTH_BUFFER_BIT, true);
-        GlStateManager.enableBlend();
-        GlStateManager.enableAlphaTest();
-        GlStateManager.enableDepthTest();
-        GlStateManager.depthMask(true);
-        GlStateManager.depthFunc(GL11.GL_LEQUAL);
-        RenderHelper.enableGUIStandardItemLighting();
+        RenderSystem.clear(GL11.GL_DEPTH_BUFFER_BIT, true);
+        RenderSystem.enableBlend();
+        RenderSystem.enableAlphaTest();
+        RenderSystem.enableDepthTest();
+        RenderSystem.depthMask(true);
+        RenderSystem.depthFunc(GL11.GL_LEQUAL);
+        Render.enableGUIStandardItemLighting();
 
-        GlStateManager.pushMatrix();
-        GlStateManager.translatef(0, 0, 100);
+        RenderSystem.pushMatrix();
+        RenderSystem.translatef(0, 0, 100);
     }
 
     public static void endItems() {
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
 
-        GlStateManager.disableDepthTest();
+        RenderSystem.disableDepthTest();
         RenderHelper.disableStandardItemLighting();
-        GlStateManager.clearColor(1, 1, 1, 1);
+        RenderSystem.clearColor(1, 1, 1, 1);
     }
 
     public static void beginSlot(int xPos, int yPos, float scale) {
@@ -80,14 +81,14 @@ public class Render {
     }
 
     public static void beginSlot(int xPos, int yPos, int zPos, float scale) {
-        GlStateManager.pushMatrix();
-        GlStateManager.translatef(xPos, yPos, zPos);
-        GlStateManager.scalef(scale, scale, scale);
-        GlStateManager.alphaFunc(GL11.GL_NOTEQUAL, 0);
+        RenderSystem.pushMatrix();
+        RenderSystem.translatef(xPos, yPos, zPos);
+        RenderSystem.scalef(scale, scale, scale);
+        RenderSystem.alphaFunc(GL11.GL_NOTEQUAL, 0);
     }
 
     public static void endSlot() {
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
     }
 
     public static void drawTexture(ResourceLocation texture, int left, int top, int width, int height, float u, float v, float umax, float vwidth) {
@@ -107,11 +108,11 @@ public class Render {
 
     public static void drawOverlays(ItemStack stack, int x, int y, int z, float scale) {
         if (stack != null) {
-            GlStateManager.pushMatrix();
-            GlStateManager.scalef(scale, scale, scale);
-            GlStateManager.translatef(x, y, z);
+            RenderSystem.pushMatrix();
+            RenderSystem.scalef(scale, scale, scale);
+            RenderSystem.translatef(x, y, z);
             Minecraft.getInstance().getItemRenderer().renderItemOverlays(Minecraft.getInstance().fontRenderer, stack, 0, 0);
-            GlStateManager.popMatrix();
+            RenderSystem.popMatrix();
         }
     }
 
@@ -121,10 +122,10 @@ public class Render {
 
     public static void drawItemStack(ItemStack stack, int x, int y, int z) {
         if (stack != null) {
-            GlStateManager.pushMatrix();
-            GlStateManager.translatef(x, y, z);
+            RenderSystem.pushMatrix();
+            RenderSystem.translatef(x, y, z);
             Minecraft.getInstance().getItemRenderer().renderItemIntoGUI(stack, 0, 0);
-            GlStateManager.popMatrix();
+            RenderSystem.popMatrix();
         }
     }
 
@@ -134,25 +135,37 @@ public class Render {
 
     public static void drawItemStackHighlight(ItemStack stack, int x, int y, int z, float scale, int color) {
         if (stack != null) {
-            GlStateManager.pushMatrix();
-            GlStateManager.scalef(scale, scale, 0);
-            GlStateManager.translatef(x, y, z);
-            GlStateManager.enableColorMaterial();
-            GlStateManager.setupSolidRenderingTextureCombine(color);
-            GlStateManager.disableBlend();
+            RenderSystem.pushMatrix();
+            RenderSystem.scalef(scale, scale, 0);
+            RenderSystem.translatef(x, y, z);
+            RenderSystem.enableColorMaterial();
+            Render.setupSolidRenderingTextureCombine(color);
+            RenderSystem.disableBlend();
             Minecraft.getInstance().getItemRenderer().renderItemIntoGUI(stack, 0, 0);
-            GlStateManager.tearDownSolidRenderingTextureCombine();
-            GlStateManager.disableColorMaterial();
-            GlStateManager.popMatrix();
+            Render.tearDownSolidRenderingTextureCombine();
+            RenderSystem.disableColorMaterial();
+            RenderSystem.popMatrix();
         }
     }
 
     public static void beginTooltips() {
-        GlStateManager.pushMatrix();
-        GlStateManager.translatef(0, 0, 300);
+        RenderSystem.pushMatrix();
+        RenderSystem.translatef(0, 0, 300);
     }
 
     public static void endTooltips() {
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
+    }
+
+    public static void setupSolidRenderingTextureCombine(int color) {
+        // TODO
+    }
+
+    public static void tearDownSolidRenderingTextureCombine() {
+        // TODO
+    }
+
+    public static void enableGUIStandardItemLighting() {
+        RenderHelper.func_227780_a_();
     }
 }

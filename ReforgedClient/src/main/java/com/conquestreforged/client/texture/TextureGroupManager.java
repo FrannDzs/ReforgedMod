@@ -23,11 +23,11 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
-public class GroupManager {
+public class TextureGroupManager {
 
     private static final Random random = new Random();
     private static final IModelData nodata = EmptyModelData.INSTANCE;
-    private static final GroupManager INSTANCE = new GroupManager();
+    private static final TextureGroupManager INSTANCE = new TextureGroupManager();
 
     private final Map<Item, ItemGroup> blockGroups = new HashMap<>();
     private final Map<String, TextureGroup> textureGroups = new HashMap<>();
@@ -133,13 +133,13 @@ public class GroupManager {
         return "";
     }
 
-    public static GroupManager getInstance() {
+    public static TextureGroupManager getInstance() {
         return INSTANCE;
     }
 
     @SubscribeEvent
     public static void reload(TextureStitchEvent.Post event) {
-        Log.info("Reloading GroupManager");
+        Log.info("Reloading TextureGroupManager");
         getInstance().rebuild();
     }
 }

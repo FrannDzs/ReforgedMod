@@ -1,7 +1,7 @@
 rootProject.name = "ConquestReforged"
 include "ReforgedCore"
 include "ReforgedBlocks"
-//include "ReforgedClient"
+include "ReforgedClient"
 //include "ReforgedEntities"
 
 rootProject.children.each { project ->

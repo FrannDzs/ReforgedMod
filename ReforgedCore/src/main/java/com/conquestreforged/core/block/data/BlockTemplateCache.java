@@ -1,6 +1,6 @@
 package com.conquestreforged.core.block.data;
 
-import com.conquestreforged.core.util.Cache;
+import com.conquestreforged.core.util.cache.Cache;
 
 public class BlockTemplateCache extends Cache<Class<?>, BlockTemplate> {
 

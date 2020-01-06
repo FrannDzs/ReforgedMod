@@ -1,26 +1,49 @@
 package com.conquestreforged.core.block.data;
 
-import java.util.LinkedList;
-import java.util.List;
+import com.conquestreforged.core.block.factory.InitializationException;
+import com.conquestreforged.core.util.cache.Disposable;
+
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.stream.Stream;
 
-public class BlockDataRegistry {
+public class BlockDataRegistry implements Disposable, Iterable<BlockData> {
 
-    public static final List<BlockData> BLOCK_DATA = new LinkedList<>();
+    private static final BlockDataRegistry instance = new BlockDataRegistry();
 
-    public static Stream<String> getNamespaces() {
-        return BLOCK_DATA.stream().map(data -> data.getRegistryName().getNamespace()).distinct();
+    private final ArrayList<BlockData> data = new ArrayList<>(8192);
+    private boolean disposed = false;
+
+    private BlockDataRegistry() {}
+
+    public Stream<String> getNamespaces() {
+        return data.stream().map(data -> data.getRegistryName().getNamespace()).distinct();
     }
 
-    public static Stream<BlockData> getData(String namespace) {
-        return BLOCK_DATA.stream().filter(data -> data.getRegistryName().getNamespace().equals(namespace));
+    public Stream<BlockData> getData(String namespace) {
+        return data.stream().filter(data -> data.getRegistryName().getNamespace().equals(namespace));
     }
 
-    public static void registerBlock(BlockData block) {
-        BLOCK_DATA.add(block);
+    public void register(BlockData block) {
+        data.add(block);
     }
 
-    public static void clear() {
-        BLOCK_DATA.clear();
+    @Override
+    public void dispose() {
+        data.clear();
+        data.trimToSize();
+        disposed = true;
+    }
+
+    public static BlockDataRegistry getInstance() {
+        if (instance.disposed) {
+            throw new InitializationException("Accessed BLockDataRegistry after it has been disposed!");
+        }
+        return instance;
+    }
+
+    @Override
+    public Iterator<BlockData> iterator() {
+        return data.iterator();
     }
 }

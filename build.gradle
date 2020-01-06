@@ -32,7 +32,7 @@ processResources {
 }
 
 build {
-    dependsOn(combinedJar)
+    finalizedBy(allInOneJar)
 }
 
 testClasses {

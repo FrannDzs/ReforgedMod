@@ -5,6 +5,7 @@ import com.conquestreforged.core.client.input.BindEvent;
 import com.conquestreforged.core.client.input.BindListener;
 import com.conquestreforged.core.networking.Channels;
 import net.minecraft.client.Minecraft;
+import net.minecraftforge.common.util.LazyOptional;
 
 public class ToggleBindListener implements BindListener {
     @Override

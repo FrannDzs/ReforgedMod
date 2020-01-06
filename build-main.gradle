@@ -64,15 +64,15 @@ task collectProjectResources(dependsOn: subprojects.tasks["processResources"]) {
 
 task collectResourcePack(type: Copy) {
     from fileTree("ReforgedRP") {
-        exclude "TO_BE_ADDED", "**.ini", "**.md"
+        exclude "TO_BE_ADDED", "**.ini", "**.md", "pack.mcmeta"
     }
     into "$buildDir/resources/resourcepack"
 }
 
-task combinedJar(dependsOn: collectResourcePack, type: Jar) {
-    classifier = "combined"
-    duplicatesStrategy = "exclude"
-    from sourceSets.main.output
+task allInOneJar(dependsOn: collectResourcePack, type: Jar) {
+    classifier = "AllInOne"
+    duplicatesStrategy = "EXCLUDE"
+    from zipTree(jar.archivePath)
     from fileTree("$buildDir/resources/resourcepack")
 }
 

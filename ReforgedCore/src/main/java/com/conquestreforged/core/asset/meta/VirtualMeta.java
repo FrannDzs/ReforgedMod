@@ -14,6 +14,8 @@ import java.io.OutputStreamWriter;
 
 public class VirtualMeta implements VirtualResource {
 
+    public static final int PACK_FORMAT = 5;
+
     private final String description;
     private final String namespace;
 
@@ -25,7 +27,7 @@ public class VirtualMeta implements VirtualResource {
     public JsonObject toJson() {
         JsonObject pack = new JsonObject();
         pack.addProperty("description", description);
-        pack.addProperty("pack_format", 5);
+        pack.addProperty("pack_format", PACK_FORMAT);
 
         JsonObject meta = new JsonObject();
         meta.add("pack", pack);

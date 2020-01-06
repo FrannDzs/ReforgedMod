@@ -6,12 +6,10 @@ import com.conquestreforged.core.block.data.BlockData;
 import com.conquestreforged.core.block.data.BlockDataRegistry;
 import com.conquestreforged.core.block.data.BlockTemplate;
 import com.conquestreforged.core.block.data.BlockTemplateCache;
-import com.conquestreforged.core.init.Context;
 import com.conquestreforged.core.item.family.FamilyRegistry;
 import com.conquestreforged.core.item.family.block.BlockFamily;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.util.ResourceLocation;
 
 public interface BlockFactory {
 
@@ -41,7 +39,7 @@ public interface BlockFactory {
 
     default BlockData register(Block block, BlockTemplate template, BlockName name, Props props) {
         BlockData data = new BlockData(block, template, name, props);
-        BlockDataRegistry.registerBlock(data);
+        BlockDataRegistry.getInstance().register(data);
         if (!getProps().hasParent()) {
             getProps().parent(data.getBlock().getDefaultState());
         }

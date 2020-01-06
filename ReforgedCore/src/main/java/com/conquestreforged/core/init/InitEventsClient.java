@@ -32,9 +32,9 @@ public class InitEventsClient {
         Side.CLIENT.getProxy().registerListeners();
 
         // init client virtual resources (assets)
-        BlockDataRegistry.getNamespaces().forEach(namespace -> {
+        BlockDataRegistry.getInstance().getNamespaces().forEach(namespace -> {
             VirtualResourcepack.Builder builder = VirtualResourcepack.builder(namespace).type(ResourcePackType.CLIENT_RESOURCES);
-            BlockDataRegistry.getData(namespace).forEach(data -> data.addClientResources(builder));
+            BlockDataRegistry.getInstance().getData(namespace).forEach(data -> data.addClientResources(builder));
             builder.add(new VirtualLang(namespace));
             builder.build();
         });
@@ -45,7 +45,7 @@ public class InitEventsClient {
     @SubscribeEvent
     public static void blockColors(ColorHandlerEvent.Block event) {
         Log.debug("REGISTERING BLOCK COLORS");
-        for (BlockData data : BlockDataRegistry.BLOCK_DATA) {
+        for (BlockData data : BlockDataRegistry.getInstance()) {
             if (data.getProps().getColorType() == ColorType.GRASS) {
                 event.getBlockColors().register(BlockColors.GRASS, data.getBlock());
             } else if (data.getProps().getColorType() == ColorType.FOLIAGE) {
@@ -60,7 +60,7 @@ public class InitEventsClient {
     public static void itemColors(ColorHandlerEvent.Item event) {
         Log.debug("REGISTERING ITEM COLORS");
         IItemColor itemColor = BlockColors.toItemColor(event.getBlockColors());
-        for (BlockData data : BlockDataRegistry.BLOCK_DATA) {
+        for (BlockData data : BlockDataRegistry.getInstance()) {
             if (data.getProps().getColorType() == ColorType.GRASS) {
                 event.getItemColors().register(itemColor, data.getBlock());
             }
@@ -70,6 +70,6 @@ public class InitEventsClient {
     @SubscribeEvent
     public static void init(FMLClientSetupEvent event) {
         Log.debug("REGISTERING BLOCK RENDER LAYERS");
-        BlockDataRegistry.BLOCK_DATA.forEach(BlockData::addRenders);
+        BlockDataRegistry.getInstance().forEach(BlockData::addRenders);
     }
 }

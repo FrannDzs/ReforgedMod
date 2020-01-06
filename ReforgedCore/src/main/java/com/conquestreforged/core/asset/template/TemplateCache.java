@@ -1,6 +1,6 @@
 package com.conquestreforged.core.asset.template;
 
-import com.conquestreforged.core.util.Cache;
+import com.conquestreforged.core.util.cache.Cache;
 
 public class TemplateCache extends Cache<String, JsonTemplate> {
 
