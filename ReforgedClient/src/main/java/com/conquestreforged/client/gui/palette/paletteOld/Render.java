@@ -5,6 +5,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -24,7 +25,7 @@ public class Render {
         RenderSystem.clearColor(1.0f, 1.0f, 1.0f, 1.0f);
     }
 
-    public static void beginMask(ResourceLocation texture, int left, int top, int width, int height, float u, float v, float umax, float vmax) {
+    public static void beginMask(ResourceLocation texture, int left, int top, int width, int height, float u, float v, int umax, int vmax) {
         RenderSystem.color4f(1, 1, 1, 1);
         RenderSystem.enableTexture();
         RenderSystem.enableDepthTest();
@@ -91,9 +92,18 @@ public class Render {
         RenderSystem.popMatrix();
     }
 
-    public static void drawTexture(ResourceLocation texture, int left, int top, int width, int height, float u, float v, float umax, float vwidth) {
+    public static void drawTexture(ResourceLocation texture, int left, int top, int width, int height, float u, float v) {
+        drawTexture(texture, left, top, width, height, u, v, width, height);
+    }
+
+    public static void drawTexture(ResourceLocation texture, int left, int top, int width, int height, float u, float v, int umax, int vmax) {
         Minecraft.getInstance().getTextureManager().bindTexture(texture);
-        AbstractGui.blit(left, top, u, v, width, height, width, height);
+        AbstractGui.blit(left, top, u, v, width, height, umax, vmax);
+    }
+
+    public static void drawTexture(ResourceLocation texture, int left, int top, int blitOffset, float u, float v, int umax, int vmax) {
+        Minecraft.getInstance().getTextureManager().bindTexture(texture);
+        AbstractGui.blit(left, top, blitOffset, u, v, umax, vmax, 256, 256);
     }
 
     public static void drawCenteredString(int x, int y, int color, String string) {

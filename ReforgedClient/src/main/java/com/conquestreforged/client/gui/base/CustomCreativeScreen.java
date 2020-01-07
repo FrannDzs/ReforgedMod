@@ -1,7 +1,6 @@
-package com.conquestreforged.client.gui;
+package com.conquestreforged.client.gui.base;
 
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.screen.inventory.CreativeCraftingListener;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ClickType;

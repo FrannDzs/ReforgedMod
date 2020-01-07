@@ -1,9 +1,8 @@
 package com.conquestreforged.client.gui.palette.screen;
 
-import com.conquestreforged.client.gui.CustomCreativeScreen;
+import com.conquestreforged.client.gui.base.CustomCreativeScreen;
 import com.conquestreforged.client.gui.palette.PaletteContainer;
 import com.conquestreforged.client.gui.palette.paletteOld.Render;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -13,7 +12,6 @@ import net.minecraft.util.text.StringTextComponent;
 
 public class PaletteScreen extends CustomCreativeScreen<PaletteContainer> {
 
-    private static final ResourceLocation HOTBAR = new ResourceLocation("minecraft:textures/gui/widgets.png");
     private static final ResourceLocation WHEEL = new ResourceLocation("conquest:textures/gui/wheel.png");
     private static final ResourceLocation MASK0 = new ResourceLocation("conquest:textures/gui/wheel_mask0.png");
     private static final ResourceLocation MASK1 = new ResourceLocation("conquest:textures/gui/wheel_mask1.png");
@@ -49,10 +47,10 @@ public class PaletteScreen extends CustomCreativeScreen<PaletteContainer> {
         renderBackground();
 
         // Wheel texture
-        Render.drawTexture(WHEEL, guiLeft, guiTop, SIZE, SIZE, 0, 0, SIZE, SIZE);
+        Render.drawTexture(WHEEL, guiLeft, guiTop, SIZE, SIZE, 0, 0);
 
-        // Hotbar texture?
-        drawHotbar();
+        // Render hotbar texture
+        getContainer().getHotbar().renderBackground(this);
     }
 
     @Override
@@ -73,26 +71,11 @@ public class PaletteScreen extends CustomCreativeScreen<PaletteContainer> {
         return slot.inventory == getContainer().getPaletteInventory();
     }
 
-    private void drawHotbar() {
-        if (minecraft != null) {
-            int u = 0;
-            int v = 0;
-            int uMax = 182;
-            int vMax = 22;
-            int left = (width / 2) - (uMax / 2);
-            int top = guiTop + SIZE - 10;
-            RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-            minecraft.getTextureManager().bindTexture(new ResourceLocation("textures/gui/widgets.png"));
-            blit(left, top, u, v, uMax, vMax);
-        }
-    }
-
     private void resize(int width, int height) {
-        int center = SIZE / 2;
         this.xSize = SIZE;
         this.ySize = SIZE;
         this.guiLeft = (width - SIZE) / 2;
         this.guiTop = (height - SIZE) / 2;
-        getContainer().setPos(center, center);
+        getContainer().init(this);
     }
 }

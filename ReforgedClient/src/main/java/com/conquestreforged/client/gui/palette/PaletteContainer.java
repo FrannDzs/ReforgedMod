@@ -1,20 +1,22 @@
 package com.conquestreforged.client.gui.palette;
 
+import com.conquestreforged.client.gui.base.AbstractContainer;
+import com.conquestreforged.client.gui.base.Hotbar;
 import com.conquestreforged.client.gui.palette.screen.PaletteSlot;
 import com.conquestreforged.client.gui.palette.screen.Style;
 import com.conquestreforged.client.gui.palette.shape.Bounds;
 import com.conquestreforged.client.gui.palette.shape.FloatMath;
 import com.conquestreforged.client.gui.palette.shape.Point;
 import com.conquestreforged.client.gui.palette.shape.Polygon;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
-public class PaletteContainer extends Container {
+public class PaletteContainer extends AbstractContainer {
 
     public static final ContainerType<PaletteContainer> TYPE = new ContainerType<>(PaletteContainer::new);
 
@@ -28,8 +30,11 @@ public class PaletteContainer extends Container {
     private final IInventory paletteInventory;
     private final PlayerInventory playerInventory;
 
+    private final Hotbar hotbar;
+
     private PaletteContainer(int id, PlayerInventory inventory) {
         super(TYPE, id);
+        this.hotbar = new Hotbar(inventory);
         this.paletteInventory = inventory;
         this.playerInventory = inventory;
         this.centerStyle = Style.center();
@@ -38,13 +43,17 @@ public class PaletteContainer extends Container {
 
     public PaletteContainer(PlayerInventory inventory, IInventory palette) {
         super(TYPE, 0);
+        this.hotbar = new Hotbar(inventory);
         this.playerInventory = inventory;
         this.paletteInventory = palette;
         this.centerStyle = Style.center();
         this.radialStyle = Style.radial(getRadialSlotCount());
     }
 
-    public void setPos(int centerX, int centerY) {
+    public void init(ContainerScreen<?> screen) {
+        int centerX = screen.getXSize() / 2;
+        int centerY = screen.getYSize() / 2;
+
         inventorySlots.clear();
 
         // add the central slot first
@@ -68,14 +77,10 @@ public class PaletteContainer extends Container {
             }
         }
 
-        int slotWidth = 20;
-        int hotbarWidth = (9 * slotWidth);
-        int left = centerX - (hotbarWidth / 2) + 2;
-        int top = centerY + centerY - 7;
-        for(int i = 0; i < 9; ++i) {
-            int dx = i * slotWidth;
-            this.addSlot(new Slot(playerInventory, i, left + dx, top));
-        }
+        // screens art translated to guiTop so need to calc the bottom relative to y=guiTop rather than y=0
+        int screenBottom = screen.height - screen.getGuiTop();
+        int top = screenBottom - hotbar.getHeight();
+        hotbar.addTo(this, centerX, top);
     }
 
     @Override
@@ -102,6 +107,10 @@ public class PaletteContainer extends Container {
     @Override
     public boolean canInteractWith(PlayerEntity player) {
         return player.isCreative();
+    }
+
+    public Hotbar getHotbar() {
+        return hotbar;
     }
 
     public IInventory getPaletteInventory() {

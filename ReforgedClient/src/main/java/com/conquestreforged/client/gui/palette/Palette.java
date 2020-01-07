@@ -61,7 +61,7 @@ public class Palette {
 
         Family<Block> family = FamilyRegistry.BLOCKS.getFamily(block);
         if (family.isAbsent()) {
-            return Optional.empty();
+            return Optional.of(createTestPalette(stack));
         }
 
         NonNullList<ItemStack> items = NonNullList.create();

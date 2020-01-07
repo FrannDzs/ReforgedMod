@@ -1,4 +1,4 @@
-package com.conquestreforged.client.gui;
+package com.conquestreforged.client.gui.base;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.datafixers.util.Pair;
