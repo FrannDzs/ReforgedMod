@@ -18,18 +18,18 @@ public class InitEventsServer {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void starting(FMLServerAboutToStartEvent event) {
-        Log.info("server about to start");
+        Log.info("Setting server-side proxy");
         Proxies.set(Side.SERVER, new ServerProxy(event.getServer()).registerListeners());
         PackFinder.getInstance(ResourcePackType.SERVER_DATA).register();
     }
 
     @SubscribeEvent
     public static void started(FMLServerStartedEvent event) {
-        Log.info("server started");
+        Log.info("Server started");
     }
 
     @SubscribeEvent
     public static void stopping(FMLServerStoppingEvent event) {
-        Log.info("server stopping");
+        Log.info("Server stopping");
     }
 }

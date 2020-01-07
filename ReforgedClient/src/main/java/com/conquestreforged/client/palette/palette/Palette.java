@@ -1,5 +1,6 @@
 package com.conquestreforged.client.palette.palette;
 
+import com.conquestreforged.client.palette.palette2.PaletteSlot;
 import com.conquestreforged.client.palette.shape.Bounds;
 import com.conquestreforged.client.palette.shape.FloatMath;
 import com.conquestreforged.client.palette.shape.Point;

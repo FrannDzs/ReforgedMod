@@ -48,6 +48,12 @@ public class TextureGroup implements OptionalValue {
         return itemStacks;
     }
 
+    public NonNullList<ItemStack> getItemsCopy() {
+        NonNullList<ItemStack> list = NonNullList.create();
+        addTo(list);
+        return list;
+    }
+
     protected void sort(Comparator<Item> order) {
         this.order = order;
         this.itemStacks.sort(wrap(order));

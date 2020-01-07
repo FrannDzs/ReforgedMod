@@ -3,6 +3,8 @@ package com.conquestreforged.client.palette.palette;
 import com.conquestreforged.client.palette.shape.FloatMath;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.inventory.InventoryScreen;
+import net.minecraft.client.settings.HotbarSnapshot;
 import net.minecraft.util.text.StringTextComponent;
 
 public class PaletteScreen extends Screen {

@@ -51,13 +51,18 @@ task prepareRunClasses(type: Copy) {
     into("$buildDir/classes/java/test")
 }
 
+task prepareRunResources(type: Copy) {
+    from("$buildDir/resources/main")
+    into("$buildDir/resources/test")
+}
+
 task prepareRunDeps(type: Copy) {
     from { configurations.compileProject.collect { it.isDirectory() ? it : zipTree(it) } }
     into("build/classes/java/test")
 }
 
 testClasses {
-    dependsOn(prepareRunDeps, prepareRunClasses)
+    dependsOn(prepareRunDeps, prepareRunClasses, prepareRunResources)
 }
 
 task deobfJar(type: Jar) {
