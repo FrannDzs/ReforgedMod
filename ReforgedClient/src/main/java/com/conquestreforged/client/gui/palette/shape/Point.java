@@ -24,8 +24,12 @@ public class Point {
     }
 
     public int distance2(int ox, int oy) {
-        int dx = x - ox;
-        int dy = y - oy;
+        return distance2(x, y, ox, oy);
+    }
+
+    public static int distance2(int x0, int y0, int x1, int y1) {
+        int dx = x0 - x1;
+        int dy = y0 - y1;
         return dx * dx + dy * dy;
     }
 }

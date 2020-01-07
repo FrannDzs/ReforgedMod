@@ -17,6 +17,10 @@ public class Hotbar {
         this.inventory = inventory;
     }
 
+    public PlayerInventory getInventory() {
+        return inventory;
+    }
+
     public int getSlotSize() {
         return 20;
     }

@@ -65,7 +65,13 @@ public abstract class CustomCreativeScreen<T extends Container> extends CustomCo
 
         if (slot == null && type != ClickType.QUICK_CRAFT) {
             PlayerInventory playerInventory = this.minecraft.player.inventory;
-            if (!playerInventory.getItemStack().isEmpty() && clickedOutside) {
+            if (!playerInventory.getItemStack().isEmpty()) {
+                if (!clickedOutside) {
+                    playerInventory.setItemStack(ItemStack.EMPTY);
+                    this.minecraft.player.container.detectAndSendChanges();
+                    return;
+                }
+
                 if (button == 0) {
                     this.minecraft.player.dropItem(playerInventory.getItemStack(), true);
                     this.minecraft.playerController.sendPacketDropItem(playerInventory.getItemStack());
@@ -145,8 +151,9 @@ public abstract class CustomCreativeScreen<T extends Container> extends CustomCo
             ItemStack slotStack = slot == null ? ItemStack.EMPTY : this.container.getSlot(slot.slotNumber).getStack();
             this.container.slotClick(slot == null ? index : slot.slotNumber, button, type, this.minecraft.player);
             if (Container.getDragEvent(button) == 2) {
+                int start = this.container.inventorySlots.size() - 9;
                 for (int k = 0; k < 9; ++k) {
-                    this.minecraft.playerController.sendSlotPacket(this.container.getSlot(45 + k).getStack(), 36 + k);
+                    this.minecraft.playerController.sendSlotPacket(this.container.getSlot(start + k).getStack(), 36 + k);
                 }
             } else if (slot != null) {
                 ItemStack itemstack4 = this.container.getSlot(slot.slotNumber).getStack();
@@ -164,26 +171,5 @@ public abstract class CustomCreativeScreen<T extends Container> extends CustomCo
                 this.minecraft.player.container.detectAndSendChanges();
             }
         }
-    }
-
-
-
-    // get closest slot index & distance to it
-    protected Pair<Integer, Integer> getClosestSlot(int mx, int my) {
-        mx -= guiLeft;
-        my -= guiTop;
-        Slot nearest = null;
-        int dist2 = Integer.MAX_VALUE;
-        for (Slot slot : getContainer().inventorySlots) {
-            int dx = slot.xPos - mx;
-            int dy = slot.yPos - my;
-            int d2 = dx * dx + dy * dy;
-            if (nearest == null || d2 < dist2) {
-                nearest = slot;
-                dist2 = d2;
-            }
-        }
-        int index = nearest == null ? -1 : nearest.slotNumber;
-        return new Pair<>(index, dist2);
     }
 }

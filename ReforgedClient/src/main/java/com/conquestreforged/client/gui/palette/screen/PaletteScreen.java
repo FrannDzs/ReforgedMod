@@ -3,10 +3,13 @@ package com.conquestreforged.client.gui.palette.screen;
 import com.conquestreforged.client.gui.base.CustomCreativeScreen;
 import com.conquestreforged.client.gui.palette.PaletteContainer;
 import com.conquestreforged.client.gui.palette.paletteOld.Render;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.StringTextComponent;
 
@@ -38,7 +41,31 @@ public class PaletteScreen extends CustomCreativeScreen<PaletteContainer> {
 
     @Override
     public void render(int mouseX, int mouseY, float partialTicks) {
-        super.render(mouseX, mouseY, partialTicks);
+        drawGuiContainerBackgroundLayer(partialTicks, mouseX, mouseY);
+
+        setupRender();
+        {
+            final int mx = mouseX - guiLeft;
+            final int my = mouseY - guiTop;
+            // render radial slots
+            getContainer().visitRadius(mx, my, slot -> {
+                float scale = slot.getScale(mx, my);
+                renderSlot(slot, slot.getStyle(), mx, my, scale);
+            });
+            // render center slot
+            getContainer().visitCenter(slot -> {
+                float scale = slot.getScale(mx, my);
+                renderSlot(slot, slot.getStyle(), mx, my, scale);
+            });
+            // render hotbar
+            getContainer().visitHotbar(slot -> renderSlot(slot, mx, my, 1F));
+            // render the dragged item
+            renderDraggedItem(mx, my);
+        }
+        tearDownRender();
+
+        // render display text
+        drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 
     @Override
@@ -56,14 +83,28 @@ public class PaletteScreen extends CustomCreativeScreen<PaletteContainer> {
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-        Slot slot = getSlotUnderMouse();
-        if (minecraft != null && slot != null) {
-            int top = SIZE + 4 - 25;
-            int left = SIZE / 2;
-            int color = 0xFFFFFF;
-            String text = slot.getStack().getDisplayName().getFormattedText();
-            drawCenteredString(minecraft.fontRenderer, text, left, top, color);
+        if (minecraft == null) {
+            return;
         }
+
+        ItemStack display = playerInventory.getItemStack();
+        if (display.isEmpty()) {
+            Slot slot = getContainer().getClosestSlot(mouseX - guiLeft, mouseY - guiTop, true);
+            if (slot == null) {
+                return;
+            }
+            display = slot.getStack();
+        }
+
+        if (display.getItem() == Items.AIR) {
+            return;
+        }
+
+        int top = (height / 2) + PaletteContainer.RADIUS + 22;
+        int left = width / 2;
+        int color = 0xFFFFFF;
+        String text = display.getDisplayName().getFormattedText();
+        drawCenteredString(minecraft.fontRenderer, text, left, top, color);
     }
 
     @Override

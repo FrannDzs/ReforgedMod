@@ -1,13 +1,16 @@
 package com.conquestreforged.client.gui.palette.screen;
 
+import com.conquestreforged.client.gui.palette.PaletteContainer;
 import com.conquestreforged.client.gui.palette.shape.Bounds;
-import com.mojang.datafixers.util.Pair;
+import com.conquestreforged.client.gui.palette.shape.Point;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 public class PaletteSlot extends Slot {
+
+    private static final ResourceLocation SLOT = new ResourceLocation("conquest:textures/gui/slot.png");
 
     private final Style style;
     private final Bounds bounds;
@@ -18,9 +21,20 @@ public class PaletteSlot extends Slot {
         this.bounds = bounds;
     }
 
-    @Override
-    public Pair<ResourceLocation, ResourceLocation> func_225517_c_() {
-        return null;
+    public ResourceLocation getBackground() {
+        return SLOT;
+    }
+
+    public Style getStyle() {
+        return style;
+    }
+
+    public Bounds getBounds() {
+        return bounds;
+    }
+
+    public boolean isMouseOver(int mx, int my) {
+        return mx >= xPos - 11 && mx <= xPos + 11 && my >= yPos - 11 && my <= yPos + 11;
     }
 
     @Override
@@ -36,5 +50,20 @@ public class PaletteSlot extends Slot {
     @Override
     public ItemStack decrStackSize(int amount) {
         return getStack();
+    }
+
+    public float getScale(int mx, int my) {
+        if (!style.fixedScale) {
+            float d2 = Point.distance2(xPos, yPos, mx, my);
+            float radius = PaletteContainer.RADIUS;
+            float rad2 = radius * radius;
+            float alpha = (rad2 - d2) / rad2;
+            float scale = style.scale;
+            if (alpha > 0.3) {
+                scale += Math.min(Math.max(alpha * alpha * alpha * 1.05F, 0), 2.5F);
+            }
+            return scale;
+        }
+        return style.scale;
     }
 }

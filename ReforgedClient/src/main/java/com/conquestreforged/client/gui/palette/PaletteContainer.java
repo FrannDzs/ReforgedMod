@@ -16,6 +16,9 @@ import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
+import javax.annotation.Nullable;
+import java.util.function.Consumer;
+
 public class PaletteContainer extends AbstractContainer {
 
     public static final ContainerType<PaletteContainer> TYPE = new ContainerType<>(PaletteContainer::new);
@@ -25,29 +28,29 @@ public class PaletteContainer extends AbstractContainer {
     private static final int PADDING = 40;
     private static final int ANGLE_OFFSET = -90;
 
+    private final int radialCount;
     private final Style centerStyle;
     private final Style radialStyle;
     private final IInventory paletteInventory;
-    private final PlayerInventory playerInventory;
 
     private final Hotbar hotbar;
 
     private PaletteContainer(int id, PlayerInventory inventory) {
         super(TYPE, id);
+        this.radialCount = 0;
         this.hotbar = new Hotbar(inventory);
         this.paletteInventory = inventory;
-        this.playerInventory = inventory;
         this.centerStyle = Style.center();
         this.radialStyle = Style.radial(0);
     }
 
     public PaletteContainer(PlayerInventory inventory, IInventory palette) {
         super(TYPE, 0);
+        this.radialCount = palette.getSizeInventory() - 1;
         this.hotbar = new Hotbar(inventory);
-        this.playerInventory = inventory;
         this.paletteInventory = palette;
         this.centerStyle = Style.center();
-        this.radialStyle = Style.radial(getRadialSlotCount());
+        this.radialStyle = Style.radial(radialCount);
     }
 
     public void init(ContainerScreen<?> screen) {
@@ -62,7 +65,7 @@ public class PaletteContainer extends AbstractContainer {
         Polygon polygon = new Polygon(EDGES, RADIUS, PADDING, PADDING);
         polygon.init(centerX, centerY);
 
-        float spacing = 360F / getRadialSlotCount();
+        float spacing = 360F / radialCount;
         float halfSpacing = spacing / 2F;
         for (int slotIndex = 1; slotIndex < paletteInventory.getSizeInventory(); slotIndex++) {
             int posIndex = slotIndex - 1;
@@ -117,13 +120,77 @@ public class PaletteContainer extends AbstractContainer {
         return paletteInventory;
     }
 
-    private int getRadialSlotCount() {
-        return Math.max(0, paletteInventory.getSizeInventory() - 1);
+    public void visitHotbar(Consumer<Slot> consumer) {
+        for (int i = inventorySlots.size() - 9; i < inventorySlots.size(); i++) {
+            consumer.accept(getSlot(i));
+        }
     }
 
-    private static ItemStack copyOne(ItemStack stack) {
-        stack = stack.copy();
-        stack.setCount(1);
-        return stack;
+    public void visitCenter(Consumer<PaletteSlot> consumer) {
+        PaletteSlot slot = (PaletteSlot) getSlot(0);
+        consumer.accept(slot);
+    }
+
+    public void visitRadius(int mouseX, int mouseY, Consumer<PaletteSlot> consumer) {
+        final Slot closest = getClosestSlot(mouseX, mouseY, false);
+        if (closest == null) {
+            return;
+        }
+
+        final int index = closest.slotNumber;
+        for (int i = 0, visited = 0; visited < radialCount; i++) {
+            if (i == 0) {
+                visited++;
+                visitRadialSlot(index, consumer);
+            } else {
+                visited += 2;
+                visitRadialSlot(index - i, consumer);
+                visitRadialSlot(index + i, consumer);
+            }
+        }
+    }
+
+    private void visitRadialSlot(int index, Consumer<PaletteSlot> consumer) {
+        int slotIndex = wrapSlotIndex(index);
+        PaletteSlot slot = (PaletteSlot) getSlot(slotIndex);
+        consumer.accept(slot);
+    }
+
+    private int wrapSlotIndex(int index) {
+        if (index < 1) {
+            return radialCount + index;
+        } else if (index > radialCount) {
+            return index - radialCount;
+        } else {
+            return index;
+        }
+    }
+
+    @Nullable
+    public Slot getClosestSlot(int mouseX, int mouseY, boolean all) {
+        Slot nearest = null;
+        int dist2 = Integer.MAX_VALUE;
+        for (Slot slot : inventorySlots) {
+            if (!all) {
+                // ignore centre slot
+                if (slot.getSlotIndex() == 0) {
+                    continue;
+                }
+
+                // ignore hotbar slots
+                if (slot.inventory != paletteInventory) {
+                    continue;
+                }
+            }
+
+            int dx = slot.xPos + 8 - mouseX;
+            int dy = slot.yPos + 8 - mouseY;
+            int d2 = dx * dx + dy * dy;
+            if (nearest == null || d2 < dist2) {
+                nearest = slot;
+                dist2 = d2;
+            }
+        }
+        return nearest;
     }
 }

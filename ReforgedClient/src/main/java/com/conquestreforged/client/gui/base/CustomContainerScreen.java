@@ -1,27 +1,23 @@
 package com.conquestreforged.client.gui.base;
 
+import com.conquestreforged.client.gui.palette.paletteOld.Render;
+import com.conquestreforged.client.gui.palette.screen.Style;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ClickType;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nullable;
 
 public abstract class CustomContainerScreen<T extends Container> extends ContainerScreen<T> {
 
     private Slot clickedSlot;
-    private int dragSplittingLimit;
-    private int dragSplittingRemnant;
     private boolean isRightMouseClick;
-    private ItemStack draggedStack = ItemStack.EMPTY;
+    private boolean isOverSlot = false;
 
     public CustomContainerScreen(T screenContainer, PlayerInventory inv, ITextComponent titleIn) {
         super(screenContainer, inv, titleIn);
@@ -38,85 +34,76 @@ public abstract class CustomContainerScreen<T extends Container> extends Contain
         onSlotClick(slot, index, button, type);
     }
 
-    public void drawSlot(Slot slot) {
-        int x = slot.xPos;
-        int y = slot.yPos;
-        ItemStack itemstack = slot.getStack();
-        boolean flag = false;
-        boolean flag1 = slot == this.clickedSlot && !this.draggedStack.isEmpty() && !this.isRightMouseClick;
-        ItemStack itemstack1 = this.minecraft.player.inventory.getItemStack();
-        String s = null;
-        if (slot == this.clickedSlot && !this.draggedStack.isEmpty() && this.isRightMouseClick && !itemstack.isEmpty()) {
-            itemstack = itemstack.copy();
-            itemstack.setCount(itemstack.getCount() / 2);
-        } else if (this.dragSplitting && this.dragSplittingSlots.contains(slot) && !itemstack1.isEmpty()) {
-            if (this.dragSplittingSlots.size() == 1) {
-                return;
-            }
+    protected void setupRender() {
+        isOverSlot = false;
 
-            if (Container.canAddItemToSlot(slot, itemstack1, true) && this.container.canDragIntoSlot(slot)) {
-                itemstack = itemstack1.copy();
-                flag = true;
-                Container.computeStackSize(this.dragSplittingSlots, this.dragSplittingLimit, itemstack, slot.getStack().isEmpty() ? 0 : slot.getStack().getCount());
-                int k = Math.min(itemstack.getMaxStackSize(), slot.getItemStackLimit(itemstack));
-                if (itemstack.getCount() > k) {
-                    s = TextFormatting.YELLOW.toString() + k;
-                    itemstack.setCount(k);
-                }
-            } else {
-                this.dragSplittingSlots.remove(slot);
-                this.updateDragSplitting();
-            }
+        RenderSystem.disableRescaleNormal();
+        RenderSystem.disableDepthTest();
+
+        RenderSystem.pushMatrix();
+        RenderSystem.translatef(guiLeft, guiTop, 0.0F);
+        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.enableRescaleNormal();
+        RenderSystem.glMultiTexCoord2f(33986, 240.0F, 240.0F);
+        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+    }
+
+    protected void tearDownRender() {
+        RenderSystem.popMatrix();
+        RenderSystem.enableDepthTest();
+    }
+
+    public void renderDraggedItem(int mx, int my) {
+        ItemStack held = playerInventory.getItemStack();
+        if (!held.isEmpty()) {
+            this.setBlitOffset(200);
+            this.itemRenderer.zLevel = 200.0F;
+            this.itemRenderer.renderItemAndEffectIntoGUI(playerInventory.player, held, mx - 8, my -8);
+            this.itemRenderer.renderItemOverlayIntoGUI(font, held, mx - 8, my -8, null);
+            this.setBlitOffset(0);
+            this.itemRenderer.zLevel = 0F;
         }
+    }
 
+    public void renderSlot(Slot slot, int mx, int my, float scale) {
+        renderSlot(slot, null, mx, my, scale);
+    }
+
+    public void renderSlot(Slot slot, Style style, int mx, int my, float scale) {
+        int x = slot.xPos + 8;
+        int y = slot.yPos + 8;
+        ItemStack itemstack = slot.getStack();
+
+        RenderSystem.pushMatrix();
+        RenderSystem.translatef(x, y, 0);
+        RenderSystem.scalef(scale, scale, 1);
+        RenderSystem.enableDepthTest();
+
+        // set z-level
         this.setBlitOffset(100);
         this.itemRenderer.zLevel = 100.0F;
-        if (itemstack.isEmpty() && slot.isEnabled()) {
-            Pair<ResourceLocation, ResourceLocation> pair = slot.func_225517_c_();
-            if (pair != null) {
-                TextureAtlasSprite textureatlassprite = this.minecraft.func_228015_a_(pair.getFirst()).apply(pair.getSecond());
-                this.minecraft.getTextureManager().bindTexture(textureatlassprite.func_229241_m_().func_229223_g_());
-                blit(x, y, this.getBlitOffset(), 16, 16, textureatlassprite);
-                flag1 = true;
+
+        if (!isOverSlot) {
+            // draw highlight
+            if (style != null && isMouseOver(slot, mx, my, 11, scale)) {
+                isOverSlot = true;
+                Render.drawItemStackHighlight(itemstack, -8, -8, 1.25F, style.selectedColor);
             }
         }
 
-        if (!flag1) {
-            if (flag) {
-                fill(x, y, x + 16, y + 16, -2130706433);
-            }
+        // draw item
+        this.itemRenderer.renderItemAndEffectIntoGUI(playerInventory.player, itemstack, -8, -8);
+        this.itemRenderer.renderItemOverlayIntoGUI(font, itemstack, -8, -8, null);
 
-            RenderSystem.enableDepthTest();
-            this.itemRenderer.renderItemAndEffectIntoGUI(this.minecraft.player, itemstack, x, y);
-            this.itemRenderer.renderItemOverlayIntoGUI(this.font, itemstack, x, y, s);
-        }
+        RenderSystem.popMatrix();
 
         this.itemRenderer.zLevel = 0.0F;
         this.setBlitOffset(0);
     }
 
-    private void updateDragSplitting() {
-        ItemStack itemstack = this.minecraft.player.inventory.getItemStack();
-        if (!itemstack.isEmpty() && this.dragSplitting) {
-            if (this.dragSplittingLimit == 2) {
-                this.dragSplittingRemnant = itemstack.getMaxStackSize();
-            } else {
-                this.dragSplittingRemnant = itemstack.getCount();
-
-                for(Slot slot : this.dragSplittingSlots) {
-                    ItemStack itemstack1 = itemstack.copy();
-                    ItemStack itemstack2 = slot.getStack();
-                    int i = itemstack2.isEmpty() ? 0 : itemstack2.getCount();
-                    Container.computeStackSize(this.dragSplittingSlots, this.dragSplittingLimit, itemstack1, i);
-                    int j = Math.min(itemstack1.getMaxStackSize(), slot.getItemStackLimit(itemstack1));
-                    if (itemstack1.getCount() > j) {
-                        itemstack1.setCount(j);
-                    }
-
-                    this.dragSplittingRemnant -= itemstack1.getCount() - i;
-                }
-
-            }
-        }
+    public static boolean isMouseOver(Slot slot, int mx, int my, int size, float scale) {
+        float delta = size * scale;
+        return mx >= slot.xPos - delta && mx <= slot.xPos + delta && my >= slot.yPos - delta && my <= slot.yPos + delta;
     }
+
 }
