@@ -1,8 +1,8 @@
 package com.conquestreforged.client;
 
-import com.conquestreforged.client.palette.PaletteBindListener;
-import com.conquestreforged.client.search.SearchBindListener;
-import com.conquestreforged.client.toggle.ToggleBindListener;
+import com.conquestreforged.client.bind.PaletteBindListener;
+import com.conquestreforged.client.bind.SearchBindListener;
+import com.conquestreforged.client.bind.ToggleBindListener;
 import com.conquestreforged.core.client.input.Bindings;
 import com.conquestreforged.core.util.Log;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
