@@ -1,6 +1,6 @@
 rootProject.name = "ConquestReforged"
 include "ReforgedCore"
-include "ReforgedBlocks"
+include "ReforgedContent"
 include "ReforgedClient"
 //include "ReforgedEntities"
 
