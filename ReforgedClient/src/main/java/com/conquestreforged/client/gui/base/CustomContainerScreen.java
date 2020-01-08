@@ -54,36 +54,41 @@ public abstract class CustomContainerScreen<T extends Container> extends Contain
         RenderSystem.enableDepthTest();
     }
 
-    public void renderDraggedItem(int mx, int my) {
+    public void renderDraggedItem(int mx, int my, float depth) {
+        int zlevel = FloatMath.round(depth * 200);
         ItemStack held = playerInventory.getItemStack();
         if (!held.isEmpty()) {
-            this.setBlitOffset(300);
-            this.itemRenderer.zLevel = 300;
-            this.itemRenderer.renderItemAndEffectIntoGUI(playerInventory.player, held, mx - 8, my -8);
-            this.itemRenderer.renderItemOverlayIntoGUI(font, held, mx - 8, my -8, null);
+            this.setBlitOffset(0);
+            this.itemRenderer.zLevel = 0;
+            RenderSystem.pushMatrix();
+            RenderSystem.translatef(mx, my, zlevel);
+            RenderSystem.enableDepthTest();
+            this.itemRenderer.renderItemAndEffectIntoGUI(playerInventory.player, held, -8, -8);
+            this.itemRenderer.renderItemOverlayIntoGUI(font, held, -8, -8, null);
+            RenderSystem.popMatrix();
             this.setBlitOffset(0);
             this.itemRenderer.zLevel = 0F;
         }
     }
 
-    public void renderSlot(Slot slot, int mx, int my, float scale) {
-        renderSlot(slot, null, mx, my, scale);
+    public void renderSlot(Slot slot, int mx, int my, float depth, float scale) {
+        renderSlot(slot, null, mx, my, depth, scale);
     }
 
-    public void renderSlot(Slot slot, Style style, int mx, int my, float scale) {
+    public void renderSlot(Slot slot, Style style, int mx, int my, float depth, float scale) {
         int x = slot.xPos + 8;
         int y = slot.yPos + 8;
+        int zlevel = FloatMath.round(depth * 200);
         ItemStack itemstack = slot.getStack();
 
         RenderSystem.pushMatrix();
-        RenderSystem.translatef(x, y, 0);
+        RenderSystem.translatef(x, y, zlevel);
         RenderSystem.scalef(scale, scale, 1);
         RenderSystem.enableDepthTest();
 
         // set z-level
-        int zlevel = FloatMath.round(scale * 200);
-        this.setBlitOffset(zlevel);
-        this.itemRenderer.zLevel = zlevel;
+        this.setBlitOffset(0);
+        this.itemRenderer.zLevel = 0;
 
         if (!isOverSlot) {
             // draw highlight

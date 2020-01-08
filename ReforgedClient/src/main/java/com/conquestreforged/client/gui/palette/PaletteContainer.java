@@ -17,6 +17,7 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nullable;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class PaletteContainer extends AbstractContainer {
@@ -131,7 +132,7 @@ public class PaletteContainer extends AbstractContainer {
         consumer.accept(slot);
     }
 
-    public void visitRadius(int mouseX, int mouseY, Consumer<PaletteSlot> consumer) {
+    public void visitRadius(int mouseX, int mouseY, BiConsumer<PaletteSlot, Float> consumer) {
         final Slot closest = getClosestSlot(mouseX, mouseY, false);
         if (closest == null) {
             return;
@@ -141,19 +142,20 @@ public class PaletteContainer extends AbstractContainer {
         for (int i = 0, visited = 0; visited < radialCount; i++) {
             if (i == 0) {
                 visited++;
-                visitRadialSlot(index, consumer);
+                visitRadialSlot(index, i, consumer);
             } else {
                 visited += 2;
-                visitRadialSlot(index - i, consumer);
-                visitRadialSlot(index + i, consumer);
+                visitRadialSlot(index - i, i, consumer);
+                visitRadialSlot(index + i, i, consumer);
             }
         }
     }
 
-    private void visitRadialSlot(int index, Consumer<PaletteSlot> consumer) {
+    private void visitRadialSlot(int index, int relativeIndex, BiConsumer<PaletteSlot, Float> consumer) {
         int slotIndex = wrapSlotIndex(index);
+        float depth = getRelativeDepth(relativeIndex);
         PaletteSlot slot = (PaletteSlot) getSlot(slotIndex);
-        consumer.accept(slot);
+        consumer.accept(slot, depth);
     }
 
     private int wrapSlotIndex(int index) {
@@ -164,6 +166,16 @@ public class PaletteContainer extends AbstractContainer {
         } else {
             return index;
         }
+    }
+
+    private float getRelativeDepth(float i) {
+        if (i == 0F) {
+            return 2F;
+        }
+        if (i >= radialCount) {
+            return 1F;
+        }
+        return 1F - (i / radialCount);
     }
 
     @Nullable

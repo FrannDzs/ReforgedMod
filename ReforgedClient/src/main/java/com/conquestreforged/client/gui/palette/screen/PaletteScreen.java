@@ -48,19 +48,19 @@ public class PaletteScreen extends CustomCreativeScreen<PaletteContainer> {
             final int mx = mouseX - guiLeft;
             final int my = mouseY - guiTop;
             // render radial slots
-            getContainer().visitRadius(mx, my, slot -> {
+            getContainer().visitRadius(mx, my, (slot, depth) -> {
                 float scale = slot.getScale(mx, my);
-                renderSlot(slot, slot.getStyle(), mx, my, scale);
+                renderSlot(slot, slot.getStyle(), mx, my, depth, scale);
             });
             // render center slot
             getContainer().visitCenter(slot -> {
                 float scale = slot.getScale(mx, my);
-                renderSlot(slot, slot.getStyle(), mx, my, scale);
+                renderSlot(slot, slot.getStyle(), mx, my, 1F, scale);
             });
             // render hotbar
-            getContainer().visitHotbar(slot -> renderSlot(slot, mx, my, 1F));
+            getContainer().visitHotbar(slot -> renderSlot(slot, mx, my, 1F,1F));
             // render the dragged item
-            renderDraggedItem(mx, my);
+            renderDraggedItem(mx, my, 3F);
         }
         tearDownRender();
 
