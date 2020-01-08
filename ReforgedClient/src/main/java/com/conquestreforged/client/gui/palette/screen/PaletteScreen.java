@@ -15,9 +15,9 @@ import net.minecraft.util.text.StringTextComponent;
 
 public class PaletteScreen extends CustomCreativeScreen<PaletteContainer> {
 
-    private static final ResourceLocation WHEEL = new ResourceLocation("conquest:textures/gui/wheel.png");
-    private static final ResourceLocation MASK0 = new ResourceLocation("conquest:textures/gui/wheel_mask0.png");
-    private static final ResourceLocation MASK1 = new ResourceLocation("conquest:textures/gui/wheel_mask1.png");
+    private static final ResourceLocation WHEEL = new ResourceLocation("conquest:textures/gui/picker/wheel.png");
+    private static final ResourceLocation MASK0 = new ResourceLocation("conquest:textures/gui/picker/wheel_mask0.png");
+    private static final ResourceLocation MASK1 = new ResourceLocation("conquest:textures/gui/picker/wheel_mask1.png");
 
     private static final int SIZE = (PaletteContainer.RADIUS + 44) * 2;
 

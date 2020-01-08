@@ -137,7 +137,7 @@ public class TextureGroupManager {
         return INSTANCE;
     }
 
-    @SubscribeEvent
+//    @SubscribeEvent
     public static void reload(TextureStitchEvent.Post event) {
         Log.info("Reloading TextureGroupManager");
         getInstance().rebuild();

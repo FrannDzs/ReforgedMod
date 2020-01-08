@@ -10,7 +10,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class PaletteSlot extends Slot {
 
-    private static final ResourceLocation SLOT = new ResourceLocation("conquest:textures/gui/slot.png");
+    private static final ResourceLocation SLOT = new ResourceLocation("conquest:textures/gui/picker/slot.png");
 
     private final Style style;
     private final Bounds bounds;
