@@ -14,7 +14,7 @@ task prepareMainRunResources(type: Copy) {
     into("$buildDir/resources/test")
 }
 
-// merges all projects' reobf'd jars into a single temporary jar
+// merges all projects' deobf'd jars into a single temporary jar (reobf task happens afterwards)
 task mergeJar(dependsOn: subprojects.tasks["jar"], type: Jar) {
     classifier "merge"
     duplicatesStrategy = "EXCLUDE"
@@ -29,7 +29,7 @@ task renameJar(type: Sync) {
     rename mergeJar.archiveName, jar.archiveName
 }
 
-// creates a new fat jar containing the project jar and the resource pack
+// creates a new fat jar containing the reobf'd project jar and the resource pack
 task allInOneJar(type: Jar) {
     classifier = "AllInOne"
     duplicatesStrategy = "EXCLUDE"
