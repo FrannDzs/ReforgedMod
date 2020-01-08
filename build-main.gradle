@@ -1,130 +1,56 @@
-minecraft {
-    runs {
-        client {
-            workingDirectory project.file("run/client")
-            property "forge.logging.markers", "SCAN,REGISTRIES,REGISTRYDUMP"
-            property "forge.logging.console.level", "debug"
-            jvmArgs "-Xmx6G", "-Xms4G"
-            mods {
-                mod {
-                    source sourceSets.main
-                }
-            }
-        }
-        server {
-            workingDirectory project.file("run/server")
-            property "forge.logging.markers", "SCAN,REGISTRIES,REGISTRYDUMP"
-            property "forge.logging.console.level", "debug"
-            jvmArgs "-Xmx6G", "-Xms4G"
-            mods {
-                mod {
-                    source sourceSets.main
-                }
-            }
-        }
-    }
+// copies the root project classes and then subproject classes into the test dir
+task prepareMainRunClasses(type: Copy) {
+    duplicatesStrategy = "EXCLUDE"
+    from("$buildDir/classes/java/main")
+    subprojects.each { project -> from fileTree("$project.buildDir/classes/java/main") }
+    into("$buildDir/classes/java/test")
 }
 
-task collectProjectClasses(type: Copy, dependsOn: subprojects.tasks["classes"]) {
-    from { subprojects.collect { p -> file("$p.buildDir/classes/java/main") } }
-    into { file("$buildDir/classes/java/main") }
+// copies the root project resources and then subproject resources into the test dir
+task prepareMainRunResources(type: Copy) {
+    duplicatesStrategy = "EXCLUDE"
+    from("$buildDir/resources/main")
+    subprojects.each { project -> from fileTree("$project.buildDir/resources/main") }
+    into("$buildDir/resources/test")
 }
 
-task collectProjectResources(dependsOn: subprojects.tasks["processResources"]) {
-    doFirst {
-        File targetDir = file("$buildDir/resources/main")
-
-        Map<String, List<File>> jsonLangs = new HashMap<>()
-        Map<String, List<File>> legacyLangs = new HashMap<>()
-
-        subprojects.each { p ->
-            File dir = file("$p.buildDir/resources/main")
-            fileTree(dir).each { f ->
-                String rel = f.path.substring(dir.path.length())
-
-                if (f.getName().endsWith(".lang")) {
-                    legacyLangs.computeIfAbsent(rel, { s -> new LinkedList<>() }).add(f)
-                    return
-                }
-
-                if (f.getName().equalsIgnoreCase("en_us.json")) {
-                    jsonLangs.computeIfAbsent(rel, { s -> new LinkedList<>() }).add(f)
-                    return
-                }
-
-                createFile(targetDir, rel).setBytes(f.getBytes())
-            }
-        }
-
-        jsonLangs.each { e -> mergeJsons(targetDir, e.getKey(), e.getValue()) }
-
-        legacyLangs.each { e -> lang2Json(targetDir, e.getKey(), e.getValue()) }
-    }
+// merges all projects' reobf'd jars into a single temporary jar
+task mergeJar(dependsOn: subprojects.tasks["jar"], type: Jar) {
+    classifier "merge"
+    duplicatesStrategy = "EXCLUDE"
+    from zipTree(jar.archivePath)
+    subprojects.each { project -> from zipTree(project.jar.archivePath)}
 }
 
-task collectResourcePack(type: Copy) {
-    from fileTree("ReforgedRP") {
-        exclude "TO_BE_ADDED", "**.ini", "**.md", "pack.mcmeta"
-    }
-    into "$buildDir/resources/resourcepack"
+// renames the temporary 'merge' jar to the normal project jar
+task renameJar(type: Sync) {
+    from mergeJar.archivePath
+    destinationDir mergeJar.destinationDir
+    rename mergeJar.archiveName, jar.archiveName
 }
 
-task allInOneJar(dependsOn: collectResourcePack, type: Jar) {
+// creates a new fat jar containing the project jar and the resource pack
+task allInOneJar(type: Jar) {
     classifier = "AllInOne"
     duplicatesStrategy = "EXCLUDE"
     from zipTree(jar.archivePath)
-    from fileTree("$buildDir/resources/resourcepack")
-}
-
-static def createFile(File dir, String path) {
-    File out = new File(dir, path)
-    out.getParentFile().mkdirs()
-    out.createNewFile()
-    return out
-}
-
-static def lang2Json(File dir, String path, List<File> files) {
-    File out = createFile(dir, path)
-    BufferedWriter writer = out.newWriter()
-    writer.append("{")
-    boolean first = true
-    files.each {f ->
-        f.readLines().each {line ->
-            String[] pair = line.split("=")
-            if (pair.length != 2) {
-                return
-            }
-            if (!first) {
-                writer.append(",")
-            }
-            writer.append("\n  \"").append(pair[0]).append("\": \"").append(pair[1]).append("\"")
-            first = false
-        }
+    from fileTree("ReforgedRP") {
+        exclude "TO_BE_ADDED", "to_be_added", "**.ini", "**.md", "pack.mcmeta"
     }
-    writer.append("\n}")
-    writer.flush()
-    writer.close()
 }
 
-static def mergeJsons(File dir, String path, List<File> files) {
-    File out = createFile(dir, path)
-    BufferedWriter writer = out.newWriter()
-    writer.append("{")
-    boolean first = true
-    files.each { it.readLines().each { line ->
-        if (line.contains("{")) {
-            return
-        }
-        if (line.contains("}")) {
-            return
-        }
-        if (!first) {
-            writer.append(",")
-        }
-        writer.append(line)
-        first = false
-    }}
-    writer.append("\n}")
-    writer.flush()
-    writer.close()
+// processes the mods toml applying version info etc
+processResources {
+    filesMatching("**/mods.toml") {
+        expand(
+                "name": project.name,
+                "version": mod_version,
+                "mc_version": mc_version
+        )
+    }
+}
+
+// collects the test classes/resources for the run config
+testClasses {
+    dependsOn(prepareMainRunClasses, prepareMainRunResources)
 }

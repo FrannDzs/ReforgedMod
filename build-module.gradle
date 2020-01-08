@@ -46,32 +46,30 @@ minecraft {
     }
 }
 
+// copies the module's classes to the test folder
 task prepareRunClasses(type: Copy) {
     from("$buildDir/classes/java/main")
     into("$buildDir/classes/java/test")
 }
 
+// copies the module's resources to the test folder
 task prepareRunResources(type: Copy) {
     from("$buildDir/resources/main")
     into("$buildDir/resources/test")
 }
 
+// copies the module's dependency classes to the test folder
 task prepareRunDeps(type: Copy) {
     from { configurations.compileProject.collect { it.isDirectory() ? it : zipTree(it) } }
     into("build/classes/java/test")
 }
 
+// collects the test classes/resources for the run config
 testClasses {
     dependsOn(prepareRunDeps, prepareRunClasses, prepareRunResources)
 }
 
-task deobfJar(type: Jar) {
-    from sourceSets.main.output
-    classifier = "deobf"
-}
-
 jar {
-    dependsOn(deobfJar)
     manifest {
         attributes([
                 "Specification-Title"     : project.name,

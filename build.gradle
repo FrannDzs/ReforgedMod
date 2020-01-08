@@ -15,26 +15,10 @@ allprojects {
 
 apply from: file("build-main.gradle")
 
-classes {
-    dependsOn(collectProjectClasses)
-}
+assemble {
+    // create -merge jar then rename it to normal jar
+    dependsOn(mergeJar, renameJar)
 
-processResources {
-    dependsOn(collectProjectResources)
-
-    filesMatching("**/mods.toml") {
-        expand(
-                "name": project.name,
-                "version": mod_version,
-                "mc_version": mc_version
-        )
-    }
-}
-
-build {
+    // create allInOneJar (after merge)
     finalizedBy(allInOneJar)
-}
-
-testClasses {
-
 }
