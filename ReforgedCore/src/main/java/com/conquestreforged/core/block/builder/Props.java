@@ -8,29 +8,14 @@ import com.conquestreforged.core.init.Context;
 import com.google.common.base.Preconditions;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
-import net.minecraft.item.DyeColor;
-import net.minecraft.item.ItemGroup;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
-public class Props implements BlockFactory {
-
-    /**
-     * Used internally to create the Block.Properties builder which requires an instance of either:
-     * 1. a Block
-     * 2. a Material & MaterialColor
-     * 3. just a Material
-     */
-    private final Block block;
-    private final Material material;
-    private final MaterialColor color;
+public class Props extends BlockProps<Props> implements BlockFactory {
 
     /**
      * Certain Block constructor methods need a BlockState passing to them, ie a 'parent'.
@@ -43,21 +28,7 @@ public class Props implements BlockFactory {
      * This Block should therefore NOT require a parent Block or BlockState in it's own constructor.
      */
     private BlockState parent = null;
-
     private BlockName name = null;
-    private DyeColor dyeColor = null;
-    private SoundType sound = null;
-    private ItemGroup group = ItemGroup.SEARCH;
-    private int light = Integer.MAX_VALUE;
-    private float resistance = Float.MAX_VALUE;
-    private float hardness = Float.MAX_VALUE;
-    private float slipperiness = Float.MAX_VALUE;
-    private boolean randomTick = false;
-    private boolean variableOpacity = false;
-    private boolean blocksMovement = true;
-    private boolean floats = true;
-    private boolean solid = true;
-
     private ColorType colorType = ColorType.NONE;
     private Textures.Builder textures;
     private Map<String, Object> extradata = Collections.emptyMap();
@@ -65,21 +36,24 @@ public class Props implements BlockFactory {
     private boolean manual = false;
 
     private Props(Block block) {
-        this.block = block;
-        this.material = null;
-        this.color = null;
+        super(block);
     }
 
     private Props(Material material) {
-        this.block = null;
-        this.material = material;
-        this.color = null;
+        super(material);
     }
 
     private Props(Material material, MaterialColor color) {
-        this.block = null;
-        this.material = material;
-        this.color = color;
+        super(material, color);
+    }
+
+    private Props(Props props) {
+        super(props);
+        this.parent = props.parent;
+        this.name = props.name;
+        this.colorType = props.colorType;
+        this.textures = props.textures;
+        this.extradata = props.extradata;
     }
 
     @Override
@@ -107,14 +81,6 @@ public class Props implements BlockFactory {
         return colorType;
     }
 
-    public DyeColor dye() {
-        return dyeColor == null ? DyeColor.BLACK : dyeColor;
-    }
-
-    public MaterialColor color() {
-        return color == null ? MaterialColor.BLACK : color;
-    }
-
     public Textures textures() {
         if (textures == null || textures.isEmpty()) {
             return Textures.NONE;
@@ -122,16 +88,8 @@ public class Props implements BlockFactory {
         return textures.build();
     }
 
-    public ItemGroup group() {
-        return group;
-    }
-
     public boolean isManual() {
         return manual;
-    }
-
-    public boolean floats() {
-        return floats;
     }
 
     public boolean hasParent() {
@@ -189,57 +147,6 @@ public class Props implements BlockFactory {
         return this;
     }
 
-    public Props dye(DyeColor color) {
-        this.dyeColor = color;
-        return this;
-    }
-
-    public Props sound(SoundType sound) {
-        this.sound = sound;
-        return this;
-    }
-
-    public Props light(int light) {
-        this.light = light;
-        return this;
-    }
-
-    public Props strength(double hardness, double resistance) {
-        this.hardness = (float) hardness;
-        this.resistance = (float) resistance;
-        return this;
-    }
-
-    public Props slipperiness(double slipperiness) {
-        this.slipperiness = (float) slipperiness;
-        return this;
-    }
-
-    public Props randomTick(boolean randomTick) {
-        this.randomTick = randomTick;
-        return this;
-    }
-
-    public Props opacity(boolean variableOpacity) {
-        this.variableOpacity = variableOpacity;
-        return this;
-    }
-
-    public Props blocking(boolean blocksMovement) {
-        this.blocksMovement = blocksMovement;
-        return this;
-    }
-
-    public Props solid(boolean solid) {
-        this.solid = solid;
-        return this;
-    }
-
-    public Props floats(boolean floats) {
-        this.floats = floats;
-        return this;
-    }
-
     public Props grassColor() {
         colorType = ColorType.GRASS;
         return this;
@@ -284,13 +191,10 @@ public class Props implements BlockFactory {
 
     public Props template(BlockTemplate template) {
         if (template.getRenderLayer().isCutout()) {
-            solid(false);
+            Props props = new Props(this);
+            props.solid(false);
+            return props;
         }
-        return this;
-    }
-
-    public Props group(ItemGroup group) {
-        this.group = group;
         return this;
     }
 
@@ -300,40 +204,6 @@ public class Props implements BlockFactory {
         }
         extradata.put(key, data);
         return this;
-    }
-
-    public Block.Properties toProperties() throws InitializationException {
-        Block.Properties builder = createBuilder();
-        set(sound, null, builder::sound);
-        setInt(light, builder::lightValue);
-        setFloat(slipperiness, builder::slipperiness);
-        setBool(randomTick, false, builder::tickRandomly);
-        setBool(variableOpacity, false, builder::variableOpacity);
-        setBool(blocksMovement, true, builder::doesNotBlockMovement);
-        set(solid, true, b -> {
-            if (!b) {
-                // not solid
-                builder.func_226896_b_();
-            }
-        });
-        setFloats(resistance, hardness, builder::hardnessAndResistance);
-        return builder;
-    }
-
-    private Block.Properties createBuilder() throws InitializationException {
-        Block.Properties props;
-
-        if (block != null) {
-            props = Block.Properties.from(block);
-        } else if (color != null && material != null) {
-            props = Block.Properties.create(material, color);
-        } else if (material != null) {
-            props = Block.Properties.create(material);
-        } else {
-            throw new InitializationException("Block.Builder requires a Material");
-        }
-
-        return props;
     }
 
     public static Props create(Block block) {
@@ -355,36 +225,6 @@ public class Props implements BlockFactory {
         Preconditions.checkNotNull(material, "Material must not be null");
         Preconditions.checkNotNull(color, "MaterialColor must not be null");
         return new Props(material, color);
-    }
-
-    private static <V> void set(V value, V defValue, Consumer<V> consumer) {
-        if (value != defValue) {
-            consumer.accept(value);
-        }
-    }
-
-    private static void setInt(int value, Consumer<Integer> consumer) {
-        if (value != Integer.MAX_VALUE) {
-            consumer.accept(value);
-        }
-    }
-
-    private static void setFloat(float value, Consumer<Float> consumer) {
-        if (value != Float.MAX_VALUE) {
-            consumer.accept(value);
-        }
-    }
-
-    private static void setBool(boolean value, boolean defValue, Runnable runnable) {
-        if (value != defValue) {
-            runnable.run();
-        }
-    }
-
-    private static void setFloats(float value1, float value2, BiConsumer<Float, Float> consumer) {
-        if (value1 != Float.MAX_VALUE && value2 != Float.MAX_VALUE) {
-            consumer.accept(value1, value2);
-        }
     }
 
     private static String withNamespace(String namespace, String name) {
