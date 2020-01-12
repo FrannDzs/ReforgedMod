@@ -25,7 +25,6 @@ public abstract class BlockProps<T extends BlockProps<T>> {
     private final Material material;
     private final MaterialColor color;
     
-    private BlockName name = null;
     private DyeColor dyeColor = null;
     private SoundType sound = null;
     private ItemGroup group = ItemGroup.SEARCH;
@@ -60,7 +59,6 @@ public abstract class BlockProps<T extends BlockProps<T>> {
         this.block = props.block;
         this.material = props.material;
         this.color = props.color;
-        this.name = props.name;
         this.dyeColor = props.dyeColor;
         this.sound = props.sound;
         this.group = props.group;
