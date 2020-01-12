@@ -36,7 +36,6 @@ public abstract class BlockProps<T extends BlockProps<T>> {
     private Boolean randomTick = null;
     private Boolean variableOpacity = null;
     private Boolean blocksMovement = null;
-    private Boolean floats = null;
     private Boolean solid = null;
 
     protected BlockProps(Block block) {
@@ -72,7 +71,6 @@ public abstract class BlockProps<T extends BlockProps<T>> {
         this.randomTick = props.randomTick;
         this.variableOpacity = props.variableOpacity;
         this.blocksMovement = props.blocksMovement;
-        this.floats = props.floats;
         this.solid = props.solid;
     }
     
@@ -124,18 +122,9 @@ public abstract class BlockProps<T extends BlockProps<T>> {
         return getProps();
     }
 
-    public T floats(boolean floats) {
-        this.floats = floats;
-        return getProps();
-    }
-
     public T group(ItemGroup group) {
         this.group = group;
         return getProps();
-    }
-
-    public boolean floats() {
-        return floats;
     }
 
     public ItemGroup group() {
