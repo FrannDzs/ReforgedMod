@@ -25,7 +25,7 @@ public class DebugBindListener implements BindListener {
         BlockPos pos = new BlockPos(result.getHitVec());
         String state = toString(event.player.get().world.getBlockState(pos));
         long window = Minecraft.getInstance().func_228018_at_().getHandle();
-        event.player.get().sendMessage(new StringTextComponent("Copied to clipboard: " + state));
+        event.player.get().sendMessage(new StringTextComponent("Copied BlockInfo clipboard!"));
         GLFW.glfwSetClipboardString(window, '`' + state + '`');
     }
 
