@@ -1,5 +1,6 @@
 package com.conquestreforged.client;
 
+import com.conquestreforged.client.bind.DebugBindListener;
 import com.conquestreforged.client.bind.PaletteBindListener;
 import com.conquestreforged.client.bind.SearchBindListener;
 import com.conquestreforged.client.bind.ToggleBindListener;
@@ -23,5 +24,7 @@ public class ClientInit {
         Bindings.listen("Palette GUI", "key.keyboard.c", category, new PaletteBindListener());
 
         Bindings.listen("Search", "key.keyboard.v", category, new SearchBindListener());
+
+        Bindings.listen("Copy Block Info", "key.keyboard.x", category, new DebugBindListener());
     }
 }
