@@ -61,7 +61,7 @@ public class InitEventsClient {
         Log.debug("REGISTERING ITEM COLORS");
         IItemColor itemColor = BlockColors.toItemColor(event.getBlockColors());
         for (BlockData data : BlockDataRegistry.getInstance()) {
-            if (data.getProps().getColorType() == ColorType.GRASS) {
+            if (data.getProps().getColorType() == ColorType.GRASS || data.getProps().getColorType() == ColorType.FOLIAGE) {
                 event.getItemColors().register(itemColor, data.getBlock());
             }
         }
