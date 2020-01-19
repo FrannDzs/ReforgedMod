@@ -43,8 +43,6 @@ public class InitEventsCommon {
         Log.info("(Total) Blocks: {}, States: {}", stats.totalBlocks, stats.totalStates);
         Log.info("(Vanilla) Blocks: {}, States: {}", stats.vanillaBlocks, stats.vanillaStates);
         Log.info("(Conquest) Blocks: {}, States: {}", stats.conquestBlocks, stats.conquestStates);
-
-//        PackFinder.export(new File("data"), true);
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)

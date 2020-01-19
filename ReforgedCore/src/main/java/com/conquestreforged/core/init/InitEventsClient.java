@@ -3,9 +3,9 @@ package com.conquestreforged.core.init;
 import com.conquestreforged.core.asset.lang.VirtualLang;
 import com.conquestreforged.core.asset.pack.PackFinder;
 import com.conquestreforged.core.asset.pack.VirtualResourcepack;
-import com.conquestreforged.core.block.data.ColorType;
 import com.conquestreforged.core.block.data.BlockData;
 import com.conquestreforged.core.block.data.BlockDataRegistry;
+import com.conquestreforged.core.block.data.ColorType;
 import com.conquestreforged.core.client.color.BlockColors;
 import com.conquestreforged.core.proxy.Proxies;
 import com.conquestreforged.core.proxy.Side;
@@ -26,7 +26,7 @@ public class InitEventsClient {
 
     @SubscribeEvent // use this event as it happens later in the registry event cycle, but before first resource reload
     public static void recipes(RegistryEvent.Register<IRecipeSerializer<?>> event) {
-        Log.debug("REGISTERING CLIENT RESOURCEPACK");
+        Log.debug("Registering client resourcepack");
         Proxies.set(Side.CLIENT, new ClientProxy());
 
         Side.CLIENT.getProxy().registerListeners();
@@ -44,7 +44,7 @@ public class InitEventsClient {
 
     @SubscribeEvent
     public static void blockColors(ColorHandlerEvent.Block event) {
-        Log.debug("REGISTERING BLOCK COLORS");
+        Log.debug("Registering block colors");
         for (BlockData data : BlockDataRegistry.getInstance()) {
             if (data.getProps().getColorType() == ColorType.GRASS) {
                 event.getBlockColors().register(BlockColors.GRASS, data.getBlock());
@@ -58,7 +58,7 @@ public class InitEventsClient {
 
     @SubscribeEvent
     public static void itemColors(ColorHandlerEvent.Item event) {
-        Log.debug("REGISTERING ITEM COLORS");
+        Log.debug("Registering item colors");
         IItemColor itemColor = BlockColors.toItemColor(event.getBlockColors());
         for (BlockData data : BlockDataRegistry.getInstance()) {
             if (data.getProps().getColorType() == ColorType.GRASS) {
@@ -69,7 +69,7 @@ public class InitEventsClient {
 
     @SubscribeEvent
     public static void init(FMLClientSetupEvent event) {
-        Log.debug("REGISTERING BLOCK RENDER LAYERS");
+        Log.debug("Registering block render layers");
         BlockDataRegistry.getInstance().forEach(BlockData::addRenders);
     }
 }

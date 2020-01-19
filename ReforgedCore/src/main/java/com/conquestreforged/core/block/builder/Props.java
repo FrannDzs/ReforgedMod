@@ -49,10 +49,11 @@ public class Props extends BlockProps<Props> implements BlockFactory {
 
     private Props(Props props) {
         super(props);
-        this.parent = props.parent;
         this.name = props.name;
-        this.colorType = props.colorType;
+        this.manual = props.manual;
+        this.parent = props.parent;
         this.textures = props.textures;
+        this.colorType = props.colorType;
         this.extradata = props.extradata;
     }
 
