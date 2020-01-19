@@ -20,5 +20,5 @@ assemble {
     dependsOn(mergeJar, renameJar)
 
     // create allInOneJar (after merge)
-    finalizedBy(allInOneJar)
+//    finalizedBy(allInOneJar)
 }
