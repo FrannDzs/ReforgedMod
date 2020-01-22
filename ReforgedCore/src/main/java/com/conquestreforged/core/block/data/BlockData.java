@@ -6,6 +6,7 @@ import com.conquestreforged.core.block.builder.Props;
 import com.conquestreforged.core.block.factory.InitializationException;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
+import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 
 import java.lang.reflect.Constructor;

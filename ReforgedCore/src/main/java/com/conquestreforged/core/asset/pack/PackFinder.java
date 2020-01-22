@@ -1,13 +1,8 @@
 package com.conquestreforged.core.asset.pack;
 
 import com.conquestreforged.core.asset.meta.VirtualMeta;
-import com.conquestreforged.core.proxy.Proxies;
-import com.conquestreforged.core.proxy.Proxy;
 import com.conquestreforged.core.util.Log;
-import net.minecraft.resources.IPackFinder;
-import net.minecraft.resources.IResourcePack;
-import net.minecraft.resources.ResourcePackInfo;
-import net.minecraft.resources.ResourcePackType;
+import net.minecraft.resources.*;
 import net.minecraft.resources.data.PackMetadataSection;
 
 import java.io.File;
@@ -16,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class PackFinder implements IPackFinder {
@@ -48,10 +44,15 @@ public class PackFinder implements IPackFinder {
         }
     }
 
-    public void register() {
-        Proxy proxy = Proxies.get(type);
-        proxy.getResourcePackList().addPackFinder(this);
-        resourcePacks.forEach(proxy::registerResourcePack);
+    public void register(IResourceManager resourceManager, ResourcePackList<?> packList) {
+        Consumer<IResourcePack> consumer = pack -> {};
+        if (resourceManager instanceof FallbackResourceManager) {
+            consumer = ((FallbackResourceManager) resourceManager)::addResourcePack;
+        } else if (resourceManager instanceof SimpleReloadableResourceManager) {
+            consumer = ((SimpleReloadableResourceManager) resourceManager)::addResourcePack;
+        }
+        packList.addPackFinder(this);
+        resourcePacks.forEach(consumer);
     }
 
     public static PackFinder getInstance(ResourcePackType type) {

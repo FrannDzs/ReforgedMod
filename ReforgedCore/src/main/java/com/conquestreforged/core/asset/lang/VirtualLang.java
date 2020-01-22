@@ -3,6 +3,7 @@ package com.conquestreforged.core.asset.lang;
 import com.conquestreforged.core.asset.VirtualResource;
 import com.conquestreforged.core.util.ByteStream;
 import com.google.gson.stream.JsonWriter;
+import net.minecraft.resources.IResourceManager;
 import net.minecraft.resources.ResourcePackType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -39,7 +40,7 @@ public class VirtualLang implements VirtualResource {
     }
 
     @Override
-    public InputStream getInputStream() throws IOException {
+    public InputStream getInputStream(IResourceManager resourceManager) throws IOException {
         ByteStream.Output output = new ByteStream.Output();
         JsonWriter writer = new JsonWriter(new OutputStreamWriter(output));
         writer.setIndent("  ");

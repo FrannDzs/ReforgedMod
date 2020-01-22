@@ -1,5 +1,6 @@
 package com.conquestreforged.core.asset;
 
+import net.minecraft.resources.IResourceManager;
 import net.minecraft.resources.ResourcePackType;
 
 import java.io.IOException;
@@ -13,5 +14,5 @@ public interface VirtualResource {
 
     ResourcePackType getType();
 
-    InputStream getInputStream() throws IOException;
+    InputStream getInputStream(IResourceManager resourceManager) throws IOException;
 }

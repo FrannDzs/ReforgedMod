@@ -19,7 +19,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
-import net.minecraft.resources.ResourcePackType;
+import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -95,13 +95,7 @@ public class BlockTemplate {
 
         JsonTemplate template = TemplateCache.getInstance().get(templatePath);
         JsonOverride overrides = getOverrides(name, blockModels);
-        builder.add(new TemplateResource(
-                ResourcePackType.CLIENT_RESOURCES,
-                name.getNamespace(),
-                virtualPath,
-                overrides,
-                template
-        ));
+        builder.add(TemplateResource.asset(name.getNamespace(), virtualPath, overrides, template));
     }
 
     private void addModel(VirtualResourcepack.Builder builder, BlockName name, Textures textures, ResourceLocation regName) {
@@ -119,13 +113,7 @@ public class BlockTemplate {
             String virtualPath = Locations.modelPath(new ModelResourceLocation(virtualName));
 
             JsonTemplate template = TemplateCache.getInstance().get(templatePath);
-            builder.add(new TemplateResource(
-                    ResourcePackType.CLIENT_RESOURCES,
-                    name.getNamespace(),
-                    virtualPath,
-                    textures,
-                    template
-            ));
+            builder.add(TemplateResource.asset(name.getNamespace(), virtualPath, textures, template));
         }
     }
 
@@ -145,13 +133,7 @@ public class BlockTemplate {
 
         JsonOverride overrides = new SingleOverride("parent", new JsonPrimitive(parentModelName));
         JsonTemplate template = TemplateCache.getInstance().get(templatePath);
-        builder.add(new TemplateResource(
-                ResourcePackType.CLIENT_RESOURCES,
-                name.getNamespace(),
-                virtualPath,
-                overrides,
-                template
-        ));
+        builder.add(TemplateResource.asset(name.getNamespace(), virtualPath, overrides, template));
     }
 
     private void addRecipe(VirtualResourcepack.Builder builder, BlockName name, ResourceLocation regName) {
@@ -179,13 +161,7 @@ public class BlockTemplate {
 
         Log.debug("Generating recipe for {}", regName);
         JsonTemplate template = TemplateCache.getInstance().get(templatePath);
-        builder.add(new TemplateResource(
-                ResourcePackType.SERVER_DATA,
-                name.getNamespace(),
-                virtualPath,
-                overrides,
-                template
-        ));
+        builder.add(TemplateResource.data(name.getNamespace(), virtualPath, overrides, template));
     }
 
     private JsonOverride getOverrides(BlockName name, Model[] replacements) {

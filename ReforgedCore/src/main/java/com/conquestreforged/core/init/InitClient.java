@@ -7,12 +7,12 @@ import com.conquestreforged.core.block.data.BlockData;
 import com.conquestreforged.core.block.data.BlockDataRegistry;
 import com.conquestreforged.core.block.data.ColorType;
 import com.conquestreforged.core.client.color.BlockColors;
-import com.conquestreforged.core.proxy.Proxies;
-import com.conquestreforged.core.proxy.Side;
-import com.conquestreforged.core.proxy.impl.ClientProxy;
 import com.conquestreforged.core.util.Log;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.resources.IResourceManager;
+import net.minecraft.resources.ResourcePackList;
 import net.minecraft.resources.ResourcePackType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ColorHandlerEvent;
@@ -22,24 +22,23 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
-public class InitEventsClient {
+public class InitClient {
 
     @SubscribeEvent // use this event as it happens later in the registry event cycle, but before first resource reload
     public static void recipes(RegistryEvent.Register<IRecipeSerializer<?>> event) {
-        Log.debug("Registering client resourcepack");
-        Proxies.set(Side.CLIENT, new ClientProxy());
+        Log.debug("Registering client resources");
 
-        Side.CLIENT.getProxy().registerListeners();
+        IResourceManager resourceManager = Minecraft.getInstance().getResourceManager();
+        ResourcePackList<?> resourcePackList = Minecraft.getInstance().getResourcePackList();
 
-        // init client virtual resources (assets)
         BlockDataRegistry.getInstance().getNamespaces().forEach(namespace -> {
             VirtualResourcepack.Builder builder = VirtualResourcepack.builder(namespace).type(ResourcePackType.CLIENT_RESOURCES);
             BlockDataRegistry.getInstance().getData(namespace).forEach(data -> data.addClientResources(builder));
             builder.add(new VirtualLang(namespace));
-            builder.build();
+            builder.build(resourceManager);
         });
 
-        PackFinder.getInstance(ResourcePackType.CLIENT_RESOURCES).register();
+        PackFinder.getInstance(ResourcePackType.CLIENT_RESOURCES).register(resourceManager, resourcePackList);
     }
 
     @SubscribeEvent

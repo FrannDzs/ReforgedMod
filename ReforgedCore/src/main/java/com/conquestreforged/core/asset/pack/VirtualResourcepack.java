@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import net.minecraft.resources.IResourceManager;
 import net.minecraft.resources.ResourcePack;
 import net.minecraft.resources.ResourcePackType;
 import net.minecraft.util.ResourceLocation;
@@ -19,11 +20,13 @@ import java.util.stream.Collectors;
 
 public class VirtualResourcepack extends ResourcePack {
 
+    private final IResourceManager resourceManager;
     private final Map<String, VirtualResource> resources;
 
-    private VirtualResourcepack(ResourcePackType type, String name, Map<String, VirtualResource> resources) {
+    private VirtualResourcepack(ResourcePackType type, IResourceManager resourceManager, String name, Map<String, VirtualResource> resources) {
         super(new File(name));
         this.resources = resources;
+        this.resourceManager = resourceManager;
         PackFinder.getInstance(type).register(this);
     }
 
@@ -49,7 +52,7 @@ public class VirtualResourcepack extends ResourcePack {
         if (resource == null) {
             throw new FileNotFoundException(resourcePath);
         }
-        return resource.getInputStream();
+        return resource.getInputStream(resourceManager);
     }
 
     @Override
@@ -108,7 +111,7 @@ public class VirtualResourcepack extends ResourcePack {
                 throw new IOException();
             }
 
-            try (InputStream inputStream = entry.getValue().getInputStream()) {
+            try (InputStream inputStream = entry.getValue().getInputStream(resourceManager)) {
                 if (inputStream == null) {
                     throw new IOException();
                 }
@@ -131,7 +134,7 @@ public class VirtualResourcepack extends ResourcePack {
                 throw new IOException();
             }
 
-            try (InputStream inputStream = entry.getValue().getInputStream()) {
+            try (InputStream inputStream = entry.getValue().getInputStream(resourceManager)) {
                 if (inputStream == null) {
                     throw new IOException();
                 }
@@ -169,7 +172,7 @@ public class VirtualResourcepack extends ResourcePack {
             return this;
         }
 
-        public VirtualResourcepack build() {
+        public VirtualResourcepack build(IResourceManager resourceManager) {
             Map<String, VirtualResource> map = new HashMap<>();
             // first so can be overridden
             map.put("pack.mcmeta", new VirtualMeta(namespace, namespace));
@@ -177,7 +180,7 @@ public class VirtualResourcepack extends ResourcePack {
             resources.forEach(r -> map.put(r.getPath(), r));
 
             String suffix = type == ResourcePackType.CLIENT_RESOURCES ? "_virtual_assets" : "_virtual_data";
-            return new VirtualResourcepack(type, namespace + suffix, map);
+            return new VirtualResourcepack(type, resourceManager, namespace + suffix, map);
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.conquestreforged.core.init;
+package com.conquestreforged.core.util;
 
 import net.minecraft.block.Block;
 import net.minecraft.util.ResourceLocation;

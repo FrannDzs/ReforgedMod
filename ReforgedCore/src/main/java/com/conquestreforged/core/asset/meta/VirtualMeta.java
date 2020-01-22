@@ -5,6 +5,7 @@ import com.conquestreforged.core.util.ByteStream;
 import com.google.gson.JsonObject;
 import com.google.gson.internal.Streams;
 import com.google.gson.stream.JsonWriter;
+import net.minecraft.resources.IResourceManager;
 import net.minecraft.resources.ResourcePackType;
 import net.minecraft.resources.data.PackMetadataSection;
 
@@ -55,7 +56,7 @@ public class VirtualMeta implements VirtualResource {
     }
 
     @Override
-    public InputStream getInputStream() throws IOException {
+    public InputStream getInputStream(IResourceManager resourceManager) throws IOException {
         ByteStream.Output out = new ByteStream.Output();
         try (JsonWriter writer = new JsonWriter(new OutputStreamWriter(out))) {
             Streams.write(toJson(), writer);

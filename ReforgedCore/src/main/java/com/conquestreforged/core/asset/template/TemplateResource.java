@@ -1,7 +1,6 @@
 package com.conquestreforged.core.asset.template;
 
 import com.conquestreforged.core.asset.VirtualResource;
-import com.conquestreforged.core.proxy.Proxies;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.resources.ResourcePackType;
 
@@ -17,11 +16,11 @@ public class TemplateResource implements VirtualResource {
     private final ResourcePackType packType;
 
     public TemplateResource(ResourcePackType type, String namespace, String path, JsonOverride overrides, JsonTemplate template) {
-        this.path = path;
         this.namespace = namespace;
         this.overrides = overrides;
         this.template = template;
         this.packType = type;
+        this.path = path;
     }
 
     @Override
@@ -40,9 +39,8 @@ public class TemplateResource implements VirtualResource {
     }
 
     @Override
-    public InputStream getInputStream() throws IOException {
-        IResourceManager manager = Proxies.get(getType()).getResourceManager();
-        return template.getInputStream(manager, overrides);
+    public InputStream getInputStream(IResourceManager resourceManager) throws IOException {
+        return template.getInputStream(resourceManager, overrides);
     }
 
     @Override
@@ -51,5 +49,25 @@ public class TemplateResource implements VirtualResource {
                 "path=" + path +
                 ", template=" + template +
                 '}';
+    }
+
+    public static TemplateResource asset(String namespace, String path, JsonOverride overrides, JsonTemplate template) {
+        return new TemplateResource(
+                ResourcePackType.CLIENT_RESOURCES,
+                namespace,
+                path,
+                overrides,
+                template
+        );
+    }
+
+    public static TemplateResource data(String namespace, String path, JsonOverride overrides, JsonTemplate template) {
+        return new TemplateResource(
+                ResourcePackType.SERVER_DATA,
+                namespace,
+                path,
+                overrides,
+                template
+        );
     }
 }
