@@ -1,5 +1,6 @@
 package com.conquestreforged.client.gui.palette.screen;
 
+import com.conquestreforged.client.BindManager;
 import com.conquestreforged.client.gui.base.CustomCreativeScreen;
 import com.conquestreforged.client.gui.palette.PaletteContainer;
 import com.conquestreforged.client.gui.palette.paletteOld.Render;
@@ -19,6 +20,7 @@ public class PaletteScreen extends CustomCreativeScreen<PaletteContainer> {
     private static final ResourceLocation MASK0 = new ResourceLocation("conquest:textures/gui/picker/wheel_mask0.png");
     private static final ResourceLocation MASK1 = new ResourceLocation("conquest:textures/gui/picker/wheel_mask1.png");
 
+    private static final int EXIT = 256;
     private static final int SIZE = (PaletteContainer.RADIUS + 44) * 2;
 
     private final Screen previous;
@@ -65,7 +67,7 @@ public class PaletteScreen extends CustomCreativeScreen<PaletteContainer> {
                 renderSlot(slot, slot.getStyle(), mx, my, 1F, scale);
             });
             // render hotbar
-            getContainer().visitHotbar(slot -> renderSlot(slot, mx, my, 1F,1F));
+            getContainer().visitHotbar(slot -> renderSlot(slot, mx, my, 1F, 1F));
             // render the dragged item
             renderDraggedItem(mx, my, 3F);
         }
@@ -121,6 +123,9 @@ public class PaletteScreen extends CustomCreativeScreen<PaletteContainer> {
 
     @Override
     public void onClose() {
+        if (previous != null) {
+            previous.init(Minecraft.getInstance(), width, height);
+        }
         Minecraft.getInstance().displayGuiScreen(previous);
     }
 
@@ -130,5 +135,9 @@ public class PaletteScreen extends CustomCreativeScreen<PaletteContainer> {
         this.guiLeft = (width - SIZE) / 2;
         this.guiTop = (height - SIZE) / 2;
         getContainer().init(this);
+    }
+
+    public static boolean closesGui(int key) {
+        return key == EXIT || key == BindManager.getPaletteBind().getKey().getKeyCode();
     }
 }

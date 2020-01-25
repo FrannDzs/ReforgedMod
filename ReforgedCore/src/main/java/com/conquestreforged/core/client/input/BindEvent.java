@@ -10,13 +10,13 @@ public class BindEvent {
 
     public final KeyBinding binding;
     public final boolean inGame;
-    public final boolean inGuiScreen;
+    public final boolean inGui;
     public final Optional<PlayerEntity> player;
 
     public BindEvent(KeyBinding binding) {
         this.binding = binding;
         this.inGame = Minecraft.getInstance().player != null;
-        this.inGuiScreen = Minecraft.getInstance().currentScreen != null;
+        this.inGui = Minecraft.getInstance().currentScreen != null;
         this.player = Optional.ofNullable(Minecraft.getInstance().player);
     }
 }

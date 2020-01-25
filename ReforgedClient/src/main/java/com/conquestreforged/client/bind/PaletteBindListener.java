@@ -12,10 +12,10 @@ public class PaletteBindListener implements BindListener {
 
     @Override
     public void onPress(BindEvent e) {
-        if (!e.inGame || e.inGuiScreen || !e.player.isPresent()) {
+        if (!e.inGame || e.inGui || !e.player.isPresent()) {
             return;
         }
-
+        
         e.player.map(PlayerEntity::getHeldItemMainhand).flatMap(Palette::getPalette).ifPresent(palette -> {
             PlayerEntity player = e.player.get();
             PaletteContainer container = new PaletteContainer(player.inventory, palette);
