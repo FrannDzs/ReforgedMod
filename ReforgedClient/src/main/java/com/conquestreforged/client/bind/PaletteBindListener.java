@@ -15,7 +15,7 @@ public class PaletteBindListener implements BindListener {
         if (!e.inGame || e.inGui || !e.player.isPresent()) {
             return;
         }
-        
+
         e.player.map(PlayerEntity::getHeldItemMainhand).flatMap(Palette::getPalette).ifPresent(palette -> {
             PlayerEntity player = e.player.get();
             PaletteContainer container = new PaletteContainer(player.inventory, palette);
