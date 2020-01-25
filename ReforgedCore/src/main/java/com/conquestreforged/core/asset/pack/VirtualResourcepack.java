@@ -61,8 +61,7 @@ public class VirtualResourcepack extends ResourcePack {
     }
 
     @Override
-    // getAllResourceLocations
-    public Collection<ResourceLocation> func_225637_a_(ResourcePackType type, String namespace, String path, int maxDepth, Predicate<String> filter) {
+    public Collection<ResourceLocation> getAllResourceLocations(ResourcePackType type, String namespace, String path, int maxDepth, Predicate<String> filter) {
         String prefix = type.getDirectoryName() + "/" + namespace + "/";
 
         return resources.keySet().stream()

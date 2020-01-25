@@ -187,6 +187,6 @@ public class Render {
     }
 
     public static void enableGUIStandardItemLighting() {
-        RenderHelper.func_227780_a_();
+        RenderHelper.enableStandardItemLighting();
     }
 }

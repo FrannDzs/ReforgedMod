@@ -101,7 +101,7 @@ public class TextureGroupManager {
 
         // add any other textures
         for (BakedQuad quad : quads) {
-            addTexture(quad.getSprite(), textures);
+            addTexture(quad.func_187508_a(), textures);
         }
 
         return textures;

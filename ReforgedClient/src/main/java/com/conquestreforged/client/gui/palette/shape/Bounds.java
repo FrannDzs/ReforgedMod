@@ -38,7 +38,7 @@ public class Bounds {
             buffer.begin(GL11.GL_POLYGON, DefaultVertexFormats.POSITION);
             for (Point point : points) {
                 // buffer.pos?
-                buffer.func_225584_a_(point.x, point.y, 0).endVertex();
+                buffer.pos(point.x, point.y, 0).endVertex();
             }
             tessellator.draw();
         }

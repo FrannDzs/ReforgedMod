@@ -23,8 +23,7 @@ public class RenderLayerHelper {
             }
 
             boolean match = false;
-            // func_228661_n_ - getBlockRenderTypes ?
-            for (RenderType type : RenderType.func_228661_n_()) {
+            for (RenderType type : RenderType.getBlockRenderTypes()) {
                 if (type.toString().equalsIgnoreCase(layer.name())) {
                     types.put(layer, type);
                     match = true;

@@ -26,7 +26,7 @@ public class BlockColors {
 
     public static final IBlockColor WATER = (state, reader, pos, tint) -> {
         if (reader != null && pos != null) {
-            return BiomeColors.func_228363_c_(reader, pos);
+            return BiomeColors.getWaterColor(reader, pos);
         }
         return defaultWaterColor();
     };
@@ -34,7 +34,7 @@ public class BlockColors {
     public static IItemColor toItemColor(net.minecraft.client.renderer.color.BlockColors colors) {
         return (stack, tint) -> {
             BlockState state = ((BlockItem) stack.getItem()).getBlock().getDefaultState();
-            return colors.func_228054_a_(state, null, null, tint);
+            return colors.getColor(state, null, null, tint);
         };
     }
 
