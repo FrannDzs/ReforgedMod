@@ -19,10 +19,11 @@ public class Bindings {
         return new KeyBinding(description, getInputId(input), category);
     }
 
-    public static void listen(String description, String input, String category, BindListener listener) {
+    public static KeyBinding create(String description, String input, String category, BindListener listener) {
         EventBinding binding = new EventBinding(description, getInputId(input), category);
         binding.listen(listener);
         bindings.add(binding);
+        return binding;
     }
 
     public static int getInputId(String inputName) {

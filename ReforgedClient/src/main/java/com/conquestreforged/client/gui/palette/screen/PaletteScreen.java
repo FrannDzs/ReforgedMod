@@ -3,8 +3,8 @@ package com.conquestreforged.client.gui.palette.screen;
 import com.conquestreforged.client.gui.base.CustomCreativeScreen;
 import com.conquestreforged.client.gui.palette.PaletteContainer;
 import com.conquestreforged.client.gui.palette.paletteOld.Render;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
@@ -21,8 +21,15 @@ public class PaletteScreen extends CustomCreativeScreen<PaletteContainer> {
 
     private static final int SIZE = (PaletteContainer.RADIUS + 44) * 2;
 
+    private final Screen previous;
+
     public PaletteScreen(PlayerEntity player, PlayerInventory inventory, PaletteContainer container) {
+        this(null, player, inventory, container);
+    }
+
+    public PaletteScreen(Screen previous, PlayerEntity player, PlayerInventory inventory, PaletteContainer container) {
         super(container, inventory, new StringTextComponent("Palette Screen"));
+        this.previous = previous;
         this.passEvents = true;
         player.openContainer = container;
     }
@@ -110,6 +117,11 @@ public class PaletteScreen extends CustomCreativeScreen<PaletteContainer> {
     @Override
     protected boolean isContainerSlot(Slot slot) {
         return slot.inventory == getContainer().getPaletteInventory();
+    }
+
+    @Override
+    public void onClose() {
+        Minecraft.getInstance().displayGuiScreen(previous);
     }
 
     private void resize(int width, int height) {

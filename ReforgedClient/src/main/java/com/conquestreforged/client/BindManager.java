@@ -6,25 +6,32 @@ import com.conquestreforged.client.bind.SearchBindListener;
 import com.conquestreforged.client.bind.ToggleBindListener;
 import com.conquestreforged.core.client.input.Bindings;
 import com.conquestreforged.core.util.Log;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
-public class ClientInit {
+public class BindManager {
 
     private static final String category = "key.category.conquest";
+
+    private static KeyBinding palette;
 
     @SubscribeEvent
     public static void init(FMLClientSetupEvent event) {
         Log.info("Registering keybinds");
 
-        Bindings.listen("Block Toggle", "key.keyboard.b", category, new ToggleBindListener());
+        Bindings.create("Block Toggle", "key.keyboard.b", category, new ToggleBindListener());
 
-        Bindings.listen("Palette GUI", "key.keyboard.c", category, new PaletteBindListener());
+        palette = Bindings.create("Palette GUI", "key.keyboard.c", category, new PaletteBindListener());
 
-        Bindings.listen("Search", "key.keyboard.v", category, new SearchBindListener());
+        Bindings.create("Search", "key.keyboard.v", category, new SearchBindListener());
 
-        Bindings.listen("Copy Block Info", "key.keyboard.x", category, new DebugBindListener());
+        Bindings.create("Copy Block Info", "key.keyboard.x", category, new DebugBindListener());
+    }
+
+    public static KeyBinding getPaletteBind() {
+        return palette;
     }
 }

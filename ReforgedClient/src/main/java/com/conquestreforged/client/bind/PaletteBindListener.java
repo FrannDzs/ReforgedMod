@@ -12,7 +12,7 @@ public class PaletteBindListener implements BindListener {
 
     @Override
     public void onPress(BindEvent e) {
-        if (!e.inGame || !e.player.isPresent()) {
+        if (!e.inGame || e.inGuiScreen || !e.player.isPresent()) {
             return;
         }
 
