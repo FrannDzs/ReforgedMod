@@ -11,6 +11,7 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.GuiScreenEvent;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -64,6 +65,15 @@ public class PaletteGuiEvents {
             PaletteContainer container = new PaletteContainer(player.inventory, palette.get());
             PaletteScreen paletteScreen = new PaletteScreen(screen, player, player.inventory, container);
             Minecraft.getInstance().displayGuiScreen(paletteScreen);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onRender(RenderGameOverlayEvent.Pre event) {
+        if (event.getType() == RenderGameOverlayEvent.ElementType.HOTBAR) {
+            if (Minecraft.getInstance().currentScreen instanceof PaletteScreen) {
+                event.setCanceled(true);
+            }
         }
     }
 }

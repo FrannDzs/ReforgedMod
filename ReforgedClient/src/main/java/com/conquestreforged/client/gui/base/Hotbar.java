@@ -36,8 +36,9 @@ public class Hotbar {
         int vMax = 22;
         int left = (screen.width / 2) - (uMax / 2);
         int top = screen.height - vMax;
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.enableBlend();
         Render.drawTexture(HOTBAR, left, top, screen.getBlitOffset(), u, v, uMax, vMax);
+        RenderSystem.disableBlend();
     }
 
     public void addTo(AbstractContainer container, int left, int top) {

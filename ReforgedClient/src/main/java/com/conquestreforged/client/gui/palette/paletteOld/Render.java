@@ -5,15 +5,8 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.SpectralArrowRenderer;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.Effect;
-import net.minecraft.potion.Effects;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
@@ -158,8 +151,6 @@ public class Render {
             RenderSystem.translatef(x, y, z);
             RenderSystem.setupOutline();
             RenderSystem.disableBlend();
-            RenderSystem.enableColorMaterial();
-//            RenderSystem.colorMaterial(color, color);
 
             Minecraft.getInstance().getItemRenderer().renderItemIntoGUI(stack, 0, 0);
 
