@@ -1,11 +1,17 @@
 package com.conquestreforged.client.gui.palette.paletteOld;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
@@ -144,17 +150,24 @@ public class Render {
 
     public static void drawItemStackHighlight(ItemStack stack, int x, int y, int z, float scale, int color) {
         if (stack != null) {
-            RenderHelper.disableStandardItemLighting();
+            int dark = 0;
+            int light = 15728888;
 
+            RenderSystem.setupOutline();
             RenderSystem.pushMatrix();
             RenderSystem.scalef(scale, scale, 0);
             RenderSystem.translatef(x, y, z);
-            RenderSystem.setupOutline();
-            RenderSystem.disableBlend();
 
-            Minecraft.getInstance().getItemRenderer().renderItemIntoGUI(stack, 0, 0);
+            ItemRenderer renderer = Minecraft.getInstance().getItemRenderer();
+            RenderSystem.translatef(8.0F, 8.0F, 0.0F);
+            RenderSystem.scalef(1.0F, -1.0F, 1.0F);
+            RenderSystem.scalef(16.0F, 16.0F, 16.0F);
+            MatrixStack matrixstack = new MatrixStack();
+            IRenderTypeBuffer.Impl buffer = Minecraft.getInstance().getRenderTypeBuffers().getBufferSource();
+            IBakedModel model = renderer.getItemModelMesher().getItemModel(stack);
+            renderer.renderItem(stack, ItemCameraTransforms.TransformType.GUI, false, matrixstack, buffer, dark, OverlayTexture.DEFAULT_LIGHT, model);
+            buffer.finish();
 
-            RenderSystem.disableColorMaterial();
             RenderSystem.teardownOutline();
             RenderSystem.popMatrix();
         }
