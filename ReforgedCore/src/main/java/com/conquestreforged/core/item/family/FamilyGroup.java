@@ -5,9 +5,11 @@ import com.conquestreforged.core.util.Stack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 public class FamilyGroup extends TaggedGroup<FamilyGroup> {
 
@@ -58,5 +60,10 @@ public class FamilyGroup extends TaggedGroup<FamilyGroup> {
             filler = ROOT_ITEMS;
             FAMILY_GROUPS.forEach(FamilyGroup::invalidate);
         }
+    }
+
+    public static Stream<FamilyGroup> stream() {
+        return FAMILY_GROUPS.stream()
+                .sorted(Comparator.comparing(FamilyGroup::getOrderIndex));
     }
 }
