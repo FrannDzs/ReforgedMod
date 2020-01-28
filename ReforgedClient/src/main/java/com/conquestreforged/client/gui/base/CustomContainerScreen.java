@@ -63,6 +63,7 @@ public abstract class CustomContainerScreen<T extends Container> extends Contain
             RenderSystem.pushMatrix();
             RenderSystem.translatef(mx, my, zlevel);
             RenderSystem.enableDepthTest();
+            Render.drawItemStackHighlight(held, -8, -8, 1.075F, 0);
             this.itemRenderer.renderItemAndEffectIntoGUI(playerInventory.player, held, -8, -8);
             this.itemRenderer.renderItemOverlayIntoGUI(font, held, -8, -8, null);
             RenderSystem.popMatrix();
@@ -92,9 +93,10 @@ public abstract class CustomContainerScreen<T extends Container> extends Contain
 
         if (!isOverSlot) {
             // draw highlight
-            if (style != null && isMouseOver(slot, mx, my, 11, scale)) {
+            ItemStack held = playerInventory.getItemStack();
+            if (held.isEmpty() && style != null && isMouseOver(slot, mx, my, 11, scale)) {
                 isOverSlot = true;
-                Render.drawItemStackHighlight(itemstack, -8, -8, 1.1F, style.selectedColor);
+                Render.drawItemStackHighlight(itemstack, -8, -8, 1.08F, style.selectedColor);
             }
         }
 
