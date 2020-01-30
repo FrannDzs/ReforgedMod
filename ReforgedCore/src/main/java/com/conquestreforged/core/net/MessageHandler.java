@@ -1,4 +1,4 @@
-package com.conquestreforged.core.networking;
+package com.conquestreforged.core.net;
 
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;

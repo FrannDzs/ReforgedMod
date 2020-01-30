@@ -8,7 +8,7 @@ import net.minecraftforge.common.capabilities.Capability;
  * Like Handler but encodes/decodes the network packets to/from nbt
  * using the Handler's write/read methods
  */
-public interface NBTHandler<T> extends Handler<T> {
+public interface NBTHandler<T> extends CapabilityHandler<T> {
 
     T create();
 

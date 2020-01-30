@@ -3,11 +3,11 @@ package com.conquestreforged.client.bind;
 import com.conquestreforged.core.capability.Capabilities;
 import com.conquestreforged.core.client.input.BindEvent;
 import com.conquestreforged.core.client.input.BindListener;
-import com.conquestreforged.core.networking.Channels;
+import com.conquestreforged.core.net.Channels;
 import net.minecraft.client.Minecraft;
-import net.minecraftforge.common.util.LazyOptional;
 
 public class ToggleBindListener implements BindListener {
+
     @Override
     public void onPress(BindEvent e) {
         if (!e.inGame || !e.player.isPresent()) {

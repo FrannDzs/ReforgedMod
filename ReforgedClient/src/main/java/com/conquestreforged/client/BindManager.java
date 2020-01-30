@@ -7,11 +7,12 @@ import com.conquestreforged.client.bind.ToggleBindListener;
 import com.conquestreforged.core.client.input.Bindings;
 import com.conquestreforged.core.util.Log;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
+@Mod.EventBusSubscriber(value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class BindManager {
 
     private static final String category = "key.category.conquest";

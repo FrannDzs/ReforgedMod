@@ -2,7 +2,6 @@ rootProject.name = "ConquestReforged"
 include "ReforgedCore"
 include "ReforgedContent"
 include "ReforgedClient"
-//include "ReforgedEntities"
 
 rootProject.children.each { project ->
     project.buildFileName = "module.gradle"

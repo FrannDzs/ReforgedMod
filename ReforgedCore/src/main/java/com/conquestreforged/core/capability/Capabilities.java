@@ -2,7 +2,7 @@ package com.conquestreforged.core.capability;
 
 import com.conquestreforged.core.capability.toggle.Toggle;
 import com.conquestreforged.core.capability.toggle.ToggleHandler;
-import com.conquestreforged.core.networking.Channels;
+import com.conquestreforged.core.net.Channels;
 import com.conquestreforged.core.util.Dummy;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.common.capabilities.Capability;
@@ -22,6 +22,6 @@ public class Capabilities {
 
     @SubscribeEvent
     public static void common(FMLCommonSetupEvent event) {
-        CapabilityHelper.register("toggle", () -> TOGGLE, Channels.TOGGLE, PlayerEntity.class, Toggle.class, new ToggleHandler());
+        Channels.TOGGLE.register(PlayerEntity.class, Toggle.class, () -> TOGGLE, new ToggleHandler());
     }
 }
