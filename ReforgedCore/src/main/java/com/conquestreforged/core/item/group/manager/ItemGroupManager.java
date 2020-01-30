@@ -1,7 +1,7 @@
 package com.conquestreforged.core.item.group.manager;
 
 import com.conquestreforged.core.item.group.ConquestItemGroup;
-import com.conquestreforged.core.util.Log;
+import com.conquestreforged.core.util.log.Log;
 import com.google.common.collect.Lists;
 import net.minecraft.item.ItemGroup;
 import net.minecraftforge.api.distmarker.Dist;

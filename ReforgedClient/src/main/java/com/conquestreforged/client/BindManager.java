@@ -5,7 +5,7 @@ import com.conquestreforged.client.bind.PaletteBindListener;
 import com.conquestreforged.client.bind.SearchBindListener;
 import com.conquestreforged.client.bind.ToggleBindListener;
 import com.conquestreforged.core.client.input.Bindings;
-import com.conquestreforged.core.util.Log;
+import com.conquestreforged.core.util.log.Log;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;

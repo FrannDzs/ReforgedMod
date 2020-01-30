@@ -1,7 +1,7 @@
 package com.conquestreforged.core.asset.pack;
 
 import com.conquestreforged.core.asset.meta.VirtualMeta;
-import com.conquestreforged.core.util.Log;
+import com.conquestreforged.core.util.log.Log;
 import net.minecraft.resources.*;
 import net.minecraft.resources.data.PackMetadataSection;
 

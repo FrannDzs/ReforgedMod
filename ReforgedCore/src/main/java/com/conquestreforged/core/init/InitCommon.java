@@ -2,7 +2,7 @@ package com.conquestreforged.core.init;
 
 import com.conquestreforged.core.block.data.BlockDataRegistry;
 import com.conquestreforged.core.util.BlockStats;
-import com.conquestreforged.core.util.Log;
+import com.conquestreforged.core.util.log.Log;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraftforge.event.RegistryEvent;

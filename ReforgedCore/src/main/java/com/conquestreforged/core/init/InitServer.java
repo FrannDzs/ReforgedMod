@@ -3,7 +3,7 @@ package com.conquestreforged.core.init;
 import com.conquestreforged.core.asset.pack.PackFinder;
 import com.conquestreforged.core.asset.pack.VirtualResourcepack;
 import com.conquestreforged.core.block.data.BlockDataRegistry;
-import com.conquestreforged.core.util.Log;
+import com.conquestreforged.core.util.log.Log;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.resources.ResourcePackList;
 import net.minecraft.resources.ResourcePackType;

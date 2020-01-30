@@ -1,6 +1,6 @@
 package com.conquestreforged.client.gui.palette.texture;
 
-import com.conquestreforged.core.util.Log;
+import com.conquestreforged.core.util.log.Log;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;

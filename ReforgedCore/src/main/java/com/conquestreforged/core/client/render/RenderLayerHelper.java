@@ -1,7 +1,7 @@
 package com.conquestreforged.core.client.render;
 
-import com.conquestreforged.core.util.Log;
 import com.conquestreforged.core.util.RenderLayer;
+import com.conquestreforged.core.util.log.Log;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;

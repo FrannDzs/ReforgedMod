@@ -7,7 +7,7 @@ import com.conquestreforged.core.block.data.BlockData;
 import com.conquestreforged.core.block.data.BlockDataRegistry;
 import com.conquestreforged.core.block.data.ColorType;
 import com.conquestreforged.core.client.color.BlockColors;
-import com.conquestreforged.core.util.Log;
+import com.conquestreforged.core.util.log.Log;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.item.crafting.IRecipeSerializer;

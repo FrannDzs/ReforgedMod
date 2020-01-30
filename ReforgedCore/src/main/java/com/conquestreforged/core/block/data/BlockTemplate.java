@@ -13,13 +13,12 @@ import com.conquestreforged.core.asset.template.TemplateResource;
 import com.conquestreforged.core.block.builder.BlockName;
 import com.conquestreforged.core.block.builder.Textures;
 import com.conquestreforged.core.client.render.RenderLayerHelper;
-import com.conquestreforged.core.util.Log;
 import com.conquestreforged.core.util.RenderLayer;
+import com.conquestreforged.core.util.log.Log;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
-import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
 

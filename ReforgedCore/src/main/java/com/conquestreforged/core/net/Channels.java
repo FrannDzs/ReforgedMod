@@ -2,7 +2,7 @@ package com.conquestreforged.core.net;
 
 import com.conquestreforged.core.capability.toggle.Toggle;
 import com.conquestreforged.core.init.Context;
-import com.conquestreforged.core.util.Log;
+import com.conquestreforged.core.util.log.Log;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
