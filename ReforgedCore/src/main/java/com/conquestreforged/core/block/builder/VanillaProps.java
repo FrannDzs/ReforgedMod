@@ -52,7 +52,7 @@ public class VanillaProps {
     }
 
     // blocks movement - not sure what is desirable
-    public static Props paper() {
+    public static Props plantLike() {
         return Props.create(Material.WOOL).sound(SoundType.PLANT).group(ItemGroup.BUILDING_BLOCKS);
     }
 
