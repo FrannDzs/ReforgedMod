@@ -93,6 +93,6 @@ public class VanillaProps {
      * Gravel props but uses grass color
      */
     public static Props grassyGravel() {
-        return sand().grassColor();
+        return gravel().grassColor();
     }
 }
