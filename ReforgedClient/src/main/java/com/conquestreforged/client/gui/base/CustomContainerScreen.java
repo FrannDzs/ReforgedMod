@@ -10,6 +10,7 @@ import net.minecraft.inventory.container.ClickType;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
 import javax.annotation.Nullable;
@@ -86,6 +87,10 @@ public abstract class CustomContainerScreen<T extends Container> extends Contain
         RenderSystem.translatef(x, y, zlevel);
         RenderSystem.scalef(scale, scale, 1);
         RenderSystem.enableDepthTest();
+
+        if (slot instanceof SlotBackground) {
+            ResourceLocation texture = ((SlotBackground) slot).getBackground();
+        }
 
         // set z-level
         this.setBlitOffset(0);

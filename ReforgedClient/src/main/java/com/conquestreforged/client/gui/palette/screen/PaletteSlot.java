@@ -19,10 +19,7 @@ public class PaletteSlot extends Slot {
         super(inventory, index, x - 8, y - 8);
         this.style = style;
         this.bounds = bounds;
-    }
-
-    public ResourceLocation getBackground() {
-        return SLOT;
+        setBackground(SLOT, SLOT);
     }
 
     public Style getStyle() {
@@ -35,6 +32,10 @@ public class PaletteSlot extends Slot {
 
     public boolean isMouseOver(int mx, int my) {
         return mx >= xPos - 11 && mx <= xPos + 11 && my >= yPos - 11 && my <= yPos + 11;
+    }
+
+    public ResourceLocation getBackground() {
+        return SLOT;
     }
 
     @Override

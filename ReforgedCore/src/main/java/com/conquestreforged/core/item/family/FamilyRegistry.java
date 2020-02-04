@@ -25,8 +25,12 @@ public class FamilyRegistry<T extends IForgeRegistryEntry> {
 
     public void register(Family<T> family) {
         for (T member : family.getMembers()) {
-            families.put(member.getRegistryName(), family);
+            register(member, family);
         }
+    }
+
+    public void register(T member, Family<T> family) {
+        families.put(member.getRegistryName(), family);
     }
 
     public void registerToFamily(ResourceLocation parent, T child) {

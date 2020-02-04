@@ -1,0 +1,14 @@
+[
+  {
+    "type": "MOD",
+    "id": "optifine",
+    "name": "Optifine",
+    "url": "https://optifine.net"
+  },
+  {
+    "type": "RESOURCEPACK",
+    "id": "conquestreforged",
+    "name": "ConquestReforged Resourcepack",
+    "url": "https://curseforge.com/TODO"
+  }
+]
