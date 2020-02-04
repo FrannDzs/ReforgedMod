@@ -1,6 +1,8 @@
 package com.conquestreforged.core.block.builder;
 
 import net.minecraft.block.Blocks;
+import net.minecraft.block.SoundType;
+import net.minecraft.block.material.Material;
 import net.minecraft.item.ItemGroup;
 
 public class VanillaProps {
@@ -47,6 +49,11 @@ public class VanillaProps {
 
     public static Props earth() {
         return Props.create(Blocks.DIRT).group(ItemGroup.BUILDING_BLOCKS);
+    }
+
+    // blocks movement - not sure what is desirable
+    public static Props paper() {
+        return Props.create(Material.WOOL).sound(SoundType.PLANT).group(ItemGroup.BUILDING_BLOCKS);
     }
 
     public static Props ice() {
