@@ -3,9 +3,6 @@ package com.conquestreforged.core.asset.pack;
 import com.conquestreforged.core.asset.VirtualResource;
 import com.conquestreforged.core.asset.meta.VirtualMeta;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.resources.ResourcePack;
 import net.minecraft.resources.ResourcePackType;
@@ -13,8 +10,11 @@ import net.minecraft.util.ResourceLocation;
 
 import java.io.*;
 import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
+import java.nio.file.Path;
 import java.util.*;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.Future;
+import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -30,20 +30,16 @@ public class VirtualResourcepack extends ResourcePack {
         PackFinder.getInstance(type).register(this);
     }
 
+    public int size() {
+        return resources.size();
+    }
+
     public boolean isEmpty() {
         return resources.isEmpty();
     }
 
-    public VirtualResource getResource(ResourceLocation location) throws FileNotFoundException {
-        return getResource(Locations.path(location));
-    }
-
-    public VirtualResource getResource(String resourcePath) throws FileNotFoundException {
-        VirtualResource resource = resources.get(resourcePath);
-        if (resource == null) {
-            throw new FileNotFoundException(resourcePath);
-        }
-        return resource;
+    public IResourceManager getResourceManager() {
+        return resourceManager;
     }
 
     @Override
@@ -98,53 +94,27 @@ public class VirtualResourcepack extends ResourcePack {
 
     }
 
-    public void export(File dir) throws IOException {
-        if (!dir.exists() && !dir.mkdirs()) {
-            throw new IOException();
-        }
-
-        for (Map.Entry<String, VirtualResource> entry : resources.entrySet()) {
-            File out = new File(dir, entry.getKey());
-            File parent = out.getParentFile();
-            if (!parent.exists() && !parent.mkdirs()) {
-                throw new IOException();
-            }
-
-            try (InputStream inputStream = entry.getValue().getInputStream(resourceManager)) {
-                if (inputStream == null) {
-                    throw new IOException();
-                }
-                Files.copy(inputStream, out.toPath(), StandardCopyOption.REPLACE_EXISTING);
-            }
-        }
+    public void forEach(BiConsumer<String, VirtualResource> visitor) {
+        resources.forEach(visitor);
     }
 
-    public void exportPretty(File dir) throws IOException {
-        if (!dir.exists() && !dir.mkdirs()) {
-            throw new IOException("Could not create directory: " + dir);
-        }
-
-        Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
-        JsonParser parser = new JsonParser();
+    public List<Future<?>> export(Path dir, Gson gson) {
+        List<Future<?>> tasks = new ArrayList<>(resources.size());
         for (Map.Entry<String, VirtualResource> entry : resources.entrySet()) {
-            File out = new File(dir, entry.getKey());
-            File parent = out.getParentFile();
-            if (!parent.exists() && !parent.mkdirs()) {
-                throw new IOException();
-            }
+            final Path path = dir.resolve(entry.getKey());
+            final VirtualResource resource = entry.getValue();
+            tasks.add(ForkJoinPool.commonPool().submit(() -> {
+                try {
+                    Files.createDirectories(path.getParent());
+                    try (BufferedWriter writer = Files.newBufferedWriter(path)) {
+                        gson.toJson(resource.getJson(resourceManager), writer);
+                    }
+                } catch (Throwable ignored) {
 
-            try (InputStream inputStream = entry.getValue().getInputStream(resourceManager)) {
-                if (inputStream == null) {
-                    throw new IOException();
                 }
-                JsonElement element = parser.parse(new InputStreamReader(inputStream));
-                try (FileWriter writer = new FileWriter(out)) {
-                    gson.toJson(element, writer);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            }));
         }
+        return tasks;
     }
 
     public static Builder builder(String name) {
@@ -178,7 +148,7 @@ public class VirtualResourcepack extends ResourcePack {
             // add resources second
             resources.forEach(r -> map.put(r.getPath(), r));
 
-            String suffix = type == ResourcePackType.CLIENT_RESOURCES ? "_virtual_assets" : "_virtual_data";
+            String suffix = type == ResourcePackType.CLIENT_RESOURCES ? "_resources" : "_data";
             return new VirtualResourcepack(type, resourceManager, namespace + suffix, map);
         }
     }

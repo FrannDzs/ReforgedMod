@@ -5,12 +5,10 @@ import com.conquestreforged.core.util.log.Log;
 import net.minecraft.resources.*;
 import net.minecraft.resources.data.PackMetadataSection;
 
-import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -44,40 +42,18 @@ public class PackFinder implements IPackFinder {
         }
     }
 
-    public void register(IResourceManager resourceManager, ResourcePackList<?> packList) {
+    public void register(IResourceManager resourceManager, Consumer<IPackFinder> packList) {
         Consumer<IResourcePack> consumer = pack -> {};
         if (resourceManager instanceof FallbackResourceManager) {
             consumer = ((FallbackResourceManager) resourceManager)::addResourcePack;
         } else if (resourceManager instanceof SimpleReloadableResourceManager) {
             consumer = ((SimpleReloadableResourceManager) resourceManager)::addResourcePack;
         }
-        packList.addPackFinder(this);
+        packList.accept(this);
         resourcePacks.forEach(consumer);
     }
 
     public static PackFinder getInstance(ResourcePackType type) {
         return finders.computeIfAbsent(type, PackFinder::new);
-    }
-
-    public static void iterate(BiConsumer<ResourcePackType, VirtualResourcepack> consumer) {
-        for (PackFinder finder : finders.values()) {
-            for (VirtualResourcepack pack : finder.resourcePacks) {
-                consumer.accept(finder.type, pack);
-            }
-        }
-    }
-
-    public static void export(File dir, boolean pretty) {
-        iterate((type, pack) -> {
-            try {
-                if (pretty) {
-                    pack.exportPretty(dir);
-                } else {
-                    pack.export(dir);
-                }
-            } catch (Throwable t) {
-                t.printStackTrace();
-            }
-        });
     }
 }

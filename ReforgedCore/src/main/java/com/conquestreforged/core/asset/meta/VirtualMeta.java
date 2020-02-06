@@ -2,6 +2,7 @@ package com.conquestreforged.core.asset.meta;
 
 import com.conquestreforged.core.asset.VirtualResource;
 import com.conquestreforged.core.util.ByteStream;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.internal.Streams;
 import com.google.gson.stream.JsonWriter;
@@ -25,17 +26,6 @@ public class VirtualMeta implements VirtualResource {
         this.namespace = namespace;
     }
 
-    public JsonObject toJson() {
-        JsonObject pack = new JsonObject();
-        pack.addProperty("description", description);
-        pack.addProperty("pack_format", PACK_FORMAT);
-
-        JsonObject meta = new JsonObject();
-        meta.add("pack", pack);
-        meta.add("language", new JsonObject());
-        return pack;
-    }
-
     public PackMetadataSection toMetadata() {
         return PackMetadataSection.SERIALIZER.deserialize(toJson());
     }
@@ -56,11 +46,27 @@ public class VirtualMeta implements VirtualResource {
     }
 
     @Override
+    public JsonElement getJson(IResourceManager resourceManager) throws IOException {
+        return toJson();
+    }
+
+    @Override
     public InputStream getInputStream(IResourceManager resourceManager) throws IOException {
         ByteStream.Output out = new ByteStream.Output();
         try (JsonWriter writer = new JsonWriter(new OutputStreamWriter(out))) {
             Streams.write(toJson(), writer);
         }
         return out.toInputStream();
+    }
+
+    private JsonObject toJson() {
+        JsonObject pack = new JsonObject();
+        pack.addProperty("description", description);
+        pack.addProperty("pack_format", PACK_FORMAT);
+
+        JsonObject meta = new JsonObject();
+        meta.add("pack", pack);
+        meta.add("language", new JsonObject());
+        return pack;
     }
 }

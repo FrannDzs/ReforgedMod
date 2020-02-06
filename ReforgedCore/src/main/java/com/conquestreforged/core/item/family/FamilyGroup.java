@@ -63,7 +63,6 @@ public class FamilyGroup extends TaggedGroup<FamilyGroup> {
     }
 
     public static Stream<FamilyGroup> stream() {
-        return FAMILY_GROUPS.stream()
-                .sorted(Comparator.comparing(FamilyGroup::getOrderIndex));
+        return FAMILY_GROUPS.stream().sorted(Comparator.comparing(FamilyGroup::getOrderIndex));
     }
 }

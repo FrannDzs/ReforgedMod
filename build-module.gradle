@@ -25,7 +25,7 @@ minecraft {
             workingDirectory project.file("run/client")
             property "forge.logging.markers", "SCAN,REGISTRIES,REGISTRYDUMP"
             property "forge.logging.console.level", "debug"
-            jvmArgs "-Xmx6G", "-Xms4G"
+            jvmArgs "-Xmx6G", "-Xms4G", "-Ddev"
             mods {
                 conquest {
                     source sourceSets.test
@@ -36,7 +36,7 @@ minecraft {
             workingDirectory project.file("run/server")
             property "forge.logging.markers", "SCAN,REGISTRIES,REGISTRYDUMP"
             property "forge.logging.console.level", "debug"
-            jvmArgs "-Xmx6G", "-Xms4G"
+            jvmArgs "-Xmx6G", "-Xms4G", "-Ddev"
             mods {
                 conquest {
                     source sourceSets.test

@@ -24,25 +24,16 @@ public interface BlockFactory {
         for (Class<? extends Block> type : types) {
             BlockType blockType = BlockTypeCache.getInstance().get(type);
             BlockTemplate template = BlockTemplateCache.getInstance().get(type);
-            BlockData data = register(blockType, template);
+            BlockName name = getName();
+            Props props = getProps().template(template);
+            Block block = blockType.create(props);
+            BlockData data = new BlockData(block, template, name, props);
+            BlockDataRegistry.getInstance().register(data);
+            if (!getProps().hasParent()) {
+                getProps().parent(data.getBlock().getDefaultState());
+            }
             family.add(data.getBlock());
         }
         FamilyRegistry.BLOCKS.register(family);
-    }
-
-    default BlockData register(BlockType type, BlockTemplate template) throws InitializationException {
-        BlockName name = getName();
-        Props props = getProps().template(template);
-        Block block = type.create(props);
-        return register(block, template, name, props);
-    }
-
-    default BlockData register(Block block, BlockTemplate template, BlockName name, Props props) {
-        BlockData data = new BlockData(block, template, name, props);
-        BlockDataRegistry.getInstance().register(data);
-        if (!getProps().hasParent()) {
-            getProps().parent(data.getBlock().getDefaultState());
-        }
-        return data;
     }
 }

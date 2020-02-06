@@ -1,6 +1,7 @@
 package com.conquestreforged.core.asset.template;
 
 import com.conquestreforged.core.asset.VirtualResource;
+import com.google.gson.JsonElement;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.resources.ResourcePackType;
 
@@ -36,6 +37,11 @@ public class TemplateResource implements VirtualResource {
     @Override
     public ResourcePackType getType() {
         return packType;
+    }
+
+    @Override
+    public JsonElement getJson(IResourceManager resourceManager) throws IOException {
+        return template.getJson(resourceManager, overrides);
     }
 
     @Override

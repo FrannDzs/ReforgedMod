@@ -18,7 +18,4 @@ apply from: file("build-main.gradle")
 assemble {
     // create -merge jar then rename it to normal jar
     dependsOn(mergeJar, renameJar)
-
-    // create allInOneJar (after merge)
-//    finalizedBy(allInOneJar)
 }

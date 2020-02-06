@@ -2,6 +2,8 @@ package com.conquestreforged.core.asset.lang;
 
 import com.conquestreforged.core.asset.VirtualResource;
 import com.conquestreforged.core.util.ByteStream;
+import com.google.gson.JsonElement;
+import com.google.gson.internal.bind.JsonTreeWriter;
 import com.google.gson.stream.JsonWriter;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.resources.ResourcePackType;
@@ -40,20 +42,31 @@ public class VirtualLang implements VirtualResource {
     }
 
     @Override
+    public JsonElement getJson(IResourceManager resourceManager) throws IOException {
+        JsonTreeWriter writer = new JsonTreeWriter();
+        write(writer);
+        return writer.get();
+    }
+
+    @Override
     public InputStream getInputStream(IResourceManager resourceManager) throws IOException {
         ByteStream.Output output = new ByteStream.Output();
         JsonWriter writer = new JsonWriter(new OutputStreamWriter(output));
+        write(writer);
+        writer.flush();
+        return output.toInputStream();
+    }
+
+    private void write(JsonWriter writer) throws IOException {
         writer.setIndent("  ");
         writer.beginObject();
         writeTranslations(ForgeRegistries.BLOCKS, "block", writer);
         writeTranslations(ForgeRegistries.ITEMS, "item", writer);
         writer.endObject();
-        writer.flush();
-        return output.toInputStream();
     }
 
     private void writeTranslations(IForgeRegistry<?> registry, String type, JsonWriter writer) throws IOException {
-        for (IForgeRegistryEntry entry : registry) {
+        for (IForgeRegistryEntry<?> entry : registry) {
             ResourceLocation name = entry.getRegistryName();
             if (name == null || !name.getNamespace().equals(getNamespace())) {
                 continue;

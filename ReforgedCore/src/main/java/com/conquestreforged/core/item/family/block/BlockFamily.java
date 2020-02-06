@@ -10,13 +10,14 @@ import net.minecraft.util.NonNullList;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 
 public class BlockFamily extends Family<Block> {
 
     public static final BlockFamily EMPTY = new BlockFamily();
 
     private BlockFamily() {
-        super(ItemGroup.SEARCH, (b1, b2) -> 0, Collections.emptyList());
+        super(ItemGroup.SEARCH, BlockFamily.BY_NAME, Collections.emptyList());
     }
 
     public BlockFamily(ItemGroup group, TypeList order) {
@@ -37,4 +38,10 @@ public class BlockFamily extends Family<Block> {
     public boolean isAbsent() {
         return this == EMPTY;
     }
+
+    private static final Comparator<Block> BY_NAME = (b1, b2) -> {
+        String name1 = b1.getRegistryName().getPath();
+        String name2 = b2.getRegistryName().getPath();
+        return name1.compareTo(name2);
+    };
 }
