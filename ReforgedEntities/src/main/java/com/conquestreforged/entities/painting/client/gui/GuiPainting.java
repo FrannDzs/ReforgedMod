@@ -1,6 +1,5 @@
 package com.conquestreforged.entities.painting.client.gui;
 
-import com.conquestreforged.entities.painting.Proxy;
 import com.conquestreforged.entities.painting.art.Art;
 import com.conquestreforged.entities.painting.art.ModArt;
 import com.conquestreforged.entities.painting.art.VanillaArt;
@@ -107,7 +106,7 @@ public class GuiPainting extends Screen {
         PacketBuffer buffer = new PacketBuffer(Unpooled.buffer());
         buffer.writeCompoundTag(tag);
 
-        Proxy.get().sendSyncPacket(buffer);
+        // todo send
     }
 
     @Override

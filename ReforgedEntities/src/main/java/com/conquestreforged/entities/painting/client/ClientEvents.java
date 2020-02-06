@@ -17,6 +17,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ClientEvents {
+
     @SubscribeEvent
     public static void rightClick(PlayerInteractEvent.RightClickItem e) {
         if (e.getSide() != LogicalSide.CLIENT) {

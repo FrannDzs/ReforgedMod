@@ -1,4 +1,4 @@
-package com.conquestreforged.entities.painting;
+package com.conquestreforged.entities.painting.init;
 
 import com.conquestreforged.entities.ModEntities;
 import com.conquestreforged.entities.ModItems;
@@ -8,15 +8,9 @@ import net.minecraft.item.Item;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 
-/**
- * @author dags <dags@dags.me>
- */
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
-public class CommonProxy implements Proxy {
-
-    public final NetworkHandler netHandler = new NetworkHandler();
+public class Common {
 
     @SubscribeEvent
     public static void items(RegistryEvent.Register<Item> event) {
@@ -30,10 +24,5 @@ public class CommonProxy implements Proxy {
             TextureType.register("painting" + i);
         }
         event.getRegistry().register(ModEntities.PAINTING);
-    }
-
-    @SubscribeEvent
-    public static void commands(FMLServerStartingEvent event) {
-        // TODO
     }
 }

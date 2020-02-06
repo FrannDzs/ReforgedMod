@@ -46,7 +46,6 @@ public class PaintingEntity extends HangingEntity implements IEntityAdditionalSp
     }
 
     public void place(BlockPos pos, Direction side) {
-        hangingPosition = pos;
         updateFacingWithBoundingBox(side);
     }
 
@@ -127,8 +126,8 @@ public class PaintingEntity extends HangingEntity implements IEntityAdditionalSp
 
     @Override
     public void setPositionAndRotationDirect(double x, double y, double z, float a, float b, int c, boolean d) {
-        BlockPos pos = this.hangingPosition.add(x - this.posX, y - this.posY, z - this.posZ);
-        this.setPosition((double) pos.getX(), (double) pos.getY(), (double) pos.getZ());
+        BlockPos pos = this.hangingPosition.add(x - getPosX(), y - getPosY(), z - getPosZ());
+        this.setPosition(pos.getX(), pos.getY(), pos.getZ());
     }
 
     @Override

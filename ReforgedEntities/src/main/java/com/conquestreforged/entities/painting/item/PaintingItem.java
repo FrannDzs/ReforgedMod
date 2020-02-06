@@ -1,11 +1,11 @@
 package com.conquestreforged.entities.painting.item;
 
 import com.conquestreforged.entities.ModEntities;
-import com.conquestreforged.entities.painting.Proxy;
 import com.conquestreforged.entities.painting.art.Art;
 import com.conquestreforged.entities.painting.entity.ArtType;
 import com.conquestreforged.entities.painting.entity.PaintingEntity;
 import com.conquestreforged.entities.painting.entity.TextureType;
+import net.minecraft.entity.Pose;
 import net.minecraft.entity.item.HangingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -90,7 +90,7 @@ public class PaintingItem extends Item {
                 name = painting.getString(Art.TYPE_TAG);
                 artName = painting.getString(Art.ART_TAG);
             }
-            Proxy.get().handlePaintingUse(stack, name, artName);
+            // todo ???
         }
         return super.onItemRightClick(world, player, hand);
     }
@@ -105,7 +105,7 @@ public class PaintingItem extends Item {
         World world = context.getWorld();
         Hand hand = context.getHand();
         Direction side = context.getFace();
-        if (player.isSneaking()) {
+        if (player.getPose() == Pose.CROUCHING) {
             onItemRightClick(world, player, hand);
             return ActionResultType.FAIL;
         }
@@ -125,7 +125,6 @@ public class PaintingItem extends Item {
 
         if (side != Direction.DOWN && side != Direction.UP) {
             BlockPos pos = context.getPos().offset(side);
-
             HangingEntity painting = createEntity(world, pos, side, paintType, paintArt);
             if (painting == null) {
                 return ActionResultType.FAIL;
@@ -149,7 +148,7 @@ public class PaintingItem extends Item {
         if (!type.isPresent() || art == null) {
             return null;
         }
-        PaintingEntity painting = new PaintingEntity(ModEntities.PAINTING, world);
+        PaintingEntity painting = new PaintingEntity(ModEntities.PAINTING, world, pos);
         painting.setType(type);
         painting.setArt(art);
         painting.place(pos, side);
