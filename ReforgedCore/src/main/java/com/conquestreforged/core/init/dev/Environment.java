@@ -7,7 +7,7 @@ public class Environment {
     private static final boolean production = System.getProperty("dev") == null;
 
     public static boolean isProduction() {
-        return false; //production;
+        return production;
     }
 
     static {
