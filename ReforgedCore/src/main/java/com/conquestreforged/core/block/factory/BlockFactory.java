@@ -6,8 +6,8 @@ import com.conquestreforged.core.block.data.BlockData;
 import com.conquestreforged.core.block.data.BlockDataRegistry;
 import com.conquestreforged.core.block.data.BlockTemplate;
 import com.conquestreforged.core.block.data.BlockTemplateCache;
+import com.conquestreforged.core.item.family.Family;
 import com.conquestreforged.core.item.family.FamilyRegistry;
-import com.conquestreforged.core.item.family.block.BlockFamily;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 
@@ -19,8 +19,10 @@ public interface BlockFactory {
 
     BlockState getParent();
 
+    Family<Block> createFamily(TypeList types);
+
     default void register(TypeList types) {
-        BlockFamily family = new BlockFamily(getProps().group(), types);
+        Family<Block> family = createFamily(types);
         for (Class<? extends Block> type : types) {
             BlockType blockType = BlockTypeCache.getInstance().get(type);
             BlockTemplate template = BlockTemplateCache.getInstance().get(type);

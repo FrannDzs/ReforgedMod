@@ -1,13 +1,58 @@
-package com.conquestreforged.core.util;
+package com.conquestreforged.core.block;
 
 import com.conquestreforged.core.block.factory.InitializationException;
+import com.conquestreforged.core.item.ItemUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.IProperty;
+import net.minecraft.state.StateContainer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
 
-public class State {
+import java.util.Optional;
+
+public class StateUtils {
+
+    public static Optional<BlockState> fromStack(ItemStack stack) {
+        return toItemBlock(stack.getItem()).flatMap(item -> fromStack(stack, item));
+    }
+
+    public static Optional<BlockState> fromStack(ItemStack stack, BlockItem item) {
+        CompoundNBT stackTag = stack.getTag();
+        if (stackTag == null) {
+            return Optional.empty();
+        }
+
+        CompoundNBT stateTag = stackTag.getCompound("BlockStateTag");
+        if (stateTag.isEmpty()) {
+            return Optional.empty();
+        }
+
+        BlockState state = item.getBlock().getDefaultState();
+        StateContainer<Block, BlockState> container = item.getBlock().getStateContainer();
+
+        for(String key : stateTag.keySet()) {
+            IProperty<?> property = container.getProperty(key);
+            if (property != null) {
+                String s1 = stateTag.get(key).getString();
+                state = StateUtils.with(state, property, s1);
+            }
+        }
+
+        if (state == item.getBlock().getDefaultState()) {
+            return Optional.empty();
+        }
+
+        return Optional.of(state);
+    }
+
+    public static Optional<BlockItem> toItemBlock(Item item) {
+        return ItemUtils.toItem(item, BlockItem.class);
+    }
 
     public static BlockState parse(String input) {
         int domainEnd = input.indexOf(':');

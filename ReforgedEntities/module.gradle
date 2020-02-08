@@ -1,3 +1,0 @@
-dependencies {
-    compileProject (project(":ReforgedCore")) { transitive false }
-}

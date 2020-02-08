@@ -4,16 +4,22 @@ import com.conquestreforged.core.block.data.BlockTemplate;
 import com.conquestreforged.core.block.data.ColorType;
 import com.conquestreforged.core.block.factory.BlockFactory;
 import com.conquestreforged.core.block.factory.InitializationException;
+import com.conquestreforged.core.block.factory.TypeList;
 import com.conquestreforged.core.init.Context;
+import com.conquestreforged.core.item.family.Family;
+import com.conquestreforged.core.item.family.block.BlockFamily;
+import com.conquestreforged.core.item.family.block.VariantFamily;
 import com.google.common.base.Preconditions;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
+import net.minecraft.item.ItemGroup;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BiFunction;
 
 public class Props extends BlockProps<Props> implements BlockFactory {
 
@@ -32,6 +38,7 @@ public class Props extends BlockProps<Props> implements BlockFactory {
     private ColorType colorType = ColorType.NONE;
     private Textures.Builder textures;
     private Map<String, Object> extradata = Collections.emptyMap();
+    private BiFunction<ItemGroup, TypeList, Family<Block>> familyFactory = BlockFamily::new;
 
     private boolean manual = false;
 
@@ -55,6 +62,7 @@ public class Props extends BlockProps<Props> implements BlockFactory {
         this.textures = props.textures;
         this.colorType = props.colorType;
         this.extradata = props.extradata;
+        this.familyFactory = props.familyFactory;
     }
 
     @Override
@@ -76,6 +84,11 @@ public class Props extends BlockProps<Props> implements BlockFactory {
             throw new InitializationException("Parent state is null");
         }
         return parent;
+    }
+
+    @Override
+    public Family<Block> createFamily(TypeList types) {
+        return familyFactory.apply(group(), types);
     }
 
     public ColorType getColorType() {
@@ -204,6 +217,11 @@ public class Props extends BlockProps<Props> implements BlockFactory {
             extradata = new HashMap<>();
         }
         extradata.put(key, data);
+        return this;
+    }
+
+    public Props variantFamily() {
+        familyFactory = VariantFamily::new;
         return this;
     }
 

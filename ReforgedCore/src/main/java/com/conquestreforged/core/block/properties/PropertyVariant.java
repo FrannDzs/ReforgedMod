@@ -1,7 +1,7 @@
 package com.conquestreforged.core.block.properties;
 
+import com.conquestreforged.core.block.StateUtils;
 import com.conquestreforged.core.item.ItemUtils;
-import com.conquestreforged.core.util.State;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
@@ -15,7 +15,7 @@ public interface PropertyVariant {
     static <B extends Block & PropertyVariant> void fillGroup(B block, NonNullList<ItemStack> stacks) {
         IProperty<?> property = block.getVariantProperty();
         for (Object value : property.getAllowedValues()) {
-            BlockState state = State.with(block.getDefaultState(), property, value.toString());
+            BlockState state = StateUtils.with(block.getDefaultState(), property, value.toString());
             ItemStack stack = ItemUtils.fromState(state, property);
             stacks.add(stack);
         }

@@ -1,7 +1,9 @@
 package com.conquestreforged.core.init;
 
+import com.conquestreforged.core.block.BlockStats;
 import com.conquestreforged.core.block.data.BlockDataRegistry;
-import com.conquestreforged.core.util.BlockStats;
+import com.conquestreforged.core.init.dev.Environment;
+import com.conquestreforged.core.util.cache.Cache;
 import com.conquestreforged.core.util.log.Log;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -10,6 +12,7 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public class InitCommon {
@@ -33,5 +36,14 @@ public class InitCommon {
         Log.info("(Total) Blocks: {}, States: {}", stats.totalBlocks, stats.totalStates);
         Log.info("(Vanilla) Blocks: {}, States: {}", stats.vanillaBlocks, stats.vanillaStates);
         Log.info("(Conquest) Blocks: {}, States: {}", stats.conquestBlocks, stats.conquestStates);
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void complete(FMLLoadCompleteEvent event) {
+        if (Environment.isProduction()) {
+            Log.info("Load complete. Clearing loading caches");
+            Cache.clearAll();
+            BlockDataRegistry.getInstance().dispose();
+        }
     }
 }

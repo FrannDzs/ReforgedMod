@@ -1,4 +1,4 @@
-package com.conquestreforged.core.util;
+package com.conquestreforged.core.item;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;

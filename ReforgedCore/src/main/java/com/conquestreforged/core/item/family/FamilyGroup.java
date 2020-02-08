@@ -1,7 +1,7 @@
 package com.conquestreforged.core.item.family;
 
+import com.conquestreforged.core.item.Stack;
 import com.conquestreforged.core.item.group.TaggedGroup;
-import com.conquestreforged.core.util.Stack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 
@@ -46,6 +46,7 @@ public class FamilyGroup extends TaggedGroup<FamilyGroup> {
         addTaggedBlocks(items);
 
         FamilyRegistry.ITEMS.values().forEach(family -> filler.fill(family, this, items));
+        addTaggedItems(items);
     }
 
     public static void setAddAllItems() {
