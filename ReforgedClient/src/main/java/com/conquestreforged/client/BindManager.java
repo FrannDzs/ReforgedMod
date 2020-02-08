@@ -1,9 +1,6 @@
 package com.conquestreforged.client;
 
-import com.conquestreforged.client.bind.DebugBindListener;
-import com.conquestreforged.client.bind.PaletteBindListener;
-import com.conquestreforged.client.bind.SearchBindListener;
-import com.conquestreforged.client.bind.ToggleBindListener;
+import com.conquestreforged.client.bind.*;
 import com.conquestreforged.core.client.input.Bindings;
 import com.conquestreforged.core.util.log.Log;
 import net.minecraft.client.settings.KeyBinding;
@@ -25,7 +22,9 @@ public class BindManager {
 
         Bindings.create("Block Toggle", "key.keyboard.b", category, new ToggleBindListener());
 
-        palette = Bindings.create("Palette GUI", "key.keyboard.c", category, new PaletteBindListener());
+        palette = Bindings.create("Palette GUI", "key.keyboard.c", category)
+                .addListener(new PaletteBindListener())
+                .addListener(new PaintingBindListener());
 
         Bindings.create("Search", "key.keyboard.v", category, new SearchBindListener());
 

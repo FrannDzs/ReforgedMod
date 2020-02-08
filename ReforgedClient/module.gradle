@@ -1,3 +1,4 @@
 dependencies {
     compileProject (project(":ReforgedCore")) { transitive false }
+    compileProject (project(":ReforgedContent")) { transitive false }
 }

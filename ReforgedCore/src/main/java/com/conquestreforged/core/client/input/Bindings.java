@@ -15,13 +15,19 @@ public class Bindings {
 
     private static final List<EventBinding> bindings = new LinkedList<>();
 
-    public static KeyBinding create(String description, String input, String category) {
+    public static KeyBinding createBasic(String description, String input, String category) {
         return new KeyBinding(description, getInputId(input), category);
     }
 
-    public static KeyBinding create(String description, String input, String category, BindListener listener) {
+    public static EventBinding create(String description, String input, String category) {
         EventBinding binding = new EventBinding(description, getInputId(input), category);
-        binding.listen(listener);
+        bindings.add(binding);
+        return binding;
+    }
+
+    public static EventBinding create(String description, String input, String category, BindListener listener) {
+        EventBinding binding = new EventBinding(description, getInputId(input), category);
+        binding.addListener(listener);
         bindings.add(binding);
         return binding;
     }

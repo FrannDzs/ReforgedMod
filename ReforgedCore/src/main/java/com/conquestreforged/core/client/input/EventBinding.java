@@ -15,8 +15,9 @@ public class EventBinding extends KeyBinding {
         super(description, keyCode, category);
     }
 
-    public void listen(BindListener listener) {
+    public EventBinding addListener(BindListener listener) {
         listeners.add(listener);
+        return this;
     }
 
     public boolean checkPressed() {
