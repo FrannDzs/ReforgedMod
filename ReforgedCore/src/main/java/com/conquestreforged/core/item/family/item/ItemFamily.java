@@ -24,7 +24,7 @@ public class ItemFamily extends Family<Item> {
 
     @Override
     protected void addItem(ItemGroup group, NonNullList<ItemStack> list, Item item) {
-        item.fillItemGroup(group, list);
+        item.fillItemGroup(item.getGroup(), list);
     }
 
     @Override
