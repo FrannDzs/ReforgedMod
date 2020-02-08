@@ -36,7 +36,7 @@ public class Palette {
         List<ItemStack> result = new ArrayList<>(family.size());
         result.add(copyOne(first));
         for (ItemStack stack : family) {
-            if (!stack.isItemEqual(first)) {
+            if (!ItemStack.areItemStackTagsEqual(first, stack)) {
                 result.add(copyOne(stack));
             }
         }

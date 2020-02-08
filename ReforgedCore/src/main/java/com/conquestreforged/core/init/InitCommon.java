@@ -1,8 +1,8 @@
 package com.conquestreforged.core.init;
 
+import com.conquestreforged.core.block.BlockStats;
 import com.conquestreforged.core.block.data.BlockDataRegistry;
 import com.conquestreforged.core.init.dev.Environment;
-import com.conquestreforged.core.util.BlockStats;
 import com.conquestreforged.core.util.cache.Cache;
 import com.conquestreforged.core.util.log.Log;
 import net.minecraft.block.Block;

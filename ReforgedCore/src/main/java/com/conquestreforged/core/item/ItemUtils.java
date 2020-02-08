@@ -42,10 +42,6 @@ public class ItemUtils {
         return t.isInstance(item) ? Optional.of(t.cast(item)) : Optional.empty();
     }
 
-    public static Optional<BlockItem> toItemBlock(Item item) {
-        return toItem(item, BlockItem.class);
-    }
-
     public static NonNullList<ItemStack> getFamilyItems(ItemStack stack) {
         return getFamilyItems(stack, TypeFilter.ANY);
     }
