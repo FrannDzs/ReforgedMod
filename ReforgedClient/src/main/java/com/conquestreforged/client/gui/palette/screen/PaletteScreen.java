@@ -1,9 +1,10 @@
 package com.conquestreforged.client.gui.palette.screen;
 
 import com.conquestreforged.client.BindManager;
-import com.conquestreforged.client.gui.base.CustomCreativeScreen;
+import com.conquestreforged.client.gui.CustomCreativeScreen;
 import com.conquestreforged.client.gui.palette.PaletteContainer;
-import com.conquestreforged.client.gui.palette.paletteOld.Render;
+import com.conquestreforged.client.gui.palette.Render;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerEntity;
@@ -59,11 +60,17 @@ public class PaletteScreen extends CustomCreativeScreen<PaletteContainer> {
             // render radial slots
             getContainer().visitRadius(mx, my, (slot, depth) -> {
                 float scale = slot.getScale(mx, my);
+                renderSlotBackGround(slot, slot.getStyle(), depth, scale);
+            });
+            getContainer().visitRadius(mx, my, (slot, depth) -> {
+                float scale = slot.getScale(mx, my);
                 renderSlot(slot, slot.getStyle(), mx, my, depth, scale);
             });
             // render center slot
             getContainer().visitCenter(slot -> {
                 float scale = slot.getScale(mx, my);
+                RenderSystem.enableBlend();
+                renderSlotBackGround(slot, slot.getStyle(), 1F, scale);
                 renderSlot(slot, slot.getStyle(), mx, my, 1F, scale);
             });
             // render hotbar
@@ -109,7 +116,7 @@ public class PaletteScreen extends CustomCreativeScreen<PaletteContainer> {
             return;
         }
 
-        int top = (height / 2) + PaletteContainer.RADIUS + 22;
+        int top = (height / 2) + PaletteContainer.RADIUS + 32;
         int left = width / 2;
         int color = 0xFFFFFF;
         String text = display.getDisplayName().getFormattedText();

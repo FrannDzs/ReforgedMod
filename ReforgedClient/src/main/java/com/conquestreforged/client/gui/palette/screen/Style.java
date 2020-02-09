@@ -1,5 +1,7 @@
 package com.conquestreforged.client.gui.palette.screen;
 
+import net.minecraft.util.ResourceLocation;
+
 public class Style {
 
     private static final float CENTER_SCALE = 1.75F;
@@ -12,26 +14,28 @@ public class Style {
     public int selectedColor;
     public int hoveredColor;
     public float highlightScale;
+    public final ResourceLocation background;
 
-    private Style(float scale, boolean fixedScale) {
+    private Style(float scale, boolean fixedScale, ResourceLocation background) {
         this.scale = scale;
+        this.background = background;
         this.hoveredColor = 0xFFFFFF;
         this.selectedColor = 0x000000;
         this.fixedScale = fixedScale;
         this.highlightScale = scale + 0.01F;
     }
 
-    public static Style center() {
-        return new Style(CENTER_SCALE, true);
+    public static Style center(ResourceLocation background) {
+        return new Style(CENTER_SCALE, true, background);
     }
 
-    public static Style radial(int count){
+    public static Style radial(int count, ResourceLocation background) {
         if (count > SCALE_THRESHOLD) {
             float dif = (count - SCALE_THRESHOLD) / (float) SCALE_THRESHOLD;
             float scale = RADIAL_SCALE - Math.min(dif, 0.45F);
-            return new Style(scale, false);
+            return new Style(scale, false, background);
         } else {
-            return new Style(RADIAL_SCALE, false);
+            return new Style(RADIAL_SCALE, false, background);
         }
     }
 }

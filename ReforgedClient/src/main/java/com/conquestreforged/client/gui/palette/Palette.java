@@ -9,36 +9,24 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.util.NonNullList;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 public class Palette {
 
-    public static IInventory createTestPalette(ItemStack stack) {
-        List<ItemStack> stacks = Arrays.asList(
-                stack,
-                new ItemStack(Items.BIRCH_PLANKS),
-                new ItemStack(Items.BIRCH_DOOR),
-                new ItemStack(Items.BIRCH_FENCE),
-                new ItemStack(Items.BIRCH_FENCE_GATE),
-                new ItemStack(Items.BIRCH_SLAB),
-                new ItemStack(Items.BIRCH_STAIRS)
-        );
-        return createPalette(stack, stacks);
-    }
-
     public static IInventory createPalette(ItemStack first, List<ItemStack> family) {
         List<ItemStack> result = new ArrayList<>(family.size());
         result.add(copyOne(first));
         for (ItemStack stack : family) {
-            if (!ItemStack.areItemStackTagsEqual(first, stack)) {
-                result.add(copyOne(stack));
+            if (stack.isItemEqual(first)) {
+                if (ItemStack.areItemStackTagsEqual(first, stack)) {
+                    continue;
+                }
             }
+            result.add(copyOne(stack));
         }
         return new Inventory(result.toArray(new ItemStack[0]));
     }

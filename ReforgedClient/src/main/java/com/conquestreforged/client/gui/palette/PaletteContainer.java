@@ -1,7 +1,7 @@
 package com.conquestreforged.client.gui.palette;
 
-import com.conquestreforged.client.gui.base.AbstractContainer;
-import com.conquestreforged.client.gui.base.Hotbar;
+import com.conquestreforged.client.gui.AbstractContainer;
+import com.conquestreforged.client.gui.Hotbar;
 import com.conquestreforged.client.gui.palette.screen.PaletteSlot;
 import com.conquestreforged.client.gui.palette.screen.Style;
 import com.conquestreforged.client.gui.palette.shape.Bounds;
@@ -15,6 +15,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nullable;
 import java.util.function.BiConsumer;
@@ -23,6 +24,7 @@ import java.util.function.Consumer;
 public class PaletteContainer extends AbstractContainer {
 
     public static final ContainerType<PaletteContainer> TYPE = new ContainerType<>(PaletteContainer::new);
+    private static final ResourceLocation BACKGROUND = new ResourceLocation("conquest:textures/gui/picker/slot.png");
 
     public static final int RADIUS = 65;
     private static final int EDGES = 6;
@@ -41,8 +43,8 @@ public class PaletteContainer extends AbstractContainer {
         this.radialCount = 0;
         this.hotbar = new Hotbar(inventory);
         this.paletteInventory = inventory;
-        this.centerStyle = Style.center();
-        this.radialStyle = Style.radial(0);
+        this.centerStyle = Style.center(BACKGROUND);
+        this.radialStyle = Style.radial(0, BACKGROUND);
     }
 
     public PaletteContainer(PlayerInventory inventory, IInventory palette) {
@@ -50,8 +52,8 @@ public class PaletteContainer extends AbstractContainer {
         this.radialCount = palette.getSizeInventory() - 1;
         this.hotbar = new Hotbar(inventory);
         this.paletteInventory = palette;
-        this.centerStyle = Style.center();
-        this.radialStyle = Style.radial(radialCount);
+        this.centerStyle = Style.center(BACKGROUND);
+        this.radialStyle = Style.radial(radialCount, BACKGROUND);
     }
 
     public void init(ContainerScreen<?> screen) {

@@ -1,4 +1,4 @@
-package com.conquestreforged.client.gui.base;
+package com.conquestreforged.client.gui;
 
 import net.minecraft.client.gui.screen.inventory.CreativeCraftingListener;
 import net.minecraft.entity.player.PlayerInventory;

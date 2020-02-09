@@ -1,16 +1,17 @@
-package com.conquestreforged.client.gui.base;
+package com.conquestreforged.client.gui;
 
-import com.conquestreforged.client.gui.palette.paletteOld.Render;
+import com.conquestreforged.client.gui.palette.Render;
 import com.conquestreforged.client.gui.palette.screen.Style;
 import com.conquestreforged.client.gui.palette.shape.FloatMath;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ClickType;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
 import javax.annotation.Nullable;
@@ -38,10 +39,7 @@ public abstract class CustomContainerScreen<T extends Container> extends Contain
 
     protected void setupRender() {
         isOverSlot = false;
-
-        RenderSystem.disableRescaleNormal();
-        RenderSystem.disableDepthTest();
-
+        RenderSystem.enableBlend();
         RenderSystem.pushMatrix();
         RenderSystem.translatef(guiLeft, guiTop, 0.0F);
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -52,7 +50,7 @@ public abstract class CustomContainerScreen<T extends Container> extends Contain
 
     protected void tearDownRender() {
         RenderSystem.popMatrix();
-        RenderSystem.enableDepthTest();
+        RenderSystem.disableBlend();
     }
 
     public void renderDraggedItem(int mx, int my, float depth) {
@@ -73,6 +71,26 @@ public abstract class CustomContainerScreen<T extends Container> extends Contain
         }
     }
 
+    public void renderSlotBackGround(Slot slot, Style style, float depth, float scale) {
+        int x = slot.xPos + 8;
+        int y = slot.yPos + 8;
+
+        RenderSystem.pushMatrix();
+        RenderSystem.translatef(x, y, 1);
+        RenderSystem.scalef(scale, scale, 1);
+
+        // set z-level
+        this.setBlitOffset(0);
+        this.itemRenderer.zLevel = 0;
+
+        if (style != null && style.background != null) {
+            Minecraft.getInstance().getTextureManager().bindTexture(style.background);
+            AbstractGui.blit(-8, -6, 16, 16, 0, 0, 72, 72, 72, 72);
+        }
+
+        RenderSystem.popMatrix();
+    }
+
     public void renderSlot(Slot slot, int mx, int my, float depth, float scale) {
         renderSlot(slot, null, mx, my, depth, scale);
     }
@@ -86,15 +104,10 @@ public abstract class CustomContainerScreen<T extends Container> extends Contain
         RenderSystem.pushMatrix();
         RenderSystem.translatef(x, y, zlevel);
         RenderSystem.scalef(scale, scale, 1);
-        RenderSystem.enableDepthTest();
-
-        if (slot instanceof SlotBackground) {
-            ResourceLocation texture = ((SlotBackground) slot).getBackground();
-        }
 
         // set z-level
-        this.setBlitOffset(0);
-        this.itemRenderer.zLevel = 0;
+        this.setBlitOffset(10);
+        this.itemRenderer.zLevel = 10;
 
         if (!isOverSlot) {
             // draw highlight

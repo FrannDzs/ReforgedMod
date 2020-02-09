@@ -1,4 +1,4 @@
-package com.conquestreforged.client.gui.base;
+package com.conquestreforged.client.gui;
 
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
