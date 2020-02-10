@@ -4,6 +4,7 @@ import com.conquestreforged.client.BindManager;
 import com.conquestreforged.client.gui.CustomCreativeScreen;
 import com.conquestreforged.client.gui.palette.PaletteContainer;
 import com.conquestreforged.client.gui.palette.Render;
+import com.conquestreforged.client.tutorial.Tutorials;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
@@ -16,6 +17,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.StringTextComponent;
 
 public class PaletteScreen extends CustomCreativeScreen<PaletteContainer> {
+
+    public static boolean hasOpened = false;
 
     private static final ResourceLocation WHEEL = new ResourceLocation("conquest:textures/gui/picker/wheel.png");
     private static final ResourceLocation MASK0 = new ResourceLocation("conquest:textures/gui/picker/wheel_mask0.png");
@@ -41,6 +44,7 @@ public class PaletteScreen extends CustomCreativeScreen<PaletteContainer> {
     public void init(Minecraft mc, int width, int height) {
         super.init(mc, width, height);
         resize(width, height);
+        Tutorials.openPalette = true;
     }
 
     @Override
