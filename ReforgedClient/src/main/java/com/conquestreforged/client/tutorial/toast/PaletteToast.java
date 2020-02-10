@@ -8,8 +8,8 @@ import net.minecraft.client.gui.toasts.ToastGui;
 
 public class PaletteToast extends AbstractToast {
 
-    private static final String line1 = "Press '%s' whilst hovering a";
-    private static final String line2 = "block to see its variants!";
+    private static final String line1 = "Press '%s' whilst hovering over";
+    private static final String line2 = "a block to see its variants!";
 
     private final ConfigSection section;
 
