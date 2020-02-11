@@ -3,12 +3,12 @@
     "type": "MOD",
     "id": "optifine",
     "name": "Optifine",
-    "url": "https://optifine.net"
+    "url": "https://optifine.net/downloads"
   },
   {
     "type": "RESOURCEPACK",
-    "id": "conquestreforged",
+    "id": "conquestreforgedrp",
     "name": "ConquestReforged Resourcepack",
-    "url": "https://curseforge.com/TODO"
+    "url": "https://www.curseforge.com/minecraft/texture-packs/conquest-reforged-resource-pack"
   }
 ]

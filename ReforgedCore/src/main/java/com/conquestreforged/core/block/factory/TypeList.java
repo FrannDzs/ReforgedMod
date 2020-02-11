@@ -3,7 +3,13 @@ package com.conquestreforged.core.block.factory;
 import net.minecraft.block.AirBlock;
 import net.minecraft.block.Block;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
 
 public class TypeList implements Iterable<Class<? extends Block>>, Comparator<Block> {
 

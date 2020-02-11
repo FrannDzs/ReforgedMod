@@ -1,4 +1,5 @@
 rootProject.name = "ConquestReforged"
+include "ReforgedAPI"
 include "ReforgedCore"
 include "ReforgedContent"
 include "ReforgedClient"

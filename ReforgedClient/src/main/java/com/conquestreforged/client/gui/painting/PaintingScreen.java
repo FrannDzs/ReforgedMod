@@ -1,19 +1,11 @@
 package com.conquestreforged.client.gui.painting;
 
-import com.conquestreforged.client.gui.painting.renderer.ModPaintingRenderer;
-import com.conquestreforged.client.gui.painting.renderer.PaintingRenderer;
-import com.conquestreforged.client.gui.painting.renderer.VanillaPaintingRenderer;
-import com.conquestreforged.entities.painting.TextureType;
-import com.conquestreforged.entities.painting.art.Art;
-import com.conquestreforged.entities.painting.art.ArtType;
-import com.conquestreforged.entities.painting.art.ModArt;
-import com.conquestreforged.entities.painting.art.VanillaArt;
-import com.conquestreforged.items.item.PaintingItem;
+import com.conquestreforged.api.painting.Painting;
+import com.conquestreforged.api.painting.art.Art;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.inventory.CreativeCraftingListener;
-import net.minecraft.entity.item.PaintingType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.StringTextComponent;
 
@@ -21,35 +13,19 @@ import java.util.List;
 
 public class PaintingScreen extends Screen {
 
-    private final List<Art> arts;
     private final ItemStack stack;
-    private final String type;
-    private final String typeUnlocal;
-    private final PaintingRenderer renderer;
+    private final Painting type;
+    private final List<? extends Art<?>> arts;
 
     private int artIndex;
     private int hoveredIndex = -1;
 
-    public PaintingScreen(ItemStack stack, TextureType type, ArtType art) {
+    public PaintingScreen(ItemStack stack, Painting type, Art<?> art) {
         super(new StringTextComponent("Painting Selector"));
+        this.type = type;
         this.stack = stack;
-        this.type = type.getName();
-        this.typeUnlocal = type.getUnlocalizedName();
-        this.arts = ModArt.ALL;
-        this.artIndex = Art.indexOf(art, ModArt.ALL);
-        this.renderer = new ModPaintingRenderer(type.getResourceLocation());
-        this.font = Minecraft.getInstance().fontRenderer;
-    }
-
-    public PaintingScreen(ItemStack stack, PaintingType art) {
-        super(new StringTextComponent("Painting Selector"));
-        this.stack = stack;
-        this.type = "Vanilla";
-        this.typeUnlocal = "";
-        this.arts = VanillaArt.ALL;
-        this.renderer = new VanillaPaintingRenderer();
-        this.artIndex = Art.indexOf(art, VanillaArt.ALL);
-        this.font = Minecraft.getInstance().fontRenderer;
+        this.arts = art.getAll();
+        this.artIndex = art.getAll().indexOf(art);
     }
 
     @Override
@@ -65,7 +41,7 @@ public class PaintingScreen extends Screen {
 
     @Override
     public boolean keyPressed(int typedChar, int keyCode, int what) {
-        Minecraft.getInstance().displayGuiScreen(null);
+//        Minecraft.getInstance().displayGuiScreen(null);
         return super.keyPressed(typedChar, keyCode, what);
     }
 
@@ -79,17 +55,12 @@ public class PaintingScreen extends Screen {
 
         GlStateManager.enableAlphaTest();
         GlStateManager.enableTexture();
-        renderer.setup();
-
         for (int i = 5; i >= 0; i--) {
             if (i > 0) {
                 drawArt(mouseX, mouseY, centerX, centerY, -i);
             }
             drawArt(mouseX, mouseY, centerX, centerY, +i);
         }
-
-        renderer.tearDown();
-
         drawLabel(centerX, centerY);
     }
 
@@ -100,10 +71,10 @@ public class PaintingScreen extends Screen {
         }
 
         int artIndex = hoveredIndex == -1 ? this.artIndex : hoveredIndex;
-        String art = arts.get(artIndex).getName();
+        Art<?> art = arts.get(artIndex);
 
         int slot = minecraft.player.inventory.getSlotFor(stack);
-        ItemStack stack = PaintingItem.createStack(type, art);
+        ItemStack stack = type.createStack(art);
 
         CreativeCraftingListener listener = new CreativeCraftingListener(minecraft);
         minecraft.player.container.addListener(listener);
@@ -146,7 +117,7 @@ public class PaintingScreen extends Screen {
         int left = cx + 1 + (di * (size + 1)) - (size / 2);
         int top = cy - (size / 2);
 
-        Art art = arts.get(index);
+        Art<?> art = arts.get(index);
         float w = 1F;
         float h = 1F;
         if (art.width() != art.height()) {
@@ -164,13 +135,14 @@ public class PaintingScreen extends Screen {
 
         float alpha = Math.min(1F, 0.2F + Math.max(0, 1F - (Math.abs(di) / 2F)));
         GlStateManager.color4f(alpha, alpha, alpha, 1F);
-        renderer.render(tl, tt, tw, th, art);
+
+        art.getRenderer().render(type, art, tl, tt, tw, th);
     }
 
     private void drawLabel(int centerX, int centerY) {
         int index = hoveredIndex != -1 ? hoveredIndex : artIndex;
-        Art art = arts.get(index);
-        String text = art.getDisplayName(typeUnlocal);
+        Art<?> art = arts.get(index);
+        String text = art.getDisplayName(type.getTranslationKey());
         int width = font.getStringWidth(text);
         int height = (this.width / 11) + 10;
         font.drawStringWithShadow(text, centerX - (width / 2F), centerY + height, 0xFFFFFF);

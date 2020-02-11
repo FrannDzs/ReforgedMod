@@ -2,7 +2,13 @@ package com.conquestreforged.core.asset.pack;
 
 import com.conquestreforged.core.asset.meta.VirtualMeta;
 import com.conquestreforged.core.util.log.Log;
-import net.minecraft.resources.*;
+import net.minecraft.resources.FallbackResourceManager;
+import net.minecraft.resources.IPackFinder;
+import net.minecraft.resources.IResourceManager;
+import net.minecraft.resources.IResourcePack;
+import net.minecraft.resources.ResourcePackInfo;
+import net.minecraft.resources.ResourcePackType;
+import net.minecraft.resources.SimpleReloadableResourceManager;
 import net.minecraft.resources.data.PackMetadataSection;
 
 import java.util.LinkedList;

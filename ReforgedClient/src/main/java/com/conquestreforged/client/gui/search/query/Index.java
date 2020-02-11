@@ -3,7 +3,11 @@ package com.conquestreforged.client.gui.search.query;
 import net.minecraft.item.Item;
 import net.minecraft.tags.Tag;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Predicate;

@@ -1,6 +1,11 @@
 package com.conquestreforged.core.block.data;
 
-import com.conquestreforged.core.asset.annotation.*;
+import com.conquestreforged.core.asset.annotation.Assets;
+import com.conquestreforged.core.asset.annotation.Ingredient;
+import com.conquestreforged.core.asset.annotation.Model;
+import com.conquestreforged.core.asset.annotation.Recipe;
+import com.conquestreforged.core.asset.annotation.Render;
+import com.conquestreforged.core.asset.annotation.State;
 import com.conquestreforged.core.asset.override.EmptyOverride;
 import com.conquestreforged.core.asset.override.MapOverride;
 import com.conquestreforged.core.asset.override.SingleOverride;

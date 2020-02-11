@@ -2,7 +2,11 @@ package com.conquestreforged.core.item.family;
 
 import com.google.common.collect.ImmutableSet;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Predicate;
 
 public interface TypeFilter extends Predicate<Object> {
