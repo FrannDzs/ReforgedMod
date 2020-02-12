@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
 
 public abstract class Cache<K, V> implements Disposable {
 
@@ -22,6 +23,17 @@ public abstract class Cache<K, V> implements Disposable {
             cache = new HashMap<>();
         }
         return cache.computeIfAbsent(k, this::compute);
+    }
+
+    public final void put(K k, V v) {
+        if (cache.isEmpty()) {
+            cache = new HashMap<>();
+        }
+        cache.put(k, v);
+    }
+
+    public final void forEach(BiConsumer<K, V> consumer) {
+        cache.forEach(consumer);
     }
 
     @Override
