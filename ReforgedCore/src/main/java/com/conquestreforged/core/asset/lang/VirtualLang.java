@@ -15,6 +15,8 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
+import java.util.HashSet;
+import java.util.Set;
 
 public class VirtualLang implements VirtualResource {
 
@@ -60,12 +62,26 @@ public class VirtualLang implements VirtualResource {
     private void write(JsonWriter writer) throws IOException {
         writer.setIndent("  ");
         writer.beginObject();
-        writeTranslations(ForgeRegistries.BLOCKS, "block", writer);
-        writeTranslations(ForgeRegistries.ITEMS, "item", writer);
+        Set<String> visited = new HashSet<>();
+        // give specific translations priority
+        Translations.getInstance().forEach((key, value) -> writeSafe(key, value, writer, visited));
+        writeTranslations(ForgeRegistries.BLOCKS, "block", writer, visited);
+        writeTranslations(ForgeRegistries.ITEMS, "item", writer, visited);
+        writeTranslations(ForgeRegistries.ENTITIES, "entity", writer, visited);
         writer.endObject();
     }
 
-    private void writeTranslations(IForgeRegistry<?> registry, String type, JsonWriter writer) throws IOException {
+    private void writeSafe(String key, String value, JsonWriter writer, Set<String> visited) {
+        if (visited.add(key)) {
+            try {
+                writer.name(key).value(value);
+            } catch (IOException ignored) {
+
+            }
+        }
+    }
+
+    private void writeTranslations(IForgeRegistry<?> registry, String type, JsonWriter writer, Set<String> visited) throws IOException {
         for (IForgeRegistryEntry<?> entry : registry) {
             ResourceLocation name = entry.getRegistryName();
             if (name == null || !name.getNamespace().equals(getNamespace())) {
@@ -73,8 +89,11 @@ public class VirtualLang implements VirtualResource {
             }
 
             String key = type + '.' + name.getNamespace() + '.' + name.getPath();
-            String value = translate(name.getPath());
+            if (!visited.add(key)) {
+                continue;
+            }
 
+            String value = translate(name.getPath());
             writer.name(key);
             writer.value(value);
         }
