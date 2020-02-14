@@ -3,7 +3,7 @@ package com.conquestreforged.client.gui.palette.screen;
 import com.conquestreforged.client.BindManager;
 import com.conquestreforged.client.gui.CustomCreativeScreen;
 import com.conquestreforged.client.gui.palette.PaletteContainer;
-import com.conquestreforged.client.gui.palette.Render;
+import com.conquestreforged.client.gui.render.Render;
 import com.conquestreforged.client.tutorial.Tutorials;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
@@ -21,13 +21,12 @@ public class PaletteScreen extends CustomCreativeScreen<PaletteContainer> {
     public static boolean hasOpened = false;
 
     private static final ResourceLocation WHEEL = new ResourceLocation("conquest:textures/gui/picker/wheel.png");
-    private static final ResourceLocation MASK0 = new ResourceLocation("conquest:textures/gui/picker/wheel_mask0.png");
-    private static final ResourceLocation MASK1 = new ResourceLocation("conquest:textures/gui/picker/wheel_mask1.png");
 
     private static final int EXIT = 256;
     private static final int SIZE = (PaletteContainer.RADIUS + 44) * 2;
 
     private final Screen previous;
+    private final PaletteSettings settings = new PaletteSettings();
 
     public PaletteScreen(PlayerEntity player, PlayerInventory inventory, PaletteContainer container) {
         this(null, player, inventory, container);
@@ -57,22 +56,24 @@ public class PaletteScreen extends CustomCreativeScreen<PaletteContainer> {
     public void render(int mouseX, int mouseY, float partialTicks) {
         drawGuiContainerBackgroundLayer(partialTicks, mouseX, mouseY);
 
+        getContainer().updateStyle(settings);
+
         setupRender();
         {
             final int mx = mouseX - guiLeft;
             final int my = mouseY - guiTop;
             // render radial slots
             getContainer().visitRadius(mx, my, (slot, depth) -> {
-                float scale = slot.getScale(mx, my);
+                float scale = slot.getScale(mx, my, settings);
                 renderSlotBackGround(slot, slot.getStyle(), depth, scale);
             });
             getContainer().visitRadius(mx, my, (slot, depth) -> {
-                float scale = slot.getScale(mx, my);
+                float scale = slot.getScale(mx, my, settings);
                 renderSlot(slot, slot.getStyle(), mx, my, depth, scale);
             });
             // render center slot
             getContainer().visitCenter(slot -> {
-                float scale = slot.getScale(mx, my);
+                float scale = slot.getScale(mx, my, settings);
                 RenderSystem.enableBlend();
                 renderSlotBackGround(slot, slot.getStyle(), 1F, scale);
                 renderSlot(slot, slot.getStyle(), mx, my, 1F, scale);
@@ -80,7 +81,7 @@ public class PaletteScreen extends CustomCreativeScreen<PaletteContainer> {
             // render hotbar
             getContainer().visitHotbar(slot -> renderSlot(slot, mx, my, 1F, 1F));
             // render the dragged item
-            renderDraggedItem(mx, my, 3F);
+            renderDraggedItem(mx, my, 3F, getContainer().getDraggedStyle());
         }
         tearDownRender();
 

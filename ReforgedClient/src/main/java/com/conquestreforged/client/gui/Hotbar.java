@@ -1,6 +1,6 @@
 package com.conquestreforged.client.gui;
 
-import com.conquestreforged.client.gui.palette.Render;
+import com.conquestreforged.client.gui.render.Render;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerInventory;

@@ -1,8 +1,8 @@
 package com.conquestreforged.client.gui;
 
-import com.conquestreforged.client.gui.palette.Render;
 import com.conquestreforged.client.gui.palette.screen.Style;
 import com.conquestreforged.client.gui.palette.shape.FloatMath;
+import com.conquestreforged.client.gui.render.Render;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
@@ -53,7 +53,7 @@ public abstract class CustomContainerScreen<T extends Container> extends Contain
         RenderSystem.disableBlend();
     }
 
-    public void renderDraggedItem(int mx, int my, float depth) {
+    public void renderDraggedItem(int mx, int my, float depth, Style style) {
         int zlevel = FloatMath.round(depth * 200);
         ItemStack held = playerInventory.getItemStack();
         if (!held.isEmpty()) {
@@ -62,7 +62,9 @@ public abstract class CustomContainerScreen<T extends Container> extends Contain
             RenderSystem.pushMatrix();
             RenderSystem.translatef(mx, my, zlevel);
             RenderSystem.enableDepthTest();
-            Render.drawItemStackHighlight(held, -8, -8, 1.075F, 0);
+
+            Render.drawItemStackHighlight(held, -8, -8, style);
+
             this.itemRenderer.renderItemAndEffectIntoGUI(playerInventory.player, held, -8, -8);
             this.itemRenderer.renderItemOverlayIntoGUI(font, held, -8, -8, null);
             RenderSystem.popMatrix();
@@ -114,7 +116,7 @@ public abstract class CustomContainerScreen<T extends Container> extends Contain
             ItemStack held = playerInventory.getItemStack();
             if (held.isEmpty() && style != null && isMouseOver(slot, mx, my, 11, scale)) {
                 isOverSlot = true;
-                Render.drawItemStackHighlight(itemstack, -8, -8, 1.08F, style.selectedColor);
+                Render.drawItemStackHighlight(itemstack, -8, -8, style);
             }
         }
 

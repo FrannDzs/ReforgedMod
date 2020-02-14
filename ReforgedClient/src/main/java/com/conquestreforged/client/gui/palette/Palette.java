@@ -10,10 +10,12 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 public class Palette {
 
@@ -49,7 +51,15 @@ public class Palette {
 
         Family<Block> family = FamilyRegistry.BLOCKS.getFamily(block);
         if (family.isAbsent()) {
-            return Optional.empty();
+            NonNullList<ItemStack> items = NonNullList.create();
+            Random random = new Random(System.currentTimeMillis());
+            List<Block> blocks = new ArrayList<>(ForgeRegistries.BLOCKS.getValues());
+            int size = random.nextInt(100);
+            while (items.size() < size) {
+                int index = random.nextInt(blocks.size());
+                items.add(new ItemStack(blocks.get(index)));
+            }
+            return Optional.of(createPalette(stack, items));
         }
 
         NonNullList<ItemStack> items = NonNullList.create();

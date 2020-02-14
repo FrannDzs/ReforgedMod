@@ -2,6 +2,7 @@ package com.conquestreforged.client.gui.palette;
 
 import com.conquestreforged.client.gui.AbstractContainer;
 import com.conquestreforged.client.gui.Hotbar;
+import com.conquestreforged.client.gui.palette.screen.PaletteSettings;
 import com.conquestreforged.client.gui.palette.screen.PaletteSlot;
 import com.conquestreforged.client.gui.palette.screen.Style;
 import com.conquestreforged.client.gui.palette.shape.Bounds;
@@ -34,6 +35,7 @@ public class PaletteContainer extends AbstractContainer {
     private final int radialCount;
     private final Style centerStyle;
     private final Style radialStyle;
+    private final Style draggedStyle;
     private final IInventory paletteInventory;
 
     private final Hotbar hotbar;
@@ -44,6 +46,7 @@ public class PaletteContainer extends AbstractContainer {
         this.hotbar = new Hotbar(inventory);
         this.paletteInventory = inventory;
         this.centerStyle = Style.center(BACKGROUND);
+        this.draggedStyle = Style.center(BACKGROUND);
         this.radialStyle = Style.radial(0, BACKGROUND);
     }
 
@@ -53,7 +56,31 @@ public class PaletteContainer extends AbstractContainer {
         this.hotbar = new Hotbar(inventory);
         this.paletteInventory = palette;
         this.centerStyle = Style.center(BACKGROUND);
+        this.draggedStyle = Style.center(BACKGROUND);
         this.radialStyle = Style.radial(radialCount, BACKGROUND);
+    }
+
+    public void updateStyle(PaletteSettings settings) {
+        draggedStyle.highlightScale = settings.highlightScale;
+        draggedStyle.highlightColor = settings.selectedColor;
+
+        radialStyle.highlightScale = settings.highlightScale;
+        radialStyle.highlightColor = settings.hoveredColor;
+
+        centerStyle.highlightScale = settings.highlightScale;
+        centerStyle.highlightColor = settings.hoveredColor;
+    }
+
+    public Style getDraggedStyle() {
+        return draggedStyle;
+    }
+
+    public Style getCenterStyle() {
+        return centerStyle;
+    }
+
+    public Style getRadialStyle() {
+        return radialStyle;
     }
 
     public void init(ContainerScreen<?> screen) {

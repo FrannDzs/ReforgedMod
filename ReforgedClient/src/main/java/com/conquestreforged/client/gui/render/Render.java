@@ -1,15 +1,11 @@
-package com.conquestreforged.client.gui.palette;
+package com.conquestreforged.client.gui.render;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.conquestreforged.client.gui.palette.screen.Style;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -32,33 +28,14 @@ public class Render {
         AbstractGui.blit(left, top, blitOffset, u, v, umax, vmax, 256, 256);
     }
 
-    public static void drawItemStackHighlight(ItemStack stack, int x, int y, float scale, int color) {
-        drawItemStackHighlight(stack, x, y, 0, scale, color);
-    }
-
-    public static void drawItemStackHighlight(ItemStack stack, int x, int y, int z, float scale, int color) {
-        if (stack != null) {
-            int dark = 0;
-            int light = 15728888;
-
-            RenderSystem.setupOutline();
-            RenderSystem.pushMatrix();
-            RenderSystem.scalef(scale, scale, 0);
-            RenderSystem.translatef(x, y, z);
-
-            ItemRenderer renderer = Minecraft.getInstance().getItemRenderer();
-            RenderSystem.translatef(8.0F, 8.0F, 0.0F);
-            RenderSystem.scalef(1.0F, -1.0F, 1.0F);
-            RenderSystem.scalef(16.0F, 16.0F, 16.0F);
-            MatrixStack matrixstack = new MatrixStack();
-            IRenderTypeBuffer.Impl buffer = Minecraft.getInstance().getRenderTypeBuffers().getBufferSource();
-            IBakedModel model = renderer.getItemModelMesher().getItemModel(stack);
-            renderer.renderItem(stack, ItemCameraTransforms.TransformType.GUI, false, matrixstack, buffer, dark, OverlayTexture.DEFAULT_LIGHT, model);
-            buffer.finish();
-
-            RenderSystem.teardownOutline();
-            RenderSystem.popMatrix();
-        }
+    public static void drawItemStackHighlight(ItemStack stack, int x, int y, Style style) {
+        RenderSystem.pushMatrix();
+        RenderSystem.setupOutline();
+        RenderSystem.scalef(style.highlightScale, style.highlightScale, 1F);
+        IBakedModel model = Minecraft.getInstance().getItemRenderer().getItemModelMesher().getItemModel(stack);
+        ItemRenderHelper.renderItemModelIntoGUI(stack, model, x, y, style.highlightColor);
+        RenderSystem.teardownOutline();
+        RenderSystem.popMatrix();
     }
 
     public static void beginTooltips() {

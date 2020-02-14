@@ -53,15 +53,15 @@ public class PaletteSlot extends Slot {
         return getStack();
     }
 
-    public float getScale(int mx, int my) {
+    public float getScale(int mx, int my, PaletteSettings settings) {
         if (!style.fixedScale) {
             float d2 = Point.distance2(xPos, yPos, mx, my);
             float radius = PaletteContainer.RADIUS;
             float rad2 = radius * radius;
             float alpha = (rad2 - d2) / rad2;
             float scale = style.scale;
-            if (alpha > 0.3) {
-                scale += Math.min(Math.max(alpha * alpha * alpha * 1.05F, 0), 2.5F);
+            if (alpha > (1 - settings.zoomSpread)) {
+                scale += Math.min(Math.max(settings.zoomCurve.apply(alpha) * settings.zoomScale, 0), 2.5F);
             }
             return scale;
         }

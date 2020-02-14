@@ -84,8 +84,4 @@ public class VanillaArt implements Art<PaintingType> {
         PaintingType type = ForgeRegistries.PAINTING_TYPES.getValue(new ResourceLocation(name));
         return Art.find(type, ALL);
     }
-
-    static {
-        ForgeRegistries.PAINTING_TYPES.forEach(type -> ALL.add(new VanillaArt(type)));
-    }
 }

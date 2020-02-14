@@ -11,18 +11,16 @@ public class Style {
     public final float scale;
     public final boolean fixedScale;
 
-    public int selectedColor;
-    public int hoveredColor;
+    public int highlightColor;
     public float highlightScale;
     public final ResourceLocation background;
 
     private Style(float scale, boolean fixedScale, ResourceLocation background) {
         this.scale = scale;
         this.background = background;
-        this.hoveredColor = 0xFFFFFF;
-        this.selectedColor = 0x000000;
+        this.highlightColor = 0xFFFFFF;
         this.fixedScale = fixedScale;
-        this.highlightScale = scale + 0.01F;
+        this.highlightScale = 1.075F;
     }
 
     public static Style center(ResourceLocation background) {
