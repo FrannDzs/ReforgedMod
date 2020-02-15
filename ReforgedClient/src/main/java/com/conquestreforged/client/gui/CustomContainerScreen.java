@@ -111,12 +111,12 @@ public abstract class CustomContainerScreen<T extends Container> extends Contain
         this.setBlitOffset(10);
         this.itemRenderer.zLevel = 10;
 
-        if (!isOverSlot) {
-            // draw highlight
-            ItemStack held = playerInventory.getItemStack();
-            if (held.isEmpty() && style != null && isMouseOver(slot, mx, my, 11, scale)) {
+        if (style != null) {
+            if (!isOverSlot && isMouseOver(slot, mx, my, 11, scale)) {
                 isOverSlot = true;
-                Render.drawItemStackHighlight(itemstack, -8, -8, style);
+                Render.drawItemStackHighlight(itemstack, -8, -8, style.highlightScale, style.hoveredColor);
+            } else {
+                Render.drawItemStackHighlight(itemstack, -8, -8, style.highlightScale, style.highlightColor);
             }
         }
 

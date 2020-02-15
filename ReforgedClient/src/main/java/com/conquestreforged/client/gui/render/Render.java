@@ -29,11 +29,15 @@ public class Render {
     }
 
     public static void drawItemStackHighlight(ItemStack stack, int x, int y, Style style) {
+        drawItemStackHighlight(stack, x, y, style.highlightScale, style.highlightColor);
+    }
+
+    public static void drawItemStackHighlight(ItemStack stack, int x, int y, float scale, int color) {
         RenderSystem.pushMatrix();
         RenderSystem.setupOutline();
-        RenderSystem.scalef(style.highlightScale, style.highlightScale, 1F);
+        RenderSystem.scalef(scale, scale, 1F);
         IBakedModel model = Minecraft.getInstance().getItemRenderer().getItemModelMesher().getItemModel(stack);
-        ItemRenderHelper.renderItemModelIntoGUI(stack, model, x, y, style.highlightColor);
+        ItemRenderHelper.renderItemModelIntoGUI(stack, model, x, y, color);
         RenderSystem.teardownOutline();
         RenderSystem.popMatrix();
     }

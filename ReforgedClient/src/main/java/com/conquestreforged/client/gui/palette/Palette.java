@@ -54,10 +54,14 @@ public class Palette {
             NonNullList<ItemStack> items = NonNullList.create();
             Random random = new Random(System.currentTimeMillis());
             List<Block> blocks = new ArrayList<>(ForgeRegistries.BLOCKS.getValues());
-            int size = random.nextInt(100);
+            int size = 5 + random.nextInt(20);
             while (items.size() < size) {
                 int index = random.nextInt(blocks.size());
-                items.add(new ItemStack(blocks.get(index)));
+                ItemStack itemStack = new ItemStack(blocks.get(index));
+                if (itemStack.isEmpty()) {
+                    continue;
+                }
+                items.add(itemStack);
             }
             return Optional.of(createPalette(stack, items));
         }

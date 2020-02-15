@@ -121,7 +121,7 @@ public class PaletteScreen extends CustomCreativeScreen<PaletteContainer> {
             return;
         }
 
-        int top = (height / 2) + PaletteContainer.RADIUS + 32;
+        int top = (height - 32);
         int left = width / 2;
         int color = 0xFFFFFF;
         String text = display.getDisplayName().getFormattedText();

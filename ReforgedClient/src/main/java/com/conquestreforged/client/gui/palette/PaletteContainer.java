@@ -62,25 +62,20 @@ public class PaletteContainer extends AbstractContainer {
 
     public void updateStyle(PaletteSettings settings) {
         draggedStyle.highlightScale = settings.highlightScale;
+        draggedStyle.highlightColor = settings.highlightColor;
         draggedStyle.highlightColor = settings.selectedColor;
 
         radialStyle.highlightScale = settings.highlightScale;
-        radialStyle.highlightColor = settings.hoveredColor;
+        radialStyle.highlightColor = settings.highlightColor;
+        radialStyle.hoveredColor = settings.hoveredColor;
 
         centerStyle.highlightScale = settings.highlightScale;
-        centerStyle.highlightColor = settings.hoveredColor;
+        centerStyle.highlightColor = settings.highlightColor;
+        centerStyle.hoveredColor = settings.hoveredColor;
     }
 
     public Style getDraggedStyle() {
         return draggedStyle;
-    }
-
-    public Style getCenterStyle() {
-        return centerStyle;
-    }
-
-    public Style getRadialStyle() {
-        return radialStyle;
     }
 
     public void init(ContainerScreen<?> screen) {
@@ -167,30 +162,35 @@ public class PaletteContainer extends AbstractContainer {
             return;
         }
 
-        final int index = closest.slotNumber;
-        for (int i = 0, visited = 0; visited < radialCount; i++) {
-            if (i == 0) {
-                visited++;
-                visitRadialSlot(index, i, consumer);
-            } else {
-                visited += 2;
-                visitRadialSlot(index - i, i, consumer);
-                visitRadialSlot(index + i, i, consumer);
+        final int index = (closest.slotNumber - 1);
+        visitRadialSlot(index, 0, consumer);
+
+        for (int i = 1, visited = 0; visited < radialCount; i++, visited += 2) {
+            if (visited + 1 >= radialCount) {
+                break;
             }
+
+            visitRadialSlot(index - i, i, consumer);
+
+            if (visited + 2 >= radialCount) {
+                break;
+            }
+
+            visitRadialSlot(index + i, i, consumer);
         }
     }
 
     private void visitRadialSlot(int index, int relativeIndex, BiConsumer<PaletteSlot, Float> consumer) {
         int slotIndex = wrapSlotIndex(index);
         float depth = getRelativeDepth(relativeIndex);
-        PaletteSlot slot = (PaletteSlot) getSlot(slotIndex);
+        PaletteSlot slot = (PaletteSlot) getSlot(slotIndex + 1); // slot 0 == center slot so add 1
         consumer.accept(slot, depth);
     }
 
     private int wrapSlotIndex(int index) {
-        if (index < 1) {
+        if (index < 0) {
             return radialCount + index;
-        } else if (index > radialCount) {
+        } else if (index >= radialCount) {
             return index - radialCount;
         } else {
             return index;

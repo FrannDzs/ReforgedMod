@@ -18,8 +18,11 @@ public class PaletteSettings {
     // size of the highlight around hovered items
     public float highlightScale = 1.1F;
 
+    // color around un-hovered items
+    public int highlightColor = Color.BLACK.getRGB();
+
     // color of the highlight around hovered items
-    public int hoveredColor = Color.CYAN.getRGB();
+    public int hoveredColor = Color.GRAY.getRGB();
 
     // color of the highlight around selected/dragged items
     public int selectedColor = Color.YELLOW.getRGB();

@@ -11,7 +11,6 @@ import net.minecraft.client.renderer.Matrix3f;
 import net.minecraft.client.renderer.Matrix4f;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.Vector4f;
 import net.minecraft.client.renderer.model.BakedQuad;
@@ -74,7 +73,7 @@ public class ItemRenderHelper {
             matrix.push();
             model = net.minecraftforge.client.ForgeHooksClient.handleCameraTransforms(matrix, model, transform, false);
             matrix.translate(-0.5D, -0.5D, -0.5D);
-            RenderType rendertype = RenderTypeLookup.getRenderType(stack);
+            RenderType rendertype = RenderType.cutout();//RenderTypeLookup.getRenderType(stack);
             IVertexBuilder builder = getBuffer(buffer, rendertype, true, stack.hasEffect());
             renderModel(model, matrix, builder, color);
             matrix.pop();
@@ -100,7 +99,7 @@ public class ItemRenderHelper {
             float r = (float)(color >> 16 & 255) / 255.0F;
             float g = (float)(color >> 8 & 255) / 255.0F;
             float b = (float)(color & 255) / 255.0F;
-            render(buffer, bakedquad, entry, r, g, b, 1F);
+            render(buffer, bakedquad, entry, r, g, b, 1);
         }
     }
 
