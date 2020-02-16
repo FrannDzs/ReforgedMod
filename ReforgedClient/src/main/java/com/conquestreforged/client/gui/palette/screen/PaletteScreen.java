@@ -18,8 +18,6 @@ import net.minecraft.util.text.StringTextComponent;
 
 public class PaletteScreen extends CustomCreativeScreen<PaletteContainer> {
 
-    public static boolean hasOpened = false;
-
     private static final ResourceLocation WHEEL = new ResourceLocation("conquest:textures/gui/picker/wheel.png");
 
     private static final int EXIT = 256;
@@ -42,6 +40,8 @@ public class PaletteScreen extends CustomCreativeScreen<PaletteContainer> {
     @Override
     public void init(Minecraft mc, int width, int height) {
         super.init(mc, width, height);
+        settings.init(minecraft, width, height);
+        children.add(settings);
         resize(width, height);
         Tutorials.openPalette = true;
     }
@@ -84,6 +84,8 @@ public class PaletteScreen extends CustomCreativeScreen<PaletteContainer> {
             renderDraggedItem(mx, my, 3F, getContainer().getDraggedStyle());
         }
         tearDownRender();
+
+        settings.render(mouseX, mouseY, partialTicks);
 
         // render display text
         drawGuiContainerForegroundLayer(mouseX, mouseY);
