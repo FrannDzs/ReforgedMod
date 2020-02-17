@@ -88,31 +88,14 @@ public class VirtualLang implements VirtualResource {
                 continue;
             }
 
-            String key = type + '.' + name.getNamespace() + '.' + name.getPath();
+            String key = Translations.getKey(type, name);
             if (!visited.add(key)) {
                 continue;
             }
 
-            String value = translate(name.getPath());
+            String value = Translations.translate(name.getPath());
             writer.name(key);
             writer.value(value);
         }
-    }
-
-    private static String translate(String in) {
-        char[] out = new char[in.length()];
-        boolean first = true;
-        for (int i = 0; i < in.length(); i++) {
-            char c = in.charAt(i);
-            if (first) {
-                first = false;
-                c = Character.toUpperCase(c);
-            } else if (c == '_') {
-                c = ' ';
-                first = true;
-            }
-            out[i] = c;
-        }
-        return new String(out);
     }
 }

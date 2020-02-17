@@ -46,7 +46,7 @@ processResources {
 // collects the test classes/resources for the run config
 testClasses {
     // do modules first
-    dependsOn(dependsOn: subprojects.tasks["testClasses"])
+    dependsOn(dependsOn: subprojects.tasks["classes"])
     // collect for the root project
     finalizedBy(prepareMainRunClasses, prepareMainRunResources)
 }

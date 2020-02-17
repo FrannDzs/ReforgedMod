@@ -18,12 +18,18 @@ public class Translations extends Cache<String, String> {
     }
 
     public void add(String type, IForgeRegistryEntry<?> entry, String translation) {
-        String key = type + "." + entry.getRegistryName().getNamespace() + "." + entry.getRegistryName().getPath();
-        put(key, translation);
+        if (entry.getRegistryName() != null) {
+            String key = getKey(type, entry.getRegistryName());
+            put(key, translation);
+        }
     }
 
     public void add(String type, ResourceLocation name, String translation) {
-        String key = type + "." + name.getNamespace() + "." + name.getPath();
+        String key = getKey(type, name);
+        put(key, translation);
+    }
+
+    public void add(String key, String translation) {
         put(key, translation);
     }
 
@@ -34,5 +40,30 @@ public class Translations extends Cache<String, String> {
 
     public static Translations getInstance() {
         return instance;
+    }
+
+    public static String getKey(String type, ResourceLocation name) {
+        return getKey(type, name.getNamespace(), name.getPath());
+    }
+
+    public static String getKey(String type, String namespace, String path) {
+        return type + "." + namespace + "." + path;
+    }
+
+    public static String translate(String in) {
+        char[] out = new char[in.length()];
+        boolean first = true;
+        for (int i = 0; i < in.length(); i++) {
+            char c = in.charAt(i);
+            if (first) {
+                first = false;
+                c = Character.toUpperCase(c);
+            } else if (c == '_') {
+                c = ' ';
+                first = true;
+            }
+            out[i] = c;
+        }
+        return new String(out);
     }
 }

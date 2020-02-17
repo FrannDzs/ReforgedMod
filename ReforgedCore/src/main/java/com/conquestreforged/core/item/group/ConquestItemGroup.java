@@ -1,5 +1,6 @@
 package com.conquestreforged.core.item.group;
 
+import com.conquestreforged.core.asset.lang.Translations;
 import com.conquestreforged.core.init.Context;
 import com.conquestreforged.core.item.family.FamilyGroup;
 import net.minecraft.item.ItemGroup;
@@ -24,6 +25,7 @@ public abstract class ConquestItemGroup extends ItemGroup {
     private final int index;
     private final String label;
     private final String namespace;
+    private final String translationKey;
     private Comparator<ItemStack> order = null;
     private List<ItemStack> cached = Collections.emptyList();
 
@@ -32,7 +34,14 @@ public abstract class ConquestItemGroup extends ItemGroup {
         this.index = index;
         this.label = label;
         this.namespace = Context.getInstance().getNamespace();
+        this.translationKey = Translations.getKey("itemGroup", namespace, label);
         loadOrder();
+        Translations.getInstance().add(translationKey, Translations.translate(label));
+    }
+
+    @Override
+    public String getTranslationKey() {
+        return translationKey;
     }
 
     public void setOrder(Comparator<ItemStack> order) {
