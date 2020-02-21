@@ -16,7 +16,7 @@ import net.minecraftforge.fml.common.Mod;
 
 import java.util.List;
 
-@Mod.EventBusSubscriber(value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
+@Mod.EventBusSubscriber(value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class DependencyTutorial {
 
     private final ConfigSection section;
@@ -28,7 +28,7 @@ public class DependencyTutorial {
 
     @SubscribeEvent
     public static void config(ConfigBuildEvent event) {
-        try (ConfigSectionSpec spec = event.client("tutorials", "Tutorial progression state")) {
+        try (ConfigSectionSpec spec = event.client("tutorials")) {
             spec.getBuilder().define("ignore_dependencies", false).next();
             MinecraftForge.EVENT_BUS.register(new DependencyTutorial(spec.getSection()));
         }

@@ -1,30 +1,33 @@
 package com.conquestreforged.client.gui.palette.screen;
 
+import com.conquestreforged.client.gui.ColorUtils;
 import com.conquestreforged.client.gui.render.Curve;
+import com.conquestreforged.core.config.ConfigBuildEvent;
+import com.conquestreforged.core.config.section.ConfigSection;
+import com.conquestreforged.core.config.section.ConfigSectionSpec;
 import com.conquestreforged.core.init.dev.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 
 import java.awt.*;
 
+@Mod.EventBusSubscriber(value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class PaletteSettings extends Screen {
 
-    // controls how large the zoom effect goes
-    public float zoomScale = 1.1F;
-    // lower values == fewer neighbours zoom in
-    public float zoomSpread = 1.0F;
-    // controls the rate of zoom effect as mouse nears stack
-    public Curve zoomCurve = Curve.SQUARE;
-    // size of the highlight around hovered items
-    public float highlightScale = 1.1F;
-    // color around un-hovered items
-    public int highlightColor = Color.BLACK.getRGB();
-    // color of the highlight around hovered items
-    public int hoveredColor = Color.GRAY.getRGB();
-    // color of the highlight around selected/dragged items
-    public int selectedColor = Color.WHITE.getRGB();
+    private static ConfigSection config;
+
+    public float zoomScale = config.get("zoom_scale");
+    public float zoomSpread = config.get("zoom_spread");
+    public Curve zoomCurve = config.getEnum("zoom_spread", Curve.class);
+    public float highlightScale = config.get("highlight_scale");
+    public int highlightColor = ColorUtils.fromHex(config.get("highlight_color"));
+    public int hoveredColor = ColorUtils.fromHex(config.get("hovered_color"));
+    public int selectedColor = ColorUtils.fromHex(config.get("selected_color"));
 
     private final Panel left = Panel.left(true);
     private final Panel right = Panel.right(true);
@@ -38,9 +41,18 @@ public class PaletteSettings extends Screen {
         dispose();
         super.init(mc, width, height);
         if (!Environment.isProduction()) {
-            addButton(right, new ColorPicker("Highlight Color", highlightColor, c -> highlightColor = c));
-            addButton(right, new ColorPicker("Hovered Color", hoveredColor, c -> hoveredColor = c));
-            addButton(right, new ColorPicker("Selected Color", selectedColor, c -> selectedColor = c));
+            add(right, new ColorPicker("Highlight Color", highlightColor, c -> {
+                highlightColor = c;
+                config.set("highlight_color", ColorUtils.toHex(c));
+            }));
+            add(right, new ColorPicker("Hovered Color", hoveredColor, c -> {
+                hoveredColor = c;
+                config.set("hovered_color", ColorUtils.toHex(c));
+            }));
+            add(right, new ColorPicker("Selected Color", selectedColor, c -> {
+                selectedColor = c;
+                config.set("selected_color", ColorUtils.toHex(c));
+            }));
             left.setSize(this, width / 3, height);
             right.setSize(this, width / 3, height);
         }
@@ -56,6 +68,7 @@ public class PaletteSettings extends Screen {
     @Override
     public void removed() {
         dispose();
+        config.save();
     }
 
     @Override
@@ -72,8 +85,36 @@ public class PaletteSettings extends Screen {
         }
     }
 
-    private void addButton(Panel panel, Widget widget) {
+    private void add(Panel panel, Widget widget) {
         super.addButton(widget);
         panel.add(widget);
+    }
+
+    @SubscribeEvent
+    public static void config(ConfigBuildEvent event) {
+        try (ConfigSectionSpec spec = event.client("palette")) {
+            spec.getBuilder().comment("Controls how large items get when your cursor moves towards them");
+            spec.getBuilder().define("zoom_scale", 1.1).next();
+
+            spec.getBuilder().comment("Controls the number of items that are affected by the zoom effect");
+            spec.getBuilder().defineInRange("zoom_spread", 1.0, 0, 1.0).next();
+
+            spec.getBuilder().comment("Controls the rate of zoom effect applied as your cursor moves towards items");
+            spec.getBuilder().defineEnum("zoom_curve", Curve.SQUARE).next();
+
+            spec.getBuilder().comment("Controls the size of the colored highlight around items");
+            spec.getBuilder().defineInRange("highlight_size", 1.1, 1.0, 2.0).next();
+
+            spec.getBuilder().comment("The highlight color around idle items");
+            spec.getBuilder().define("highlight_color", ColorUtils.toHex(Color.BLACK)).next();
+
+            spec.getBuilder().comment("The highlight color around the item under your cursor");
+            spec.getBuilder().define("hovered_color", ColorUtils.toHex(Color.GRAY)).next();
+
+            spec.getBuilder().comment("The highlight color around the selected/dragged item");
+            spec.getBuilder().define("selected_color", ColorUtils.toHex(Color.WHITE)).next();
+
+            PaletteSettings.config = spec.getSection();
+        }
     }
 }
