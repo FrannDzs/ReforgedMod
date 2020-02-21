@@ -1,6 +1,5 @@
 package com.conquestreforged.client;
 
-import com.conquestreforged.client.bind.DebugBindListener;
 import com.conquestreforged.client.bind.PaintingBindListener;
 import com.conquestreforged.client.bind.PaletteBindListener;
 import com.conquestreforged.client.bind.SearchBindListener;
@@ -16,18 +15,16 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class BindManager {
-
-    private static final String category = "key.category.conquest";
-
+    
     private static KeyBinding palette;
 
     @SubscribeEvent
     public static void init(FMLClientSetupEvent event) {
         Log.info("Registering keybinds");
+        String category = "key.category.conquest";
         Translations.getInstance().add(category, "Conquest Reforged");
         Bindings.create("Block Toggle", "key.keyboard.b", category, new ToggleBindListener());
-        Bindings.create("Search", "key.keyboard.v", category, new SearchBindListener());
-        Bindings.create("Copy Block Info", "key.keyboard.x", category, new DebugBindListener());
+        Bindings.create("Search", "key.keyboard.unknown", category, new SearchBindListener());
         palette = Bindings.create("Palette GUI", "key.keyboard.c", category)
                 .addListener(new PaletteBindListener())
                 .addListener(new PaintingBindListener());
