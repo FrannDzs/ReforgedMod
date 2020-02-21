@@ -24,12 +24,12 @@ public class StateUtils {
     public static Optional<BlockState> fromStack(ItemStack stack, BlockItem item) {
         CompoundNBT stackTag = stack.getTag();
         if (stackTag == null) {
-            return Optional.empty();
+            return Optional.of(item.getBlock().getDefaultState());
         }
 
         CompoundNBT stateTag = stackTag.getCompound("BlockStateTag");
         if (stateTag.isEmpty()) {
-            return Optional.empty();
+            return Optional.of(item.getBlock().getDefaultState());
         }
 
         BlockState state = item.getBlock().getDefaultState();

@@ -5,6 +5,7 @@ import com.conquestreforged.client.bind.PaintingBindListener;
 import com.conquestreforged.client.bind.PaletteBindListener;
 import com.conquestreforged.client.bind.SearchBindListener;
 import com.conquestreforged.client.bind.ToggleBindListener;
+import com.conquestreforged.core.asset.lang.Translations;
 import com.conquestreforged.core.client.input.Bindings;
 import com.conquestreforged.core.util.log.Log;
 import net.minecraft.client.settings.KeyBinding;
@@ -23,16 +24,13 @@ public class BindManager {
     @SubscribeEvent
     public static void init(FMLClientSetupEvent event) {
         Log.info("Registering keybinds");
-
+        Translations.getInstance().add(category, "Conquest Reforged");
         Bindings.create("Block Toggle", "key.keyboard.b", category, new ToggleBindListener());
-
+        Bindings.create("Search", "key.keyboard.v", category, new SearchBindListener());
+        Bindings.create("Copy Block Info", "key.keyboard.x", category, new DebugBindListener());
         palette = Bindings.create("Palette GUI", "key.keyboard.c", category)
                 .addListener(new PaletteBindListener())
                 .addListener(new PaintingBindListener());
-
-        Bindings.create("Search", "key.keyboard.v", category, new SearchBindListener());
-
-        Bindings.create("Copy Block Info", "key.keyboard.x", category, new DebugBindListener());
     }
 
     public static KeyBinding getPaletteBind() {

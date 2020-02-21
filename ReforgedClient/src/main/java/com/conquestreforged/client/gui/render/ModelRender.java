@@ -19,7 +19,6 @@ import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.Vec3i;
 import net.minecraftforge.client.model.pipeline.LightUtil;
@@ -30,11 +29,15 @@ import java.nio.IntBuffer;
 import java.util.List;
 import java.util.Random;
 
-public class ItemRenderHelper {
+public class ModelRender {
 
     private static final int[] lightmap = {15728880, 15728880, 15728880, 15728880};
 
-    protected static void renderItemModelIntoGUI(ItemStack stack, IBakedModel model, int x, int y, int color) {
+    public static void renderModel(IBakedModel model, int x, int y, int color) {
+        renderModel(ItemCameraTransforms.TransformType.GUI, model, x, y, color);
+    }
+
+    public static void renderModel(ItemCameraTransforms.TransformType transform, IBakedModel model, int x, int y, int color) {
         RenderSystem.pushMatrix();
         Minecraft.getInstance().getTextureManager().bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
         Minecraft.getInstance().getTextureManager().getTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE).setBlurMipmapDirect(false, false);
@@ -55,7 +58,7 @@ public class ItemRenderHelper {
             RenderHelper.setupGuiFlatDiffuseLighting();
         }
 
-        renderItem(stack, ItemCameraTransforms.TransformType.GUI, matrixstack, buffer, model, color);
+        renderItem(transform, matrixstack, buffer, model, color);
 
         buffer.finish();
         RenderSystem.enableDepthTest();
@@ -68,16 +71,14 @@ public class ItemRenderHelper {
         RenderSystem.popMatrix();
     }
 
-    private static void renderItem(ItemStack stack, ItemCameraTransforms.TransformType transform, MatrixStack matrix, IRenderTypeBuffer buffer, IBakedModel model, int color) {
-        if (!stack.isEmpty()) {
-            matrix.push();
-            model = net.minecraftforge.client.ForgeHooksClient.handleCameraTransforms(matrix, model, transform, false);
-            matrix.translate(-0.5D, -0.5D, -0.5D);
-            RenderType rendertype = RenderType.cutout();//RenderTypeLookup.getRenderType(stack);
-            IVertexBuilder builder = getBuffer(buffer, rendertype, true, stack.hasEffect());
-            renderModel(model, matrix, builder, color);
-            matrix.pop();
-        }
+    private static void renderItem(ItemCameraTransforms.TransformType transform, MatrixStack matrix, IRenderTypeBuffer buffer, IBakedModel model, int color) {
+        matrix.push();
+        model = net.minecraftforge.client.ForgeHooksClient.handleCameraTransforms(matrix, model, transform, false);
+        matrix.translate(-0.5D, -0.5D, -0.5D);
+        RenderType rendertype = RenderType.cutout();//RenderTypeLookup.getRenderType(stack);
+        IVertexBuilder builder = getBuffer(buffer, rendertype, true, false);
+        renderModel(model, matrix, builder, color);
+        matrix.pop();
     }
 
     private static void renderModel(IBakedModel modelIn, MatrixStack matrix, IVertexBuilder buffer, int color) {
@@ -94,11 +95,12 @@ public class ItemRenderHelper {
     }
 
     private static void renderQuads(MatrixStack matrix, IVertexBuilder buffer, List<BakedQuad> quads, int color) {
+        float r = (float)(color >> 16 & 255) / 255.0F;
+        float g = (float)(color >> 8 & 255) / 255.0F;
+        float b = (float)(color & 255) / 255.0F;
+
         MatrixStack.Entry entry = matrix.getLast();
         for(BakedQuad bakedquad : quads) {
-            float r = (float)(color >> 16 & 255) / 255.0F;
-            float g = (float)(color >> 8 & 255) / 255.0F;
-            float b = (float)(color & 255) / 255.0F;
             render(buffer, bakedquad, entry, r, g, b, 1);
         }
     }

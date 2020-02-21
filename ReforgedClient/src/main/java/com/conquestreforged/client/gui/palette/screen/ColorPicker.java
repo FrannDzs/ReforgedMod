@@ -76,11 +76,16 @@ public class ColorPicker extends Button {
         return false;
     }
 
+    public void dispose() {
+        picker.close();
+        slider.close();
+    }
+
     private boolean interact(double mx, double my) {
         boolean color = click(mx, my, x, y, picker, (x, y) -> {
             this.hue = x;
             this.saturation = y;
-            this.consumer.accept(Color.HSBtoRGB(hueOffset - this.hue, this.saturation, this.brightness));
+            this.consumer.accept(getRGB(hue, saturation, brightness));
             this.dirty = true;
         });
 
@@ -90,7 +95,7 @@ public class ColorPicker extends Button {
 
         return click(mx, my, x, y + pickerHeight + 1, slider, (x1, y1) -> {
             this.brightness = x1;
-            this.consumer.accept(Color.HSBtoRGB(hueOffset - this.hue, this.saturation, this.brightness));
+            this.consumer.accept(getRGB(hue, saturation, brightness));
             this.dirty = true;
         });
     }
@@ -126,13 +131,15 @@ public class ColorPicker extends Button {
         if (picker == null) {
             return;
         }
+
         int crosshairX = (int) (picker.getWidth() * hue);
         int crosshairY = (int) (picker.getHeight() * saturation);
+        float displayBrightness = 0.5F + (0.5F * brightness);
         for (int y = 0; y < picker.getHeight(); y++) {
             float sat = ((float) y) / pickerHeight;
             for (int x = 0; x < picker.getWidth(); x++) {
                 float hue = (((float) x) / pickerWidth);
-                int rgb = Color.HSBtoRGB(hue, sat, brightness);
+                int rgb = Color.HSBtoRGB(hue, sat, displayBrightness);
                 picker.setPixelRGBA(x, y, rgb);
 
                 if (x == crosshairX || y == crosshairY) {
@@ -147,6 +154,7 @@ public class ColorPicker extends Button {
         if (slider == null) {
             return;
         }
+
         int slidebarX = (int) (slider.getWidth() * brightness);
         for (int x = 0; x < slider.getWidth(); x++) {
             float brightness = ((float) x) / slider.getWidth();
@@ -159,5 +167,10 @@ public class ColorPicker extends Button {
                 }
             }
         }
+    }
+
+    private static int getRGB(float hue, float saturation, float brightness) {
+        Color rgb = Color.getHSBColor(hue, saturation, brightness);
+        return NativeImage.getCombined(255, rgb.getBlue(), rgb.getGreen(), rgb.getRed());
     }
 }

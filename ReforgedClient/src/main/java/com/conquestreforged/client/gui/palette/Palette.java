@@ -1,5 +1,6 @@
 package com.conquestreforged.client.gui.palette;
 
+import com.conquestreforged.core.init.dev.Environment;
 import com.conquestreforged.core.item.family.Family;
 import com.conquestreforged.core.item.family.FamilyRegistry;
 import net.minecraft.block.Block;
@@ -51,25 +52,34 @@ public class Palette {
 
         Family<Block> family = FamilyRegistry.BLOCKS.getFamily(block);
         if (family.isAbsent()) {
-            NonNullList<ItemStack> items = NonNullList.create();
-            Random random = new Random(System.currentTimeMillis());
-            List<Block> blocks = new ArrayList<>(ForgeRegistries.BLOCKS.getValues());
-            int size = 5 + random.nextInt(20);
-            while (items.size() < size) {
-                int index = random.nextInt(blocks.size());
-                ItemStack itemStack = new ItemStack(blocks.get(index));
-                if (itemStack.isEmpty()) {
-                    continue;
-                }
-                items.add(itemStack);
+            if (Environment.isProduction()) {
+                return Optional.empty();
             }
-            return Optional.of(createPalette(stack, items));
+            return Optional.of(createPalette(stack, createDebugPalette(5, 50)));
         }
 
         NonNullList<ItemStack> items = NonNullList.create();
         family.addAllItems(family.getGroup(), items);
 
         return Optional.of(createPalette(stack, items));
+    }
+
+    private static List<ItemStack> createDebugPalette(int min, int max) {
+        Random random = new Random(System.currentTimeMillis());
+        int size = min + random.nextInt((max - min));
+
+        NonNullList<ItemStack> items = NonNullList.create();
+        List<Block> blocks = new ArrayList<>(ForgeRegistries.BLOCKS.getValues());
+        while (items.size() < size) {
+            int index = random.nextInt(blocks.size());
+            ItemStack itemStack = new ItemStack(blocks.get(index));
+            if (itemStack.isEmpty()) {
+                continue;
+            }
+            items.add(itemStack);
+        }
+
+        return items;
     }
 
     private static ItemStack copyOne(ItemStack stack) {

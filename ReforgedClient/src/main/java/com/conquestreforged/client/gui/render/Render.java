@@ -37,7 +37,7 @@ public class Render {
         RenderSystem.setupOutline();
         RenderSystem.scalef(scale, scale, 1F);
         IBakedModel model = Minecraft.getInstance().getItemRenderer().getItemModelMesher().getItemModel(stack);
-        ItemRenderHelper.renderItemModelIntoGUI(stack, model, x, y, color);
+        ModelRender.renderModel(model, x, y, color);
         RenderSystem.teardownOutline();
         RenderSystem.popMatrix();
     }
