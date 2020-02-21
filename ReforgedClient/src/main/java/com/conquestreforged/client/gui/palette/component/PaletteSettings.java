@@ -1,6 +1,6 @@
-package com.conquestreforged.client.gui.palette.screen;
+package com.conquestreforged.client.gui.palette.component;
 
-import com.conquestreforged.client.gui.ColorUtils;
+import com.conquestreforged.client.gui.render.ColorUtils;
 import com.conquestreforged.client.gui.render.Curve;
 import com.conquestreforged.core.config.ConfigBuildEvent;
 import com.conquestreforged.core.config.section.ConfigSection;
@@ -19,12 +19,14 @@ import java.awt.*;
 @Mod.EventBusSubscriber(value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class PaletteSettings extends Screen {
 
+    private static final boolean test = false;
     private static ConfigSection config;
 
-    public float zoomScale = config.get("zoom_scale");
-    public float zoomSpread = config.get("zoom_spread");
-    public Curve zoomCurve = config.getEnum("zoom_spread", Curve.class);
-    public float highlightScale = config.get("highlight_scale");
+    public transient Curve zoomCurve = Curve.SQUARE;
+
+    public float zoomScale = config.getAsFloat("zoom_scale", 1.1);
+    public float zoomSpread = config.getAsFloat("zoom_spread", 1);
+    public float highlightScale = config.getAsFloat("highlight_scale", 1.1);
     public int highlightColor = ColorUtils.fromHex(config.get("highlight_color"));
     public int hoveredColor = ColorUtils.fromHex(config.get("hovered_color"));
     public int selectedColor = ColorUtils.fromHex(config.get("selected_color"));
@@ -40,7 +42,7 @@ public class PaletteSettings extends Screen {
     public void init(Minecraft mc, int width, int height) {
         dispose();
         super.init(mc, width, height);
-        if (!Environment.isProduction()) {
+        if (!Environment.isProduction() && test) {
             add(right, new ColorPicker("Highlight Color", highlightColor, c -> {
                 highlightColor = c;
                 config.set("highlight_color", ColorUtils.toHex(c));
@@ -75,6 +77,7 @@ public class PaletteSettings extends Screen {
     public void onClose() {
         super.onClose();
         dispose();
+        config.save();
     }
 
     private void dispose() {
@@ -98,9 +101,6 @@ public class PaletteSettings extends Screen {
 
             spec.getBuilder().comment("Controls the number of items that are affected by the zoom effect");
             spec.getBuilder().defineInRange("zoom_spread", 1.0, 0, 1.0).next();
-
-            spec.getBuilder().comment("Controls the rate of zoom effect applied as your cursor moves towards items");
-            spec.getBuilder().defineEnum("zoom_curve", Curve.SQUARE).next();
 
             spec.getBuilder().comment("Controls the size of the colored highlight around items");
             spec.getBuilder().defineInRange("highlight_size", 1.1, 1.0, 2.0).next();

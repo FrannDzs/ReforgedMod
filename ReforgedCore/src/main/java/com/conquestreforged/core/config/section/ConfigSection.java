@@ -125,6 +125,11 @@ public interface ConfigSection extends CommentedConfig {
     default void getComments(Map<String, CommentNode> destination) {
         getRoot().getComments(destination);
     }
+
+    default float getAsFloat(String path, double defValue) {
+        double value = getOrElse(path, defValue);
+        return (float) value;
+    }
     
     @Override
     default <T> T get(String path) {

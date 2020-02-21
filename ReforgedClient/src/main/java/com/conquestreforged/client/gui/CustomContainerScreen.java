@@ -1,6 +1,6 @@
 package com.conquestreforged.client.gui;
 
-import com.conquestreforged.client.gui.palette.screen.Style;
+import com.conquestreforged.client.gui.palette.component.Style;
 import com.conquestreforged.client.gui.palette.shape.FloatMath;
 import com.conquestreforged.client.gui.render.Render;
 import com.mojang.blaze3d.systems.RenderSystem;

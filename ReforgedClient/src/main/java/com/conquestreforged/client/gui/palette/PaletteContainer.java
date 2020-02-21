@@ -2,9 +2,9 @@ package com.conquestreforged.client.gui.palette;
 
 import com.conquestreforged.client.gui.AbstractContainer;
 import com.conquestreforged.client.gui.Hotbar;
-import com.conquestreforged.client.gui.palette.screen.PaletteSettings;
-import com.conquestreforged.client.gui.palette.screen.PaletteSlot;
-import com.conquestreforged.client.gui.palette.screen.Style;
+import com.conquestreforged.client.gui.palette.component.PaletteSettings;
+import com.conquestreforged.client.gui.palette.component.PaletteSlot;
+import com.conquestreforged.client.gui.palette.component.Style;
 import com.conquestreforged.client.gui.palette.shape.Bounds;
 import com.conquestreforged.client.gui.palette.shape.FloatMath;
 import com.conquestreforged.client.gui.palette.shape.Point;

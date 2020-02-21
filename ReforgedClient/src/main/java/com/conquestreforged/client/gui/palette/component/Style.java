@@ -1,4 +1,4 @@
-package com.conquestreforged.client.gui.palette.screen;
+package com.conquestreforged.client.gui.palette.component;
 
 import net.minecraft.util.ResourceLocation;
 

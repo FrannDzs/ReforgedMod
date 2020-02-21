@@ -1,10 +1,10 @@
 package com.conquestreforged.client.gui.render;
 
-import com.conquestreforged.client.gui.palette.screen.Style;
+import com.conquestreforged.client.gui.palette.component.Style;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -42,24 +42,13 @@ public class Render {
         RenderSystem.popMatrix();
     }
 
-    public static void beginTooltips() {
+    public static void drawBlockModel(BlockState state, int x, int y, float scale) {
         RenderSystem.pushMatrix();
-        RenderSystem.translatef(0, 0, 300);
-    }
-
-    public static void endTooltips() {
+        RenderSystem.setupOutline();
+        RenderSystem.scalef(scale, scale, 1F);
+        IBakedModel model = Minecraft.getInstance().getBlockRendererDispatcher().getModelForState(state);
+        ModelRender.renderModel(model, x, y, 0x00FFFFFF);
+        RenderSystem.teardownOutline();
         RenderSystem.popMatrix();
-    }
-
-    public static void setupSolidRenderingTextureCombine(int color) {
-        // TODO
-    }
-
-    public static void tearDownSolidRenderingTextureCombine() {
-        // TODO
-    }
-
-    public static void enableGUIStandardItemLighting() {
-        RenderHelper.enableStandardItemLighting();
     }
 }

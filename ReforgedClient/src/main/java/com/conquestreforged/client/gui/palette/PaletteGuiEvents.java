@@ -1,7 +1,6 @@
 package com.conquestreforged.client.gui.palette;
 
 import com.conquestreforged.client.BindManager;
-import com.conquestreforged.client.gui.palette.screen.PaletteScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.screen.inventory.CreativeScreen;

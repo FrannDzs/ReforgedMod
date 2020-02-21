@@ -21,6 +21,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.Vec3i;
+import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.model.pipeline.LightUtil;
 import org.lwjgl.system.MemoryStack;
 
@@ -58,7 +59,7 @@ public class ModelRender {
             RenderHelper.setupGuiFlatDiffuseLighting();
         }
 
-        renderItem(transform, matrixstack, buffer, model, color);
+        renderModel(transform, matrixstack, buffer, model, color);
 
         buffer.finish();
         RenderSystem.enableDepthTest();
@@ -71,9 +72,9 @@ public class ModelRender {
         RenderSystem.popMatrix();
     }
 
-    private static void renderItem(ItemCameraTransforms.TransformType transform, MatrixStack matrix, IRenderTypeBuffer buffer, IBakedModel model, int color) {
+    private static void renderModel(ItemCameraTransforms.TransformType transform, MatrixStack matrix, IRenderTypeBuffer buffer, IBakedModel model, int color) {
         matrix.push();
-        model = net.minecraftforge.client.ForgeHooksClient.handleCameraTransforms(matrix, model, transform, false);
+        model = ForgeHooksClient.handleCameraTransforms(matrix, model, transform, false);
         matrix.translate(-0.5D, -0.5D, -0.5D);
         RenderType rendertype = RenderType.cutout();//RenderTypeLookup.getRenderType(stack);
         IVertexBuilder builder = getBuffer(buffer, rendertype, true, false);

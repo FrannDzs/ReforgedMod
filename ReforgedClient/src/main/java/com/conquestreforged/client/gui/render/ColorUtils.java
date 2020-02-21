@@ -1,4 +1,4 @@
-package com.conquestreforged.client.gui;
+package com.conquestreforged.client.gui.render;
 
 import java.awt.*;
 

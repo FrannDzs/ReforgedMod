@@ -1,4 +1,4 @@
-package com.conquestreforged.client.gui.palette.screen;
+package com.conquestreforged.client.gui.palette.component;
 
 import com.conquestreforged.client.gui.palette.PaletteContainer;
 import com.conquestreforged.client.gui.palette.shape.Bounds;

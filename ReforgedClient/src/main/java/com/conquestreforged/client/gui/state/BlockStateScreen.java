@@ -1,11 +1,9 @@
 package com.conquestreforged.client.gui.state;
 
 import com.conquestreforged.client.gui.PickerScreen;
-import com.conquestreforged.client.gui.render.ModelRender;
+import com.conquestreforged.client.gui.render.Render;
 import com.conquestreforged.core.item.ItemUtils;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.item.ItemStack;
 
 public class BlockStateScreen extends PickerScreen<BlockState> {
@@ -31,11 +29,8 @@ public class BlockStateScreen extends PickerScreen<BlockState> {
 
     @Override
     public void render(BlockState option, int x, int y, int width, int height) {
-        IBakedModel model = Minecraft.getInstance().getBlockRendererDispatcher().getModelForState(option);
-        ModelRender.renderModel(model, x, y, 0xFFFFFF);
+        Render.drawBlockModel(option, x, y, 1F);
     }
-
-    //    (BlockState blockStateIn, MatrixStack matrixStackIn, IRenderTypeBuffer bufferTypeIn, int combinedLightIn, int combinedOverlayIn, net.minecraftforge.client.model.data.IModelData modelData) {
 
     @Override
     public ItemStack createItemStack(ItemStack original, BlockState value) {

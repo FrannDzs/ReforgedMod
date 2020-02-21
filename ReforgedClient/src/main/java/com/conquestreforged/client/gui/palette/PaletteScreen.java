@@ -1,8 +1,8 @@
-package com.conquestreforged.client.gui.palette.screen;
+package com.conquestreforged.client.gui.palette;
 
 import com.conquestreforged.client.BindManager;
 import com.conquestreforged.client.gui.CustomCreativeScreen;
-import com.conquestreforged.client.gui.palette.PaletteContainer;
+import com.conquestreforged.client.gui.palette.component.PaletteSettings;
 import com.conquestreforged.client.gui.render.Render;
 import com.conquestreforged.client.tutorial.Tutorials;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -137,6 +137,7 @@ public class PaletteScreen extends CustomCreativeScreen<PaletteContainer> {
 
     @Override
     public void onClose() {
+        settings.onClose();
         if (previous != null) {
             previous.init(Minecraft.getInstance(), width, height);
         }
