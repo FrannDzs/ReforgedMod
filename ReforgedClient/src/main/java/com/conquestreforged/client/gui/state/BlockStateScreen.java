@@ -14,17 +14,19 @@ public class BlockStateScreen extends PickerScreen<BlockState> {
 
     @Override
     public int getWidth(BlockState option) {
-        return 16;
+        return 0;
     }
 
     @Override
     public int getHeight(BlockState option) {
-        return 16;
+        return 0;
     }
 
     @Override
     public String getDisplayName(BlockState option) {
-        return option.getBlock().getNameTextComponent().getString();
+        StringBuilder sb = new StringBuilder();
+        option.getProperties().forEach(p -> sb.append(sb.length() > 0 ? "," : "").append(p.getName()).append('=').append(option.get(p)));
+        return sb.toString();
     }
 
     @Override

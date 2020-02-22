@@ -48,6 +48,7 @@ public abstract class PickerScreen<T> extends Screen {
 
         GlStateManager.enableAlphaTest();
         GlStateManager.enableTexture();
+
         for (int i = 5; i >= 0; i--) {
             if (i > 0) {
                 renderOption(centerX, centerY, -i);
@@ -101,6 +102,10 @@ public abstract class PickerScreen<T> extends Screen {
 
         if (index >= options.size()) {
             index = index - (options.size() - 1);
+        }
+
+        if (index < 0 || index > options.size()) {
+            return;
         }
 
         float scale0 = 2F - ((Math.abs(di)) / 4F);

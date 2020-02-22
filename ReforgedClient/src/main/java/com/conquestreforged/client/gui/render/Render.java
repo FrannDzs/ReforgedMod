@@ -44,11 +44,10 @@ public class Render {
 
     public static void drawBlockModel(BlockState state, int x, int y, float scale) {
         RenderSystem.pushMatrix();
-        RenderSystem.setupOutline();
+        RenderSystem.translatef(x, y, 0);
         RenderSystem.scalef(scale, scale, 1F);
         IBakedModel model = Minecraft.getInstance().getBlockRendererDispatcher().getModelForState(state);
-        ModelRender.renderModel(model, x, y, 0x00FFFFFF);
-        RenderSystem.teardownOutline();
+        ModelRender.renderModel(state, model, 0, 0, 0x00FFFFFF);
         RenderSystem.popMatrix();
     }
 }

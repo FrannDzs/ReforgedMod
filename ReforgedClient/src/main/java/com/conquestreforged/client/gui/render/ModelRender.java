@@ -4,13 +4,16 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.Matrix3f;
 import net.minecraft.client.renderer.Matrix4f;
+import net.minecraft.client.renderer.Quaternion;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.Vector4f;
 import net.minecraft.client.renderer.model.BakedQuad;
@@ -54,12 +57,14 @@ public class ModelRender {
         RenderSystem.scalef(16.0F, 16.0F, 16.0F);
         MatrixStack matrixstack = new MatrixStack();
         IRenderTypeBuffer.Impl buffer = Minecraft.getInstance().getRenderTypeBuffers().getBufferSource();
+        model = ForgeHooksClient.handleCameraTransforms(matrixstack, model, transform, false);
+
         boolean flag = !model.func_230044_c_();
         if (flag) {
             RenderHelper.setupGuiFlatDiffuseLighting();
         }
 
-        renderModel(transform, matrixstack, buffer, model, color);
+        renderModel(matrixstack, RenderType.cutout(), buffer, model, color);
 
         buffer.finish();
         RenderSystem.enableDepthTest();
@@ -72,11 +77,46 @@ public class ModelRender {
         RenderSystem.popMatrix();
     }
 
-    private static void renderModel(ItemCameraTransforms.TransformType transform, MatrixStack matrix, IRenderTypeBuffer buffer, IBakedModel model, int color) {
+    public static void renderModel(BlockState state, IBakedModel model, int x, int y, int color) {
+        RenderSystem.pushMatrix();
+        Minecraft.getInstance().getTextureManager().bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+        Minecraft.getInstance().getTextureManager().getTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE).setBlurMipmapDirect(false, false);
+        RenderSystem.enableRescaleNormal();
+        RenderSystem.enableAlphaTest();
+        RenderSystem.defaultAlphaFunc();
+        RenderSystem.enableBlend();
+        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.translatef((float) x, (float) y, 100.0F);
+        RenderSystem.translatef(8.0F, 8.0F, 0.0F);
+        RenderSystem.scalef(1.0F, -1.0F, 1.0F);
+        RenderSystem.scalef(16.0F, 16.0F, 16.0F);
+        MatrixStack matrixstack = new MatrixStack();
+        IRenderTypeBuffer.Impl buffer = Minecraft.getInstance().getRenderTypeBuffers().getBufferSource();
+        boolean flag = !model.func_230044_c_();
+        if (flag) {
+            RenderHelper.setupGuiFlatDiffuseLighting();
+        }
+
+        matrixstack.push();
+        matrixstack.rotate(new Quaternion(0.001F, 0.005F, 0.003F, 90));
+        renderModel(matrixstack, RenderTypeLookup.getRenderType(state), buffer, model, color);
+        matrixstack.pop();
+
+        buffer.finish();
+        RenderSystem.enableDepthTest();
+        if (flag) {
+            RenderHelper.setupGui3DDiffuseLighting();
+        }
+
+        RenderSystem.disableAlphaTest();
+        RenderSystem.disableRescaleNormal();
+        RenderSystem.popMatrix();
+    }
+
+    private static void renderModel(MatrixStack matrix, RenderType rendertype, IRenderTypeBuffer buffer, IBakedModel model, int color) {
         matrix.push();
-        model = ForgeHooksClient.handleCameraTransforms(matrix, model, transform, false);
         matrix.translate(-0.5D, -0.5D, -0.5D);
-        RenderType rendertype = RenderType.cutout();//RenderTypeLookup.getRenderType(stack);
         IVertexBuilder builder = getBuffer(buffer, rendertype, true, false);
         renderModel(model, matrix, builder, color);
         matrix.pop();

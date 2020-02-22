@@ -1,5 +1,6 @@
 package com.conquestreforged.client.gui.dependency.screen;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.gui.widget.list.ExtendedList;
@@ -27,7 +28,16 @@ public class ListWidget extends ExtendedList<ListWidget.Entry> {
         return getLeft() + getRowWidth();
     }
 
-    public static class Entry extends ExtendedList.AbstractListEntry<Entry> {
+    private int getMinWidth() {
+        int width = 0;
+        for (Entry entry : children()) {
+            int w = Minecraft.getInstance().fontRenderer.getStringWidth(entry.button.getMessage());
+            width = Math.max(width, w);
+        }
+        return width + 32;
+    }
+
+    public class Entry extends ExtendedList.AbstractListEntry<Entry> {
 
         private final Button button;
 
@@ -37,9 +47,13 @@ public class ListWidget extends ExtendedList<ListWidget.Entry> {
 
         @Override
         public void render(int entryIdx, int top, int left, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean p_194999_5_, float partialTicks) {
-            button.x = left;
+            int buttonWidth = Math.min(getMinWidth(), entryWidth - 2);
+            int paddingLeft = (entryWidth - buttonWidth) / 2;
+            int dx = (left - ListWidget.this.getLeft());
+
+            button.x = left + paddingLeft - dx;
             button.y = top;
-            button.setWidth(entryWidth - 4);
+            button.setWidth(buttonWidth);
             button.setHeight(entryHeight);
             button.render(mouseX, mouseY, partialTicks);
         }

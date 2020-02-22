@@ -25,7 +25,7 @@ public class DependencyScreen extends Screen {
 
     private static final int LIST_HEIGHT = 64;
     private static final int TITLE_HEIGHT = 22;
-    private static final int MARGIN_TOP = 4;
+    private static final int MARGIN_TOP = 10;
     private static final int MARGIN_BOTTOM = 28;
 
     private final Screen screen;
@@ -61,10 +61,18 @@ public class DependencyScreen extends Screen {
 
         int center = width / 2;
 
-        int imageHeight = height - MARGIN_TOP - TITLE_HEIGHT - LIST_HEIGHT - MARGIN_BOTTOM;
+        int imageHeight = Math.min(CTM_HEIGHT, height - MARGIN_TOP - TITLE_HEIGHT - LIST_HEIGHT - MARGIN_BOTTOM);
         int imageWidth = Math.round(CTM_WIDTH * (((float) imageHeight) / CTM_HEIGHT));
 
-        int listTop = MARGIN_TOP + imageHeight + TITLE_HEIGHT;
+        int elementsHeight = imageHeight + TITLE_HEIGHT + LIST_HEIGHT;
+        int paddingTop = (height - elementsHeight) / 2;
+        int dif = height - (paddingTop + elementsHeight);
+        if (dif < MARGIN_BOTTOM) {
+            paddingTop -= dif;
+            paddingTop = Math.max(paddingTop, 2);
+        }
+
+        int listTop = paddingTop + imageHeight + TITLE_HEIGHT;
         int listBottom = listTop + LIST_HEIGHT;
 
         listWidget = new ListWidget(this, imageWidth, listTop, listBottom);
@@ -99,16 +107,24 @@ public class DependencyScreen extends Screen {
 
         listWidget.render(mx, my, ticks);
 
-        int imageHeight = height - MARGIN_TOP - TITLE_HEIGHT - LIST_HEIGHT - MARGIN_BOTTOM;
+        int imageHeight = Math.min(256, height - MARGIN_TOP - TITLE_HEIGHT - LIST_HEIGHT - MARGIN_BOTTOM);
         int imageWidth = Math.round(CTM_WIDTH * (((float) imageHeight) / CTM_HEIGHT));
         int imageLeft = (this.width / 2) - (imageWidth / 2);
 
+        int elementsHeight = imageHeight + TITLE_HEIGHT + LIST_HEIGHT;
+        int paddingTop = (height - elementsHeight) / 2;
+        int dif = height - (paddingTop + elementsHeight);
+        if (dif < MARGIN_BOTTOM) {
+            paddingTop -= dif;
+            paddingTop = Math.max(paddingTop, 2);
+        }
+
         RenderSystem.enableTexture();
         Minecraft.getInstance().getTextureManager().bindTexture(CTM);
-        AbstractGui.blit(imageLeft, MARGIN_TOP, imageWidth, imageHeight,0, 0, CTM_WIDTH, CTM_HEIGHT, CTM_WIDTH, CTM_HEIGHT);
+        AbstractGui.blit(imageLeft, paddingTop, imageWidth, imageHeight,0, 0, CTM_WIDTH, CTM_HEIGHT, CTM_WIDTH, CTM_HEIGHT);
 
         String message = "Missing Dependencies:";
-        font.drawStringWithShadow(message, imageLeft, MARGIN_TOP + imageHeight + 8, 0xFFFFFF);
+        font.drawStringWithShadow(message, imageLeft, paddingTop + imageHeight + 8, 0xFFFFFF);
 
         super.render(mx, my, ticks);
     }
