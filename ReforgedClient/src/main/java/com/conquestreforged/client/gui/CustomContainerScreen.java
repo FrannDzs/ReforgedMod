@@ -1,7 +1,6 @@
 package com.conquestreforged.client.gui;
 
 import com.conquestreforged.client.gui.palette.component.Style;
-import com.conquestreforged.client.gui.palette.shape.FloatMath;
 import com.conquestreforged.client.gui.render.Render;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
@@ -54,11 +53,11 @@ public abstract class CustomContainerScreen<T extends Container> extends Contain
     }
 
     public void renderDraggedItem(int mx, int my, float depth, Style style) {
-        int zlevel = FloatMath.round(depth * 200);
+        int zlevel = 250;
         ItemStack held = playerInventory.getItemStack();
         if (!held.isEmpty()) {
-            this.setBlitOffset(0);
-            this.itemRenderer.zLevel = 0;
+            this.setBlitOffset(zlevel);
+            this.itemRenderer.zLevel = zlevel;
             RenderSystem.pushMatrix();
             RenderSystem.translatef(mx, my, zlevel);
             RenderSystem.enableDepthTest();
@@ -100,16 +99,17 @@ public abstract class CustomContainerScreen<T extends Container> extends Contain
     public void renderSlot(Slot slot, Style style, int mx, int my, float depth, float scale) {
         int x = slot.xPos + 8;
         int y = slot.yPos + 8;
-        int zlevel = FloatMath.round(depth * 200);
+        int zlevel = depth == 1 ? 60 : 0;
         ItemStack itemstack = slot.getStack();
 
         RenderSystem.pushMatrix();
+        RenderSystem.disableBlend();
         RenderSystem.translatef(x, y, zlevel);
         RenderSystem.scalef(scale, scale, 1);
 
         // set z-level
-        this.setBlitOffset(10);
-        this.itemRenderer.zLevel = 10;
+        this.setBlitOffset(zlevel);
+        this.itemRenderer.zLevel = zlevel;
 
         if (style != null) {
             if (!isOverSlot && isMouseOver(slot, mx, my, 11, scale)) {

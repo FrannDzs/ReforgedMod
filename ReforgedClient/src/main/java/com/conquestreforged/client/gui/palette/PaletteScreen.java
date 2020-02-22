@@ -81,7 +81,7 @@ public class PaletteScreen extends CustomCreativeScreen<PaletteContainer> {
             // render hotbar
             getContainer().visitHotbar(slot -> renderSlot(slot, mx, my, 1F, 1F));
             // render the dragged item
-            renderDraggedItem(mx, my, 3F, getContainer().getDraggedStyle());
+            renderDraggedItem(mx, my, 1F, getContainer().getDraggedStyle());
         }
         tearDownRender();
 
@@ -126,6 +126,7 @@ public class PaletteScreen extends CustomCreativeScreen<PaletteContainer> {
         int top = (height - 32);
         int left = width / 2;
         int color = 0xFFFFFF;
+
         String text = display.getDisplayName().getFormattedText();
         drawCenteredString(minecraft.fontRenderer, text, left, top, color);
     }

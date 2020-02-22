@@ -199,12 +199,9 @@ public class PaletteContainer extends AbstractContainer {
 
     private float getRelativeDepth(float i) {
         if (i == 0F) {
-            return 2F;
-        }
-        if (i >= radialCount) {
             return 1F;
         }
-        return 1F - (i / radialCount);
+        return 0F;
     }
 
     @Nullable
