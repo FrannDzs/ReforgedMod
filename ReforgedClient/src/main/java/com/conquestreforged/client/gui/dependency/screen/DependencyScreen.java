@@ -61,33 +61,18 @@ public class DependencyScreen extends Screen {
 
         int center = width / 2;
 
-        int imageHeight = Math.min(CTM_HEIGHT, height - MARGIN_TOP - TITLE_HEIGHT - LIST_HEIGHT - MARGIN_BOTTOM);
-        int imageWidth = Math.round(CTM_WIDTH * (((float) imageHeight) / CTM_HEIGHT));
+        int imageHeight = getImageHeight();
+        int imageWidth = getImageWidth(imageHeight);
+        int paddingTop = getPaddingTop(imageHeight);
+        int listTop = paddingTop + imageHeight;
+        int listBottom = listTop + TITLE_HEIGHT + LIST_HEIGHT;
 
-        int elementsHeight = imageHeight + TITLE_HEIGHT + LIST_HEIGHT;
-        int paddingTop = (height - elementsHeight) / 2;
-        int dif = height - (paddingTop + elementsHeight);
-        if (dif < MARGIN_BOTTOM) {
-            paddingTop -= dif;
-            paddingTop = Math.max(paddingTop, 2);
-        }
-
-        int listTop = paddingTop + imageHeight + TITLE_HEIGHT;
-        int listBottom = listTop + LIST_HEIGHT;
-
-        listWidget = new ListWidget(this, imageWidth, listTop, listBottom);
+        listWidget = new ListWidget(this, imageWidth, listTop, TITLE_HEIGHT, listBottom);
         listWidget.setLeftPos(center - (imageWidth / 2));
-        super.children.add(listWidget);
+        children.add(listWidget);
 
         for (Dependency dependency : missing) {
-            Button button = new Button(0, 0, 0, 0, dependency.getDisplayName(), b -> {
-                try {
-                    Util.getOSType().openURL(new URL(dependency.getURL()));
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                }
-            });
-
+            Button button = createButton(dependency);
             listWidget.add(button);
             children.add(button);
         }
@@ -107,9 +92,41 @@ public class DependencyScreen extends Screen {
 
         listWidget.render(mx, my, ticks);
 
-        int imageHeight = Math.min(256, height - MARGIN_TOP - TITLE_HEIGHT - LIST_HEIGHT - MARGIN_BOTTOM);
-        int imageWidth = Math.round(CTM_WIDTH * (((float) imageHeight) / CTM_HEIGHT));
-        int imageLeft = (this.width / 2) - (imageWidth / 2);
+        int imageHeight = getImageHeight();
+        int imageWidth = getImageWidth(imageHeight);
+        int imageLeft = getImageLeft(imageWidth);
+        int paddingTop = getPaddingTop(imageHeight);
+
+        RenderSystem.enableTexture();
+        Minecraft.getInstance().getTextureManager().bindTexture(CTM);
+        AbstractGui.blit(imageLeft, paddingTop, imageWidth, imageHeight,0, 0, CTM_WIDTH, CTM_HEIGHT, CTM_WIDTH, CTM_HEIGHT);
+
+        String message = "Missing Dependencies:";
+        int titleWidth = font.getStringWidth(message);
+        int titleOffset = titleWidth / 2;
+        font.drawStringWithShadow(message, (width / 2F) - titleOffset, paddingTop + imageHeight + 8, 0xFFFFFF);
+
+        super.render(mx, my, ticks);
+    }
+
+    private int getImageHeight() {
+        // scale the iamge to the remaining vertical height after subtracting static height elements
+        return Math.min(CTM_HEIGHT, height - MARGIN_TOP - TITLE_HEIGHT - LIST_HEIGHT - MARGIN_BOTTOM);
+    }
+
+    private int getImageWidth(int imageHeight) {
+        // scale image width proportionally to the image height
+        return Math.round(CTM_WIDTH * (((float) imageHeight) / CTM_HEIGHT));
+    }
+
+    private int getImageLeft(int imageWidth) {
+        // find the left (x) pos of the image so that it is centered on screen
+        return (width / 2) - (imageWidth / 2);
+    }
+
+    private int getPaddingTop(int imageHeight) {
+        // adjust the top margin to ensure all content fits on screen without overlapping
+        // attempt to center content vertically before receding upwards to accommodate larger gui scales
 
         int elementsHeight = imageHeight + TITLE_HEIGHT + LIST_HEIGHT;
         int paddingTop = (height - elementsHeight) / 2;
@@ -118,14 +135,16 @@ public class DependencyScreen extends Screen {
             paddingTop -= dif;
             paddingTop = Math.max(paddingTop, 2);
         }
+        return paddingTop;
+    }
 
-        RenderSystem.enableTexture();
-        Minecraft.getInstance().getTextureManager().bindTexture(CTM);
-        AbstractGui.blit(imageLeft, paddingTop, imageWidth, imageHeight,0, 0, CTM_WIDTH, CTM_HEIGHT, CTM_WIDTH, CTM_HEIGHT);
-
-        String message = "Missing Dependencies:";
-        font.drawStringWithShadow(message, imageLeft, paddingTop + imageHeight + 8, 0xFFFFFF);
-
-        super.render(mx, my, ticks);
+    private static Button createButton(Dependency dependency) {
+        return new Button(0, 0, 0, 0, dependency.getDisplayName(), btn -> {
+            try {
+                Util.getOSType().openURL(new URL(dependency.getURL()));
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+        });
     }
 }

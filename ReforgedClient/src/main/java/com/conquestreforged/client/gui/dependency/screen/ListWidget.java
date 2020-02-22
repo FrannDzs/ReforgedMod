@@ -8,10 +8,12 @@ import net.minecraft.client.gui.widget.list.ExtendedList;
 public class ListWidget extends ExtendedList<ListWidget.Entry> {
 
     private final int width;
+    private final int paddingTop;
 
-    public ListWidget(Screen parent, int width, int top, int bottom) {
+    public ListWidget(Screen parent, int width, int top, int padding, int bottom) {
         super(parent.getMinecraft(), width, parent.height, top, bottom, 24);
         this.width = width;
+        this.paddingTop = padding;
     }
 
     public void add(Button button) {
@@ -52,7 +54,7 @@ public class ListWidget extends ExtendedList<ListWidget.Entry> {
             int dx = (left - ListWidget.this.getLeft());
 
             button.x = left + paddingLeft - dx;
-            button.y = top;
+            button.y = top + paddingTop;
             button.setWidth(buttonWidth);
             button.setHeight(entryHeight);
             button.render(mouseX, mouseY, partialTicks);
