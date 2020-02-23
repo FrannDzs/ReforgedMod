@@ -14,6 +14,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.IProperty;
 import net.minecraft.util.NonNullList;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 
@@ -35,6 +36,27 @@ public class ItemUtils {
         ItemStack stack = new ItemStack(state.getBlock());
         stack.getOrCreateChildTag(BLOCK_STATE_TAG).putString(property.getName(), value);
         stack.setDisplayName(stack.getDisplayName().appendText(property.getName() + "=" + value));
+        return stack;
+    }
+
+    public static ItemStack fromState(BlockState state, Collection<IProperty<?>> properties) {
+        StringBuilder name = new StringBuilder("[");
+        ItemStack stack = new ItemStack(state.getBlock());
+        CompoundNBT stateTag = stack.getOrCreateChildTag(BLOCK_STATE_TAG);
+        for (IProperty<?> property : properties) {
+            if (state.has(property)) {
+                String value = state.get(property).toString();
+                stateTag.putString(property.getName(), value);
+                if (name.length() > 1) {
+                    name.append(',');
+                }
+                name.append(property.getName()).append('=').append(value);
+            }
+        }
+        if (name.length() > 1) {
+            name.append("]");
+            stack.setDisplayName(stack.getDisplayName().appendText(name.toString()));
+        }
         return stack;
     }
 

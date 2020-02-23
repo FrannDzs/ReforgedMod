@@ -17,6 +17,10 @@ import java.util.Optional;
 
 public class StateUtils {
 
+    public static Optional<BlockState> getOrDefault(ItemStack stack) {
+        return toItemBlock(stack.getItem()).map(item -> fromStack(stack, item).orElse(item.getBlock().getDefaultState()));
+    }
+
     public static Optional<BlockState> fromStack(ItemStack stack) {
         return toItemBlock(stack.getItem()).flatMap(item -> fromStack(stack, item));
     }

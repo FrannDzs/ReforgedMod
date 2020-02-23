@@ -1,6 +1,7 @@
 package com.conquestreforged.client.gui;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.inventory.CreativeCraftingListener;
@@ -49,11 +50,19 @@ public abstract class PickerScreen<T> extends Screen {
         GlStateManager.enableAlphaTest();
         GlStateManager.enableTexture();
 
-        for (int i = 5; i >= 0; i--) {
+        int visited = 0;
+        for (int i = 0; i < getSize(); i++) {
             if (i > 0) {
                 renderOption(centerX, centerY, -i);
+                if (++visited >= options.size()) {
+                    break;
+                }
             }
+
             renderOption(centerX, centerY, +i);
+            if (++visited >= options.size()) {
+                break;
+            }
         }
         drawLabel(centerX, centerY);
     }
@@ -104,7 +113,7 @@ public abstract class PickerScreen<T> extends Screen {
             index = index - (options.size() - 1);
         }
 
-        if (index < 0 || index > options.size()) {
+        if (index < 0 || index >= options.size()) {
             return;
         }
 
@@ -130,17 +139,29 @@ public abstract class PickerScreen<T> extends Screen {
         int tt = top + ((size - th) / 2);
 
         float alpha = Math.min(1F, 0.2F + Math.max(0, 1F - (Math.abs(di) / 2F)));
-        GlStateManager.color4f(alpha, alpha, alpha, 1F);
+        RenderSystem.color4f(alpha, alpha, alpha, 1F);
+        RenderSystem.pushMatrix();
+        RenderSystem.translatef(tl, tt, 0);
+        RenderSystem.scalef(scale0, scale0, 1F);
 
-        render(option, tl, tt, tw, th);
+        render(option, 0, 0, tw, th);
+
+        RenderSystem.popMatrix();
     }
 
     private void drawLabel(int centerX, int centerY) {
+        if (index < 0 || index >= options.size()) {
+            return;
+        }
         T option = options.get(index);
         String text = getDisplayName(option);
         int width = font.getStringWidth(text);
         int height = (this.width / 11) + 10;
         font.drawStringWithShadow(text, centerX - (width / 2F), centerY + height, 0xFFFFFF);
+    }
+
+    public int getSize() {
+        return 5;
     }
 
     public abstract int getWidth(T option);

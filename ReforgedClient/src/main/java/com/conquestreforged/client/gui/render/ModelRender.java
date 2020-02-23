@@ -13,7 +13,6 @@ import net.minecraft.client.renderer.Matrix4f;
 import net.minecraft.client.renderer.Quaternion;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.Vector4f;
 import net.minecraft.client.renderer.model.BakedQuad;
@@ -79,6 +78,7 @@ public class ModelRender {
 
     public static void renderModel(BlockState state, IBakedModel model, int x, int y, int color) {
         RenderSystem.pushMatrix();
+        RenderSystem.enableTexture();
         Minecraft.getInstance().getTextureManager().bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
         Minecraft.getInstance().getTextureManager().getTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE).setBlurMipmapDirect(false, false);
         RenderSystem.enableRescaleNormal();
@@ -91,17 +91,19 @@ public class ModelRender {
         RenderSystem.translatef(8.0F, 8.0F, 0.0F);
         RenderSystem.scalef(1.0F, -1.0F, 1.0F);
         RenderSystem.scalef(16.0F, 16.0F, 16.0F);
-        MatrixStack matrixstack = new MatrixStack();
+        MatrixStack matrix = new MatrixStack();
+
         IRenderTypeBuffer.Impl buffer = Minecraft.getInstance().getRenderTypeBuffers().getBufferSource();
+
         boolean flag = !model.func_230044_c_();
         if (flag) {
             RenderHelper.setupGuiFlatDiffuseLighting();
         }
 
-        matrixstack.push();
-        matrixstack.rotate(new Quaternion(0.001F, 0.005F, 0.003F, 90));
-        renderModel(matrixstack, RenderTypeLookup.getRenderType(state), buffer, model, color);
-        matrixstack.pop();
+        matrix.push();
+        matrix.rotate(new Quaternion(0.003F, 0.005F, 0.00025F, 65));
+        Minecraft.getInstance().getBlockRendererDispatcher().renderBlock(state, matrix, buffer, 15728880, OverlayTexture.DEFAULT_LIGHT);
+        matrix.pop();
 
         buffer.finish();
         RenderSystem.enableDepthTest();
