@@ -93,23 +93,15 @@ public class ModelRender {
         RenderSystem.scalef(16.0F, 16.0F, 16.0F);
         MatrixStack matrix = new MatrixStack();
 
-        IRenderTypeBuffer.Impl buffer = Minecraft.getInstance().getRenderTypeBuffers().getBufferSource();
-
-        boolean flag = !model.func_230044_c_();
-        if (flag) {
-            RenderHelper.setupGuiFlatDiffuseLighting();
-        }
-
         matrix.push();
-        matrix.rotate(new Quaternion(0.003F, 0.005F, 0.00025F, 65));
+        matrix.translate(-0.75, 0, 0);
+        matrix.rotate(new Quaternion(30, 30, 0, true));
+        IRenderTypeBuffer.Impl buffer = Minecraft.getInstance().getRenderTypeBuffers().getBufferSource();
         Minecraft.getInstance().getBlockRendererDispatcher().renderBlock(state, matrix, buffer, 15728880, OverlayTexture.DEFAULT_LIGHT);
         matrix.pop();
 
         buffer.finish();
         RenderSystem.enableDepthTest();
-        if (flag) {
-            RenderHelper.setupGui3DDiffuseLighting();
-        }
 
         RenderSystem.disableAlphaTest();
         RenderSystem.disableRescaleNormal();

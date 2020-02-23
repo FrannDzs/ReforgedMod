@@ -13,15 +13,26 @@ import java.util.List;
 public abstract class PickerScreen<T> extends Screen {
 
     private final ItemStack stack;
+    private final T selected;
     private final List<T> options;
 
-    private int index;
+    private int index = -1;
 
     public PickerScreen(String title, ItemStack stack, T selected, List<T> options) {
         super(new StringTextComponent(title));
         this.stack = stack;
         this.options = options;
-        this.index = options.indexOf(selected);
+        this.selected = selected;
+    }
+
+    public boolean match(T a, T b) {
+        return a.equals(b);
+    }
+
+    @Override
+    public void init(Minecraft mc, int width, int height) {
+        super.init(mc, width, height);
+        this.index = indexOf(selected, options);
     }
 
     @Override
@@ -50,18 +61,17 @@ public abstract class PickerScreen<T> extends Screen {
         GlStateManager.enableAlphaTest();
         GlStateManager.enableTexture();
 
-        int visited = 0;
-        for (int i = 0; i < getSize(); i++) {
-            if (i > 0) {
-                renderOption(centerX, centerY, -i);
-                if (++visited >= options.size()) {
-                    break;
+        int maxWidth = (options.size()) / 2;
+        int size = Math.min(maxWidth, getSize());
+        for (int i = size, visited = 0; i >= 0; i--) {
+            if (i == 0) {
+                renderOption(centerX, centerY, i);
+            } else {
+                renderOption(centerX, centerY, +i);
+                if (++visited >= (options.size() - 1)) {
+                    continue;
                 }
-            }
-
-            renderOption(centerX, centerY, +i);
-            if (++visited >= options.size()) {
-                break;
+                renderOption(centerX, centerY, -i);
             }
         }
         drawLabel(centerX, centerY);
@@ -70,15 +80,12 @@ public abstract class PickerScreen<T> extends Screen {
     @Override
     public boolean mouseScrolled(double mx, double my, double scroll) {
         if (scroll > 0) {
-            index = index - 1;
-            if (index < 0) {
+            if (--index < 0) {
                 index = options.size() - 1;
             }
         }
-
         if (scroll < 0) {
-            index = index + 1;
-            if (index >= options.size()) {
+            if (++index >= options.size()) {
                 index = 0;
             }
         }
@@ -106,19 +113,20 @@ public abstract class PickerScreen<T> extends Screen {
         int index = this.index + di;
 
         if (index < 0) {
-            index = (options.size() - 1) + index;
+            index += (options.size());
         }
 
         if (index >= options.size()) {
-            index = index - (options.size() - 1);
+            index -= options.size();
         }
 
         if (index < 0 || index >= options.size()) {
             return;
         }
 
-        float scale0 = 2F - ((Math.abs(di)) / 4F);
-        int size = Math.round((this.width / 11F) * scale0);
+        float scale = 2F - ((Math.abs(di)) / 4F);
+        float count = (getSize() * 2) + 1;
+        int size = Math.round((this.width / count) * scale);
         int left = cx + 1 + (di * (size + 1)) - (size / 2);
         int top = cy - (size / 2);
 
@@ -138,14 +146,11 @@ public abstract class PickerScreen<T> extends Screen {
         int tl = left + ((size - tw) / 2);
         int tt = top + ((size - th) / 2);
 
-        float alpha = Math.min(1F, 0.2F + Math.max(0, 1F - (Math.abs(di) / 2F)));
+        float alpha = Math.min(1F, 0.4F + Math.max(0, 1F - (Math.abs(di) / 2F)));
         RenderSystem.color4f(alpha, alpha, alpha, 1F);
         RenderSystem.pushMatrix();
-        RenderSystem.translatef(tl, tt, 0);
-        RenderSystem.scalef(scale0, scale0, 1F);
-
-        render(option, 0, 0, tw, th);
-
+        RenderSystem.translatef(0, 0, scale * 50);
+        render(option, tl, tt, tw, th, scale);
         RenderSystem.popMatrix();
     }
 
@@ -153,15 +158,44 @@ public abstract class PickerScreen<T> extends Screen {
         if (index < 0 || index >= options.size()) {
             return;
         }
+
+        int height = (this.width / ((getSize() * 2) + 1)) + 10;
+
+        int barWidth = 150;
+        int barLeft = (this.width / 2) - (barWidth / 2);
+        int barTop = centerY + height + getYOffset();
+        int barRight = barLeft + barWidth;
+        int barBottom = barTop + 3;
+
+        float position = ((float) index) / (options.size() - 1);
+        int posLeft = barLeft + Math.round(position * barWidth) - 1;
+        int posRight = posLeft + 2;
+        fillGradient(barLeft, barTop, barRight, barBottom, 0x44000000, 0x44000000);
+        fillGradient(posLeft, barTop, posRight, barBottom, 0x66FFFFFF, 0x66FFFFFF);
+
         T option = options.get(index);
         String text = getDisplayName(option);
         int width = font.getStringWidth(text);
-        int height = (this.width / 11) + 10;
-        font.drawStringWithShadow(text, centerX - (width / 2F), centerY + height, 0xFFFFFF);
+        float top = barTop + 15;
+        float left = centerX - (width / 2F);
+        font.drawStringWithShadow(text, left, top, 0xFFFFFF);
+    }
+
+    private int indexOf(T value, List<T> options) {
+        for (int i = 0; i < options.size(); i++) {
+            if (match(value, options.get(i))) {
+                return i;
+            }
+        }
+        return 0;
     }
 
     public int getSize() {
         return 5;
+    }
+
+    public int getYOffset() {
+        return 0;
     }
 
     public abstract int getWidth(T option);
@@ -170,7 +204,7 @@ public abstract class PickerScreen<T> extends Screen {
 
     public abstract String getDisplayName(T option);
 
-    public abstract void render(T option, int x, int y, int width, int height);
+    public abstract void render(T option, int x, int y, int width, int height, float scale);
 
     public abstract ItemStack createItemStack(ItemStack original, T value);
 }

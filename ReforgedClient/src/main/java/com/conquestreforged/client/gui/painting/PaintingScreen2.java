@@ -30,7 +30,7 @@ public class PaintingScreen2<T> extends PickerScreen<Art<T>> {
     }
 
     @Override
-    public void render(Art<T> option, int x, int y, int width, int height) {
+    public void render(Art<T> option, int x, int y, int width, int height, float scale) {
         option.getRenderer().render(type, option, x, y, width, height);
     }
 

@@ -5,7 +5,7 @@ import com.conquestreforged.api.painting.PaintingHolder;
 import com.conquestreforged.api.painting.art.Art;
 import com.conquestreforged.api.painting.vanilla.VanillaArt;
 import com.conquestreforged.api.painting.vanilla.VanillaPainting;
-import com.conquestreforged.client.gui.painting.PaintingScreen;
+import com.conquestreforged.client.gui.painting.PaintingScreen2;
 import com.conquestreforged.core.client.input.BindEvent;
 import com.conquestreforged.core.client.input.BindListener;
 import net.minecraft.client.Minecraft;
@@ -28,7 +28,7 @@ public class PaintingBindListener implements BindListener {
                 if (art == null || type == null) {
                     return;
                 }
-                PaintingScreen screen = new PaintingScreen(stack, type, art);
+                PaintingScreen2<?> screen = new PaintingScreen2<>(stack, type, art);
                 Minecraft.getInstance().displayGuiScreen(screen);
                 return;
             }
@@ -37,7 +37,7 @@ public class PaintingBindListener implements BindListener {
                 String name = PaintingType.ALBAN.getRegistryName() + "";
                 Art<?> art = VanillaArt.fromName(name);
                 Painting type = VanillaPainting.INSTANCE;
-                PaintingScreen screen = new PaintingScreen(stack, type, art);
+                PaintingScreen2<?> screen = new PaintingScreen2<>(stack, type, art);
                 Minecraft.getInstance().displayGuiScreen(screen);
             }
         });

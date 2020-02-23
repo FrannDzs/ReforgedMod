@@ -3,10 +3,10 @@ package com.conquestreforged.client.gui.state;
 import com.conquestreforged.client.gui.PickerScreen;
 import com.conquestreforged.client.gui.render.Render;
 import com.conquestreforged.core.item.ItemUtils;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.IProperty;
-import net.minecraft.state.properties.BlockStateProperties;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,35 +23,59 @@ public class BlockStateScreen extends PickerScreen<BlockState> {
     private final Collection<IProperty<?>> properties;
 
     public BlockStateScreen(ItemStack stack, BlockState state, List<BlockState> states, Collection<IProperty<?>> properties) {
-        super("State Selector", stack, state, filterWaterlogged(state, states));
+        super("State Selector", stack, state, states);
         this.properties = properties;
     }
 
     @Override
+    public boolean match(BlockState a, BlockState b) {
+        for (IProperty<?> property : properties) {
+            if (!a.get(property).equals(b.get(property))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
     public int getSize() {
-        return 3;
+        return 5;
+    }
+
+    @Override
+    public int getYOffset() {
+        return -30;
     }
 
     @Override
     public int getWidth(BlockState option) {
-        return 8;
+        return 1;
     }
 
     @Override
     public int getHeight(BlockState option) {
-        return 8;
+        return 1;
     }
 
     @Override
     public String getDisplayName(BlockState option) {
         StringBuilder sb = new StringBuilder();
-        option.getProperties().forEach(p -> sb.append(sb.length() > 0 ? "," : "").append(p.getName()).append('=').append(option.get(p)));
+        for (IProperty<?> property : properties) {
+            if (sb.length() > 0) {
+                sb.append(", ");
+            }
+            sb.append(property.getName()).append('=').append(option.get(property));
+        }
         return sb.toString();
     }
 
     @Override
-    public void render(BlockState option, int x, int y, int width, int height) {
-        Render.drawBlockModel(option, x, y, 1F);
+    public void render(BlockState option, int x, int y, int width, int height, float scale) {
+        RenderSystem.pushMatrix();
+        RenderSystem.translatef(x + (width / 2F), y + (height / 2F), 0);
+        RenderSystem.scalef(scale, scale, 1);
+        Render.drawBlockModel(option, -8, -8, 1);
+        RenderSystem.popMatrix();
     }
 
     @Override
@@ -59,19 +83,6 @@ public class BlockStateScreen extends PickerScreen<BlockState> {
         ItemStack stack = ItemUtils.fromState(value, properties);
         stack.setCount(original.getCount());
         return stack;
-    }
-
-    private static List<BlockState> filterWaterlogged(BlockState state, List<BlockState> in) {
-        if (state.has(BlockStateProperties.WATERLOGGED)) {
-            List<BlockState> out = new ArrayList<>(in.size() / 2);
-            for (BlockState s : in) {
-                if (!s.get(BlockStateProperties.WATERLOGGED)) {
-                    out.add(s);
-                }
-            }
-            return out;
-        }
-        return in;
     }
 
     /**
