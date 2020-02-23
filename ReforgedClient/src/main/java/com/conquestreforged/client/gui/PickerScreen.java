@@ -1,5 +1,6 @@
 package com.conquestreforged.client.gui;
 
+import com.conquestreforged.client.gui.render.Render;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
@@ -33,6 +34,7 @@ public abstract class PickerScreen<T> extends Screen {
     public void init(Minecraft mc, int width, int height) {
         super.init(mc, width, height);
         this.index = indexOf(selected, options);
+        Render.hideMouse();
     }
 
     @Override
@@ -94,6 +96,8 @@ public abstract class PickerScreen<T> extends Screen {
 
     @Override
     public void removed() {
+        Render.showMouse();
+
         if (minecraft == null || minecraft.player == null || !minecraft.player.isCreative()) {
             return;
         }
