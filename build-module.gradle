@@ -1,7 +1,7 @@
 apply plugin: "net.minecraftforge.gradle"
 apply plugin: "eclipse"
 
-version = "${mod_version}${getBuildNumber()}-mc${mc_version}"
+version = "${mod_version}${getClassifier()}-mc${mc_version}"
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = "1.8"
 
 configurations {
@@ -83,10 +83,14 @@ jar {
     }
 }
 
-static def getBuildNumber() {
-    def buildNumber = System.getenv("BUILD_NUMBER")
-    if (buildNumber == null) {
-        return ""
+static def getClassifier() {
+    def tag = System.getenv("GIT_TAG_NAME")
+    if (tag != null) {
+        return "-${tag}"
     }
-    return "-${buildNumber}"
+    def buildNumber = System.getenv("BUILD_NUMBER")
+    if (buildNumber != null) {
+        return "-${buildNumber}"
+    }
+    return ""
 }
