@@ -1,12 +1,13 @@
 package com.conquestreforged.core.util;
 
-import com.google.common.base.Preconditions;
 import net.minecraft.block.Blocks;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
 /**
@@ -16,28 +17,42 @@ import java.util.function.Supplier;
  */
 public class Provider<T extends IItemProvider> implements IItemProvider {
 
+    private final String name;
     private final Supplier<T> supplier;
     private final Supplier<T> defaultValue;
 
     private T value;
 
-    private Provider(Supplier<T> supplier, Supplier<T> defaultValue) {
+    private Provider(String name, Supplier<T> supplier, Supplier<T> defaultValue) {
+        this.name = name;
         this.supplier = supplier;
         this.defaultValue = defaultValue;
     }
 
     public T get() {
         if (value == null) {
-            T t = supplier.get();
-            value = t == null ? defaultValue.get() : value;
-            Preconditions.checkNotNull(value);
+            value = supplier.get();
+            if (value == null) {
+                new NullPointerException("Invalid item: " + name).printStackTrace();
+
+                value = defaultValue.get();
+
+                if (value == null) {
+                    throw new NullPointerException("No default value for: " + name);
+                }
+            }
         }
         return value;
     }
 
+    public Provider.Stack toStack() {
+        return new Stack(this);
+    }
+
     @Override
     public net.minecraft.item.Item asItem() {
-        return get().asItem();
+        T t = get();
+        return t.asItem();
     }
 
     public static Provider.Block block(String name) {
@@ -45,11 +60,11 @@ public class Provider<T extends IItemProvider> implements IItemProvider {
     }
 
     public static Provider.Block block(ResourceLocation name) {
-        return block(() -> ForgeRegistries.BLOCKS.getValue(name));
+        return block("" + name, () -> ForgeRegistries.BLOCKS.getValue(name));
     }
 
-    public static Provider.Block block(Supplier<net.minecraft.block.Block> getter) {
-        return new Block(getter);
+    public static Provider.Block block(String name, Supplier<net.minecraft.block.Block> getter) {
+        return new Block(name, getter);
     }
 
     public static Provider.Item item(String name) {
@@ -57,22 +72,44 @@ public class Provider<T extends IItemProvider> implements IItemProvider {
     }
 
     public static Provider.Item item(ResourceLocation name) {
-        return item(() -> ForgeRegistries.ITEMS.getValue(name));
+        return item("" + name, () -> ForgeRegistries.ITEMS.getValue(name));
     }
 
-    public static Provider.Item item(Supplier<net.minecraft.item.Item> getter) {
-        return new Item(getter);
+    public static Provider.Item item(String name, Supplier<net.minecraft.item.Item> getter) {
+        return new Item(name, getter);
     }
 
     public static class Block extends Provider<net.minecraft.block.Block> {
-        public Block(Supplier<net.minecraft.block.Block> supplier) {
-            super(supplier, () -> Blocks.AIR);
+        public Block(String name, Supplier<net.minecraft.block.Block> supplier) {
+            super(name, supplier, () -> Blocks.AIR);
         }
     }
 
     public static class Item extends Provider<net.minecraft.item.Item> {
-        public Item(Supplier<net.minecraft.item.Item> supplier) {
-            super(supplier, () -> Items.AIR);
+        public Item(String name, Supplier<net.minecraft.item.Item> supplier) {
+            super(name, supplier, () -> Items.AIR);
+        }
+    }
+
+    public static class Stack implements Supplier<ItemStack> {
+
+        private final IItemProvider provider;
+
+        public Stack(IItemProvider provider) {
+            this.provider = provider;
+        }
+
+        @Override
+        public ItemStack get() {
+            return new ItemStack(provider.asItem());
+        }
+
+        public Optional<ItemStack> getSafely() {
+            net.minecraft.item.Item item = provider.asItem();
+            if (item == Items.AIR) {
+                return Optional.empty();
+            }
+            return Optional.of(new ItemStack(item));
         }
     }
 }

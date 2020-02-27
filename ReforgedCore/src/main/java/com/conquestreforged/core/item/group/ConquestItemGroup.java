@@ -3,6 +3,8 @@ package com.conquestreforged.core.item.group;
 import com.conquestreforged.core.asset.lang.Translations;
 import com.conquestreforged.core.init.Context;
 import com.conquestreforged.core.item.family.FamilyGroup;
+import com.conquestreforged.core.item.group.sort.ItemList;
+import com.conquestreforged.core.item.group.sort.Sorter;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
@@ -13,40 +15,29 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public abstract class ConquestItemGroup extends ItemGroup {
 
     private static final String pathFormat = "/assets/%s/groups/%s.txt";
 
     private final int index;
-    private final String label;
-    private final String namespace;
     private final String translationKey;
-    private Comparator<ItemStack> order = null;
+    private final Sorter<ItemStack> sorter;
     private List<ItemStack> cached = Collections.emptyList();
 
     public ConquestItemGroup(int index, String label) {
         super(-1, label);
+        String namespace = Context.getInstance().getNamespace();
         this.index = index;
-        this.label = label;
-        this.namespace = Context.getInstance().getNamespace();
         this.translationKey = Translations.getKey("itemGroup", namespace, label);
-        loadOrder();
+        this.sorter = getItemSorter(namespace, label);
         Translations.getInstance().add(translationKey, Translations.translate(label));
     }
 
     @Override
     public String getTranslationKey() {
         return translationKey;
-    }
-
-    public void setOrder(Comparator<ItemStack> order) {
-        this.order = order;
-        invalidate();
     }
 
     public void invalidate() {
@@ -57,42 +48,32 @@ public abstract class ConquestItemGroup extends ItemGroup {
         return index;
     }
 
-    public void loadOrder() {
-        String path = String.format(pathFormat, namespace, label);
-        try (InputStream in = FamilyGroup.class.getResourceAsStream(path)) {
-            if (in != null) {
-                setOrder(ConquestItemGroup.sorter(in));
-            }
-        } catch (IOException e) {
-            // errors if unable to close the resource or reading the stream fails
-            e.printStackTrace();
-        }
-    }
-
     @Override
     public final void fill(NonNullList<ItemStack> items) {
         if (cached.isEmpty()) {
             NonNullList<ItemStack> list = NonNullList.create();
             populate(list);
             cached = new ArrayList<>(list);
-            if (order != null) {
-                cached.sort(order);
-            }
+            sorter.apply(cached);
         }
         items.addAll(cached);
     }
 
-    public abstract void populate(NonNullList<ItemStack> items);
-
-    public static Comparator<ItemStack> sorter(InputStream inputStream) throws IOException {
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
-            String line;
-            int index = 0;
-            Map<String, Integer> order = new HashMap<>();
-            while ((line = reader.readLine()) != null) {
-                order.put(line, index++);
+    private Sorter<ItemStack> getItemSorter(String namespace, String label) {
+        String path = String.format(pathFormat, namespace, label);
+        try (InputStream in = FamilyGroup.class.getResourceAsStream(path)) {
+            if (in == null) {
+                return Sorter.none();
             }
-            return new ItemStackSorter(order);
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
+                return ItemList.read(reader);
+            }
+        } catch (IOException e) {
+            // errors if unable to close the resource or reading the stream fails
+            e.printStackTrace();
         }
+        return Sorter.none();
     }
+
+    public abstract void populate(NonNullList<ItemStack> items);
 }
