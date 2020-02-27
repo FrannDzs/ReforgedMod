@@ -16,6 +16,7 @@ import com.conquestreforged.core.asset.template.JsonTemplate;
 import com.conquestreforged.core.asset.template.TemplateCache;
 import com.conquestreforged.core.asset.template.TemplateResource;
 import com.conquestreforged.core.block.builder.BlockName;
+import com.conquestreforged.core.block.builder.Props;
 import com.conquestreforged.core.block.builder.Textures;
 import com.conquestreforged.core.client.render.RenderLayerHelper;
 import com.conquestreforged.core.util.RenderLayer;
@@ -72,7 +73,12 @@ public class BlockTemplate {
         addModel(builder, name, textures, regName);
     }
 
-    public void registerRenders(Block block) {
+    public void registerRenders(Block block, Props props) {
+        if (props.getRenderLayer() != RenderLayer.UNDEFINED) {
+            RenderLayerHelper.getInstance().register(block, props.getRenderLayer());
+            return;
+        }
+
         if (render != null) {
             RenderLayer layer = render.value();
             RenderLayerHelper.getInstance().register(block, layer);

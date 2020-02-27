@@ -76,6 +76,6 @@ public class BlockData {
     }
 
     public void addRenders() {
-        template.registerRenders(block);
+        template.registerRenders(block, props);
     }
 }

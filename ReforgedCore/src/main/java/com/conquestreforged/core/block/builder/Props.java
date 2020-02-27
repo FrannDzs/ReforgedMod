@@ -9,6 +9,7 @@ import com.conquestreforged.core.init.Context;
 import com.conquestreforged.core.item.family.Family;
 import com.conquestreforged.core.item.family.block.BlockFamily;
 import com.conquestreforged.core.item.family.block.VariantFamily;
+import com.conquestreforged.core.util.RenderLayer;
 import com.google.common.base.Preconditions;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -36,6 +37,7 @@ public class Props extends BlockProps<Props> implements BlockFactory {
     private BlockState parent = null;
     private BlockName name = null;
     private ColorType colorType = ColorType.NONE;
+    private RenderLayer renderLayer = RenderLayer.UNDEFINED;
     private Textures.Builder textures;
     private Map<String, Object> extradata = Collections.emptyMap();
     private BiFunction<ItemGroup, TypeList, Family<Block>> familyFactory = BlockFamily::new;
@@ -62,6 +64,7 @@ public class Props extends BlockProps<Props> implements BlockFactory {
         this.textures = props.textures;
         this.colorType = props.colorType;
         this.extradata = props.extradata;
+        this.renderLayer = props.renderLayer;
         this.familyFactory = props.familyFactory;
     }
 
@@ -93,6 +96,10 @@ public class Props extends BlockProps<Props> implements BlockFactory {
 
     public ColorType getColorType() {
         return colorType;
+    }
+
+    public RenderLayer getRenderLayer() {
+        return renderLayer;
     }
 
     public Textures textures() {
@@ -176,6 +183,11 @@ public class Props extends BlockProps<Props> implements BlockFactory {
         return this;
     }
 
+    public Props render(RenderLayer layer) {
+        this.renderLayer = layer;
+        return this;
+    }
+
     public Props texture(String texture) {
         return texture("*", texture);
     }
@@ -204,7 +216,7 @@ public class Props extends BlockProps<Props> implements BlockFactory {
     }
 
     public Props template(BlockTemplate template) {
-        if (template.getRenderLayer().isCutout()) {
+        if (getRenderLayer().isCutout() || template.getRenderLayer().isCutout()) {
             Props props = new Props(this);
             props.solid(false);
             return props;

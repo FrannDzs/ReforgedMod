@@ -7,6 +7,7 @@ import net.minecraft.client.gui.screen.inventory.CreativeScreen;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Slot;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.GuiScreenEvent;
@@ -27,7 +28,17 @@ public class PaletteGuiEvents {
                 return;
             }
 
-            if (event.getGui() instanceof PaletteScreen) {
+            ContainerScreen<?> screen = (ContainerScreen<?>) event.getGui();
+            if (screen instanceof CreativeScreen) {
+                // ignore search tab in creative inventory
+                CreativeScreen creativeScreen = (CreativeScreen) screen;
+                int tabIndex = creativeScreen.getSelectedTabIndex();
+                if (tabIndex == ItemGroup.SEARCH.getIndex()) {
+                    return;
+                }
+            }
+
+            if (screen instanceof PaletteScreen) {
                 // open previous screen or close if none
                 if (PaletteScreen.closesGui(event.getKeyCode())) {
                     event.setCanceled(true);
@@ -48,7 +59,6 @@ public class PaletteGuiEvents {
                 return;
             }
 
-            ContainerScreen<?> screen = (ContainerScreen<?>) event.getGui();
             Slot slot = screen.getSlotUnderMouse();
             if (slot == null || !slot.getHasStack()) {
                 return;

@@ -24,6 +24,7 @@ public class BlockStats {
                 continue;
             }
 
+
             if (name.getNamespace().equals("minecraft")) {
                 vb++;
                 vs += block.getStateContainer().getValidStates().size();
