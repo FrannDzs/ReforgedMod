@@ -29,6 +29,6 @@ out/
 src/generated/
 
 # Gource Stuff #
-**/timeline.txt
-**/*.stream
-**/logs/
+.gource/logs/
+.gource/timeline.txt
+.gource/*.stream
