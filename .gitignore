@@ -27,3 +27,8 @@ build/
 run/
 out/
 src/generated/
+
+# Gource Stuff #
+**/timeline.txt
+**/*.stream
+**/logs/
