@@ -34,12 +34,7 @@ public class Provider<T extends IItemProvider> implements IItemProvider {
             value = supplier.get();
             if (value == null) {
                 new NullPointerException("Invalid item: " + name).printStackTrace();
-
                 value = defaultValue.get();
-
-                if (value == null) {
-                    throw new NullPointerException("No default value for: " + name);
-                }
             }
         }
         return value;
@@ -52,6 +47,9 @@ public class Provider<T extends IItemProvider> implements IItemProvider {
     @Override
     public net.minecraft.item.Item asItem() {
         T t = get();
+        if (t == null) {
+            throw new NullPointerException("Invalid item: " + name);
+        }
         return t.asItem();
     }
 
