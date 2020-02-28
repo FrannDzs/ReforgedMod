@@ -1,3 +1,5 @@
+version = "mc${mc_version}-${mod_version}${getClassifier()}"
+
 // copies the root project classes and then subproject classes into the test dir
 task prepareMainRunClasses(type: Copy) {
     duplicatesStrategy = "EXCLUDE"
@@ -37,7 +39,7 @@ processResources {
     filesMatching("**/mods.toml") {
         expand(
                 "name": project.name,
-                "version": mod_version,
+                "version": "${mod_version}${getClassifier()}",
                 "mc_version": mc_version
         )
     }
@@ -67,4 +69,16 @@ minecraft {
             }
         }
     }
+}
+
+static def getClassifier() {
+    def tag = System.getenv("GIT_TAG_NAME")
+    if (tag != null) {
+        return "-${tag}"
+    }
+    def buildNumber = System.getenv("BUILD_NUMBER")
+    if (buildNumber != null) {
+        return "-${buildNumber}"
+    }
+    return ""
 }
