@@ -11,6 +11,10 @@ public class VanillaProps {
         return Props.create(Blocks.STONE).group(ItemGroup.BUILDING_BLOCKS);
     }
 
+    public static Props wood() {
+        return planks();
+    }
+
     public static Props bricks() {
         return Props.create(Blocks.BRICKS).group(ItemGroup.BUILDING_BLOCKS);
     }
