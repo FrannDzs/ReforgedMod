@@ -32,11 +32,13 @@ public class InitCommon {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void common(FMLCommonSetupEvent event) {
-        BlockStats stats = new BlockStats();
-        Log.info("Block Stats:");
-        Log.info("(Total) Blocks: {}, States: {}", stats.totalBlocks, stats.totalStates);
-        Log.info("(Vanilla) Blocks: {}, States: {}", stats.vanillaBlocks, stats.vanillaStates);
-        Log.info("(Conquest) Blocks: {}, States: {}", stats.conquestBlocks, stats.conquestStates);
+        if (!Environment.isProduction()) {
+            BlockStats stats = new BlockStats();
+            Log.info("Block Stats:");
+            Log.info("(Total) Blocks: {}, States: {}", stats.totalBlocks, stats.totalStates);
+            Log.info("(Vanilla) Blocks: {}, States: {}", stats.vanillaBlocks, stats.vanillaStates);
+            Log.info("(Conquest) Blocks: {}, States: {}", stats.conquestBlocks, stats.conquestStates);
+        }
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)

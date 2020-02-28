@@ -11,7 +11,7 @@ public class Environment {
     }
 
     static {
-        if (production) {
+        if (!production) {
             Log.info("Running in developer mode!");
         }
     }
