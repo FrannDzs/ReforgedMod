@@ -7,6 +7,7 @@ import net.minecraft.block.Block;
 import java.lang.reflect.Constructor;
 
 public class DyeConstructor extends PropsConstructor {
+
     public DyeConstructor(Constructor<? extends Block> constructor) {
         super(constructor);
     }

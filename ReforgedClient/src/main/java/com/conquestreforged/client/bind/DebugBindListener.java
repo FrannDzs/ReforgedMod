@@ -11,6 +11,7 @@ import net.minecraft.util.text.StringTextComponent;
 import org.lwjgl.glfw.GLFW;
 
 public class DebugBindListener implements BindListener {
+
     @Override
     public void onPress(BindEvent event) {
         if (!event.inGame || !event.player.isPresent()) {
@@ -33,7 +34,7 @@ public class DebugBindListener implements BindListener {
         StringBuilder sb = new StringBuilder(128);
         sb.append(state.getBlock().getRegistryName());
         int len = sb.length();
-        for (IProperty<?> p :state.getProperties()) {
+        for (IProperty<?> p : state.getProperties()) {
             if (sb.length() == len) {
                 sb.append('[');
             } else {

@@ -27,10 +27,10 @@ public class Props extends BlockProps<Props> implements BlockFactory {
     /**
      * Certain Block constructor methods need a BlockState passing to them, ie a 'parent'.
      * For example, Slabs need the full-block instance passing to them to act as the double-slab variant.
-     *
+     * <p>
      * In cases where the first Block created with the Factory requires a parent Block/BlockState,
      * the 'parent' must be set manually before calling the register(..) methods.
-     *
+     * <p>
      * We otherwise assume the first Block created with this Factory is the parent.
      * This Block should therefore NOT require a parent Block or BlockState in it's own constructor.
      */
@@ -139,7 +139,7 @@ public class Props extends BlockProps<Props> implements BlockFactory {
 
     /**
      * Set the 'parent' (usually the full-block variant) of all subsequent Blocks created by this factory.
-     *
+     * <p>
      * If not set manually, the first Block instance created by this Factory will be set as the parent. In this case,
      * it's critical that this first Block does not itself require a parent Block/BlockState in it's constructor.
      *

@@ -2,13 +2,13 @@ package com.conquestreforged.core.item.family.block;
 
 import com.conquestreforged.core.block.factory.TypeList;
 import com.conquestreforged.core.item.family.Family;
+import com.conquestreforged.core.util.OptimizedList;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
@@ -21,7 +21,7 @@ public class BlockFamily extends Family<Block> {
     }
 
     public BlockFamily(ItemGroup group, TypeList order) {
-        super(group, order, new ArrayList<>());
+        super(group, order, new OptimizedList<>());
     }
 
     @Override

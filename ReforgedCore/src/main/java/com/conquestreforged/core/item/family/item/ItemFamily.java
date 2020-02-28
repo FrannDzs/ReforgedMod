@@ -1,20 +1,19 @@
 package com.conquestreforged.core.item.family.item;
 
 import com.conquestreforged.core.item.family.Family;
+import com.conquestreforged.core.util.OptimizedList;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.NonNullList;
 
-import java.util.ArrayList;
-
 public class ItemFamily extends Family<Item> {
 
     public static final ItemFamily EMPTY = new ItemFamily(ItemGroup.SEARCH);
 
     public ItemFamily(ItemGroup group) {
-        super(group, new ArrayList<>());
+        super(group, new OptimizedList<>());
     }
 
     @Override

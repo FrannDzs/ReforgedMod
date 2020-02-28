@@ -15,6 +15,7 @@ public class Point {
     public float distance(Point other) {
         return distance(other.x, other.y);
     }
+
     public float distance(int x, int y) {
         return FloatMath.sqrt(distance2(x, y));
     }

@@ -14,6 +14,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Items;
 
 public class PaintingBindListener implements BindListener {
+
     @Override
     public void onPress(BindEvent e) {
         if (!e.inGame || e.inGui || !e.player.isPresent()) {

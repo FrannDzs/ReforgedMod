@@ -19,7 +19,7 @@ public abstract class TaggedGroup<T extends TaggedGroup> extends ConquestItemGro
         super(index, label);
     }
 
-    public abstract  T self();
+    public abstract T self();
 
     @SafeVarargs
     public final T blocks(Tag<Block>... blocks) {

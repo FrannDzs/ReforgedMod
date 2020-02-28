@@ -78,12 +78,14 @@ public class Provider<T extends IItemProvider> implements IItemProvider {
     }
 
     public static class Block extends Provider<net.minecraft.block.Block> {
+
         public Block(String name, Supplier<net.minecraft.block.Block> supplier) {
             super(name, supplier, () -> Blocks.AIR);
         }
     }
 
     public static class Item extends Provider<net.minecraft.item.Item> {
+
         public Item(String name, Supplier<net.minecraft.item.Item> supplier) {
             super(name, supplier, () -> Items.AIR);
         }

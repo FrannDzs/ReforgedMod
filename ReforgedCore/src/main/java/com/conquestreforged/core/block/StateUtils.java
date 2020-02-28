@@ -39,7 +39,7 @@ public class StateUtils {
         BlockState state = item.getBlock().getDefaultState();
         StateContainer<Block, BlockState> container = item.getBlock().getStateContainer();
 
-        for(String key : stateTag.keySet()) {
+        for (String key : stateTag.keySet()) {
             IProperty<?> property = container.getProperty(key);
             if (property != null) {
                 String s1 = stateTag.get(key).getString();

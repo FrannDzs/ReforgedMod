@@ -120,7 +120,7 @@ public class ModelRender {
         Random random = new Random();
         long i = 42L;
 
-        for(Direction direction : Direction.values()) {
+        for (Direction direction : Direction.values()) {
             random.setSeed(42L);
             renderQuads(matrix, buffer, modelIn.getQuads(null, direction, random), color);
         }
@@ -130,12 +130,12 @@ public class ModelRender {
     }
 
     private static void renderQuads(MatrixStack matrix, IVertexBuilder buffer, List<BakedQuad> quads, int color) {
-        float r = (float)(color >> 16 & 255) / 255.0F;
-        float g = (float)(color >> 8 & 255) / 255.0F;
-        float b = (float)(color & 255) / 255.0F;
+        float r = (float) (color >> 16 & 255) / 255.0F;
+        float g = (float) (color >> 8 & 255) / 255.0F;
+        float b = (float) (color & 255) / 255.0F;
 
         MatrixStack.Entry entry = matrix.getLast();
-        for(BakedQuad bakedquad : quads) {
+        for (BakedQuad bakedquad : quads) {
             render(buffer, bakedquad, entry, r, g, b, 1);
         }
     }
@@ -143,7 +143,7 @@ public class ModelRender {
     private static void render(IVertexBuilder bufferIn, BakedQuad quadIn, MatrixStack.Entry entry, float red, float green, float blue, float alpha) {
         int[] aint = quadIn.getVertexData();
         Vec3i vec3i = quadIn.getFace().getDirectionVec();
-        Vector3f vector3f = new Vector3f((float)vec3i.getX(), (float)vec3i.getY(), (float)vec3i.getZ());
+        Vector3f vector3f = new Vector3f((float) vec3i.getX(), (float) vec3i.getY(), (float) vec3i.getZ());
         Matrix4f matrix4f = entry.getPositionMatrix();
         vector3f.transform(entry.getNormalMatrix());
         int i = 8;
@@ -153,7 +153,7 @@ public class ModelRender {
             ByteBuffer bytebuffer = memorystack.malloc(DefaultVertexFormats.BLOCK.getSize());
             IntBuffer intbuffer = bytebuffer.asIntBuffer();
 
-            for(int k = 0; k < j; ++k) {
+            for (int k = 0; k < j; ++k) {
                 intbuffer.clear();
                 intbuffer.put(aint, k * 8, 8);
                 float f = bytebuffer.getFloat(0);

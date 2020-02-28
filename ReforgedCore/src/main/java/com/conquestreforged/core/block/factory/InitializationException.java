@@ -3,6 +3,7 @@ package com.conquestreforged.core.block.factory;
 import java.lang.reflect.Constructor;
 
 public class InitializationException extends RuntimeException {
+
     public InitializationException(String message) {
         super(message);
     }

@@ -19,11 +19,11 @@ import java.util.function.Supplier;
 public interface ConfigSection extends CommentedConfig {
 
     void save();
-    
+
     CommentedConfig getRoot();
-    
+
     List<String> getPath(String path);
-    
+
     List<String> getPath(List<String> path);
 
     @Override
@@ -130,7 +130,7 @@ public interface ConfigSection extends CommentedConfig {
         double value = getOrElse(path, defValue);
         return (float) value;
     }
-    
+
     @Override
     default <T> T get(String path) {
         return getRoot().get(getPath(path));

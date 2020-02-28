@@ -263,7 +263,7 @@ public class BlockTemplate {
     }
 
     private static Ingredient createIngredient(String name, String template, boolean plrual) {
-        return new Ingredient(){
+        return new Ingredient() {
 
             @Override
             public Class<? extends Annotation> annotationType() {

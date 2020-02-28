@@ -5,6 +5,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 
 public class EmptyGroup extends ItemGroup {
+
     EmptyGroup() {
         super("empty");
     }

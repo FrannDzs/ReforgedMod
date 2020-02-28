@@ -15,11 +15,10 @@ public class Registrar {
             String blockName = data.getBlock().getRegistryName() + "";
             String itemType = data.getItem().getClass().getName();
             String itemName = data.getItem().getRegistryName() + "";
-            String message = type + "("+ blockType + "[" + blockName + "] / " + itemType + "[" + itemName + "]) ";
+            String message = type + "(" + blockType + "[" + blockName + "] / " + itemType + "[" + itemName + "]) ";
             throw new RegistrationException(message, t);
         }
     }
-
 
     private static class RegistrationException extends RuntimeException {
 

@@ -7,6 +7,7 @@ import net.minecraft.block.Block;
 import java.lang.reflect.Constructor;
 
 public class StateConstructor extends PropsConstructor {
+
     public StateConstructor(Constructor<? extends Block> constructor) {
         super(constructor);
     }

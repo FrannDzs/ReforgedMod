@@ -1,11 +1,13 @@
 package com.conquestreforged.core.item.family;
 
+import com.conquestreforged.core.util.OptimizedList;
 import com.conquestreforged.core.util.OptionalValue;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -32,6 +34,16 @@ public abstract class Family<T> implements OptionalValue, Comparator<T> {
 
     protected abstract void addItem(ItemGroup group, NonNullList<ItemStack> list, T item);
 
+    public void trim() {
+        if (members instanceof ArrayList) {
+            ((ArrayList<T>) members).trimToSize();
+            return;
+        }
+        if (members instanceof OptimizedList) {
+            ((OptimizedList<T>) members).trim();
+        }
+    }
+
     public ItemGroup getGroup() {
         return group;
     }
@@ -55,7 +67,7 @@ public abstract class Family<T> implements OptionalValue, Comparator<T> {
     }
 
     public List<T> getMembers() {
-        return new ArrayList<>(members);
+        return Collections.unmodifiableList(members);
     }
 
     public int size() {

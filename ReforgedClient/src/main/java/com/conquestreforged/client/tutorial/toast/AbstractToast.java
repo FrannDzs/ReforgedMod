@@ -28,7 +28,7 @@ public abstract class AbstractToast implements IToast {
                 toastGui.getMinecraft().fontRenderer.drawString(getLine1(), 5.0F, 12.0F, line1Color);
             } else {
                 toastGui.getMinecraft().fontRenderer.drawString(getLine1(), 5.0F, 7.0F, line1Color);
-                toastGui.getMinecraft().fontRenderer.drawString(getLine2(), 5.0F, 18.0F,  line2Color);
+                toastGui.getMinecraft().fontRenderer.drawString(getLine2(), 5.0F, 18.0F, line2Color);
             }
         }
         return getVisibility();

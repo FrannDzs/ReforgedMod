@@ -18,8 +18,7 @@ public enum Curve {
         public float apply(float input) {
             return input * input * input;
         }
-    }
-    ;
+    };
 
     public abstract float apply(float input);
 }

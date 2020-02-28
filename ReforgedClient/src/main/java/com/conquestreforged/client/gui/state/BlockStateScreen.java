@@ -86,8 +86,8 @@ public class BlockStateScreen extends PickerScreen<BlockState> {
     }
 
     /**
-     * @param stack the current ItemStack
-     * @param state the BLockState derrived from the provided ItemStack
+     * @param stack  the current ItemStack
+     * @param state  the BLockState derrived from the provided ItemStack
      * @param filter a filter of IProperties to ignore (true == ignore!)
      */
     public static Optional<BlockStateScreen> of(ItemStack stack, BlockState state, Predicate<IProperty<?>> filter) {

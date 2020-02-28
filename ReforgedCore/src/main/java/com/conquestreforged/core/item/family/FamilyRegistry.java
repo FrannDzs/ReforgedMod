@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 
-public class FamilyRegistry<T extends IForgeRegistryEntry> {
+public class FamilyRegistry<T extends IForgeRegistryEntry<?>> {
 
     public static final FamilyRegistry<Block> BLOCKS = new FamilyRegistry<>(BlockFamily.EMPTY);
     public static final FamilyRegistry<Item> ITEMS = new FamilyRegistry<>(ItemFamily.EMPTY);
@@ -50,5 +50,13 @@ public class FamilyRegistry<T extends IForgeRegistryEntry> {
 
     public Stream<Family<T>> values() {
         return families.values().stream().distinct();
+    }
+
+    /**
+     * Trims all registered families to size to save on unallocated array slots
+     */
+    public static void bake() {
+        BLOCKS.values().forEach(Family::trim);
+        ITEMS.values().forEach(Family::trim);
     }
 }

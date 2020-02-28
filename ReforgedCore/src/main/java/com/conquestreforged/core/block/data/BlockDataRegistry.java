@@ -11,10 +11,11 @@ public class BlockDataRegistry implements Disposable, Iterable<BlockData> {
 
     private static final BlockDataRegistry instance = new BlockDataRegistry();
 
-    private final ArrayList<BlockData> data = new ArrayList<>(8192);
+    private final ArrayList<BlockData> data = new ArrayList<>(500);
     private boolean disposed = false;
 
-    private BlockDataRegistry() {}
+    private BlockDataRegistry() {
+    }
 
     public Stream<String> getNamespaces() {
         return data.stream().map(data -> data.getRegistryName().getNamespace()).distinct();

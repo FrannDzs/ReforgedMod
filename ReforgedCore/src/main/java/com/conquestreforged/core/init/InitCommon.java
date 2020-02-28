@@ -3,6 +3,7 @@ package com.conquestreforged.core.init;
 import com.conquestreforged.core.block.BlockStats;
 import com.conquestreforged.core.block.data.BlockDataRegistry;
 import com.conquestreforged.core.init.dev.Environment;
+import com.conquestreforged.core.item.family.FamilyRegistry;
 import com.conquestreforged.core.util.cache.Cache;
 import com.conquestreforged.core.util.log.Log;
 import net.minecraft.block.Block;
@@ -43,6 +44,7 @@ public class InitCommon {
         if (Environment.isProduction()) {
             Log.info("Load complete. Clearing loading caches");
             Cache.clearAll();
+            FamilyRegistry.bake();
             BlockDataRegistry.getInstance().dispose();
         }
     }

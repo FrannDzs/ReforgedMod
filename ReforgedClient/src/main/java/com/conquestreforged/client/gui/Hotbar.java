@@ -44,7 +44,7 @@ public class Hotbar {
     public void addTo(AbstractContainer container, int left, int top) {
         int hotbarWidth = (9 * getSlotSize());
         int x = left - (hotbarWidth / 2) + 2;
-        for(int i = 0; i < 9; ++i) {
+        for (int i = 0; i < 9; ++i) {
             int dx = i * getSlotSize();
             container.addSlot(new Slot(inventory, i, x + dx, top));
         }

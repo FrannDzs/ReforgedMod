@@ -15,7 +15,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class BindManager {
-    
+
     private static KeyBinding palette;
 
     @SubscribeEvent

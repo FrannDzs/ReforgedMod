@@ -99,7 +99,7 @@ public class DependencyScreen extends Screen {
 
         RenderSystem.enableTexture();
         Minecraft.getInstance().getTextureManager().bindTexture(CTM);
-        AbstractGui.blit(imageLeft, paddingTop, imageWidth, imageHeight,0, 0, CTM_WIDTH, CTM_HEIGHT, CTM_WIDTH, CTM_HEIGHT);
+        AbstractGui.blit(imageLeft, paddingTop, imageWidth, imageHeight, 0, 0, CTM_WIDTH, CTM_HEIGHT, CTM_WIDTH, CTM_HEIGHT);
 
         String message = "Missing Dependencies:";
         int titleWidth = font.getStringWidth(message);
