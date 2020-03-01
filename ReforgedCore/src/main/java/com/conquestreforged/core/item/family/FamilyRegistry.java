@@ -30,6 +30,9 @@ public class FamilyRegistry<T extends IForgeRegistryEntry<?>> {
     }
 
     public void register(T member, Family<T> family) {
+        if (family.isAbsent()) {
+            return;
+        }
         families.put(member.getRegistryName(), family);
     }
 

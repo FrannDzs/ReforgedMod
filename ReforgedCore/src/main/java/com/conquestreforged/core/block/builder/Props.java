@@ -6,7 +6,9 @@ import com.conquestreforged.core.block.factory.BlockFactory;
 import com.conquestreforged.core.block.factory.InitializationException;
 import com.conquestreforged.core.block.factory.TypeList;
 import com.conquestreforged.core.init.Context;
+import com.conquestreforged.core.item.family.DeferredFamilyRegistry;
 import com.conquestreforged.core.item.family.Family;
+import com.conquestreforged.core.item.family.FamilyFactory;
 import com.conquestreforged.core.item.family.block.BlockFamily;
 import com.conquestreforged.core.item.family.block.VariantFamily;
 import com.conquestreforged.core.util.RenderLayer;
@@ -15,12 +17,12 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
-import net.minecraft.item.ItemGroup;
+import net.minecraft.util.ResourceLocation;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.BiFunction;
+import java.util.Optional;
 
 public class Props extends BlockProps<Props> implements BlockFactory {
 
@@ -40,7 +42,8 @@ public class Props extends BlockProps<Props> implements BlockFactory {
     private RenderLayer renderLayer = RenderLayer.UNDEFINED;
     private Textures.Builder textures;
     private Map<String, Object> extradata = Collections.emptyMap();
-    private BiFunction<ItemGroup, TypeList, Family<Block>> familyFactory = BlockFamily::new;
+    private FamilyFactory<Block> familyFactory = FamilyFactory.of(BlockFamily::new);
+    private ResourceLocation family = null;
 
     private boolean manual = false;
 
@@ -66,6 +69,7 @@ public class Props extends BlockProps<Props> implements BlockFactory {
         this.extradata = props.extradata;
         this.renderLayer = props.renderLayer;
         this.familyFactory = props.familyFactory;
+        this.family = props.family;
     }
 
     @Override
@@ -91,7 +95,12 @@ public class Props extends BlockProps<Props> implements BlockFactory {
 
     @Override
     public Family<Block> createFamily(TypeList types) {
-        return familyFactory.apply(group(), types);
+        ResourceLocation name = family == null ? parent == null ? null : parent.getBlock().getRegistryName() : family;
+        return familyFactory.create(name, group(), types);
+    }
+
+    public Optional<ResourceLocation> getFamily() {
+        return Optional.ofNullable(family);
     }
 
     public ColorType getColorType() {
@@ -149,6 +158,20 @@ public class Props extends BlockProps<Props> implements BlockFactory {
     public Props parent(BlockState state) {
         this.parent = state;
         return this;
+    }
+
+    public Props family(String namespace, String name) {
+        this.family = new ResourceLocation(namespace, name);
+        this.familyFactory = DeferredFamilyRegistry.BLOCKS;
+        return this;
+    }
+
+    public Props family(String name) {
+        String[] parts = name.split(":");
+        if (parts.length == 2) {
+            return family(parts[0], parts[1]);
+        }
+        return family(Context.getInstance().getNamespace(), name);
     }
 
     public Props name(String namespace, String plural, String singular) {
@@ -233,7 +256,7 @@ public class Props extends BlockProps<Props> implements BlockFactory {
     }
 
     public Props variantFamily() {
-        familyFactory = VariantFamily::new;
+        familyFactory = FamilyFactory.of(VariantFamily::new);
         return this;
     }
 
