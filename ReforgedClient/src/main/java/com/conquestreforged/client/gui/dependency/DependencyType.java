@@ -4,6 +4,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.ClientResourcePackInfo;
 import net.minecraftforge.fml.ModList;
 
+import java.io.IOException;
+
 public enum DependencyType {
     UNKNOWN {
         @Override
@@ -21,9 +23,13 @@ public enum DependencyType {
         @Override
         public boolean isAvailable(Dependency dependency) {
             for (ClientResourcePackInfo pack : Minecraft.getInstance().getResourcePackList().getEnabledPacks()) {
-                String packName = pack.getName().replaceAll("[^a-zA-Z0-9_]", "").toLowerCase();
-                if (packName.contains(dependency.getId())) {
-                    return true;
+                try {
+                    String packId = pack.getResourcePack().getMetadata(PackIdDeserializer.INSTANCE);
+                    if (packId != null && packId.equalsIgnoreCase(dependency.getId())) {
+                        return true;
+                    }
+                } catch (IOException ignored) {
+
                 }
             }
             return false;
