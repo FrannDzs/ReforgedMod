@@ -24,8 +24,8 @@ public enum DependencyType {
         public boolean isAvailable(Dependency dependency) {
             for (ClientResourcePackInfo pack : Minecraft.getInstance().getResourcePackList().getEnabledPacks()) {
                 try {
-                    String packId = pack.getResourcePack().getMetadata(PackIdDeserializer.INSTANCE);
-                    if (packId != null && packId.equalsIgnoreCase(dependency.getId())) {
+                    Object packId = pack.getResourcePack().getMetadata(PackIdDeserializer.INSTANCE);
+                    if (dependency.getId().equalsIgnoreCase(packId + "")) {
                         return true;
                     }
                 } catch (IOException ignored) {
