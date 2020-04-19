@@ -1,9 +1,9 @@
 package com.conquestreforged.core.item.group.sort;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 
 import java.util.Comparator;
-import java.util.List;
 
 public class SimpleSorter implements Sorter<ItemStack> {
 
@@ -14,7 +14,7 @@ public class SimpleSorter implements Sorter<ItemStack> {
     }
 
     @Override
-    public void apply(List<ItemStack> list) {
+    public void apply(NonNullList<ItemStack> list) {
         list.sort(comparator);
     }
 }

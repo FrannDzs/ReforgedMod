@@ -53,8 +53,8 @@ public abstract class ConquestItemGroup extends ItemGroup {
         if (cached.isEmpty()) {
             NonNullList<ItemStack> list = NonNullList.create();
             populate(list);
+            sorter.apply(list);
             cached = new ArrayList<>(list);
-            sorter.apply(cached);
         }
         items.addAll(cached);
     }
