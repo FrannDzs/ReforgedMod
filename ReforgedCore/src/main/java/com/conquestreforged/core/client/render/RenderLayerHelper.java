@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.fluid.Fluid;
 
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
 
 public class RenderLayerHelper {
@@ -17,7 +18,8 @@ public class RenderLayerHelper {
     private final Map<RenderLayer, RenderType> types = new EnumMap<>(RenderLayer.class);
 
     private RenderLayerHelper() {
-        for (RenderLayer layer : RenderLayer.values()) {
+        //commented out for now as it crashes optifine/optiforge
+        /*for (RenderLayer layer : RenderLayer.values()) {
             if (layer == RenderLayer.UNDEFINED) {
                 continue;
             }
@@ -34,7 +36,14 @@ public class RenderLayerHelper {
             if (!match) {
                 throw new RuntimeException("No RenderType of RenderLayer: " + layer);
             }
-        }
+        }*/
+        List<RenderType> typeList = RenderType.getBlockRenderTypes();
+
+        types.put(RenderLayer.SOLID, typeList.get(0));
+        types.put(RenderLayer.CUTOUT, typeList.get(1));
+        types.put(RenderLayer.CUTOUT_MIPPED, typeList.get(2));
+        types.put(RenderLayer.TRANSLUCENT, typeList.get(3));
+
     }
 
     public RenderType getRenderType(RenderLayer layer) {
