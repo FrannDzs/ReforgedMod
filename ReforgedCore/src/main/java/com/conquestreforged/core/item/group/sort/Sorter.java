@@ -1,12 +1,12 @@
 package com.conquestreforged.core.item.group.sort;
 
-import java.util.List;
+import net.minecraft.util.NonNullList;
 
 public interface Sorter<T> {
 
     Sorter NONE = l -> {};
 
-    void apply(List<T> list);
+    void apply(NonNullList<T> list);
 
     @SuppressWarnings("unchecked")
     static <T> Sorter<T> none() {

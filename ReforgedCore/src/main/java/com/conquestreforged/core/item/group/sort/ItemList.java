@@ -1,7 +1,10 @@
 package com.conquestreforged.core.item.group.sort;
 
 import com.conquestreforged.core.util.Provider;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 
 import java.io.BufferedReader;
 import java.util.Comparator;
@@ -26,15 +29,15 @@ public class ItemList implements Sorter<ItemStack>, Comparator<ItemStack> {
     }
 
     @Override
-    public void apply(List<ItemStack> items) {
+    public void apply(NonNullList<ItemStack> items) {
         fill(items);
         items.sort(this);
     }
 
-    private void fill(List<ItemStack> items) {
+    private void fill(NonNullList<ItemStack> items) {
         for (Map.Entry<String, Entry> e : index.entrySet()) {
             if (!contains(items, e.getKey())) {
-                e.getValue().stack.getSafely().ifPresent(items::add);
+                e.getValue().stack.get().fillItemGroup(ItemGroup.SEARCH, items);
             }
         }
     }
@@ -60,11 +63,11 @@ public class ItemList implements Sorter<ItemStack>, Comparator<ItemStack> {
     private static class Entry {
 
         private final int index;
-        private final Provider.Stack stack;
+        private final Provider<Item> stack;
 
-        private Entry(int index, Provider<?> provider) {
+        private Entry(int index, Provider<Item> provider) {
             this.index = index;
-            this.stack = provider.toStack();
+            this.stack = provider;
         }
     }
 
