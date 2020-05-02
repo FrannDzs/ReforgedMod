@@ -159,7 +159,8 @@ public class ModelRender {
                 float f = bytebuffer.getFloat(0);
                 float f1 = bytebuffer.getFloat(4);
                 float f2 = bytebuffer.getFloat(8);
-                int light = applyBakedLighting(lightmap[k], bytebuffer);
+                int l = Math.min(k, lightmap.length - 1);
+                int light = applyBakedLighting(lightmap[l], bytebuffer);
                 float u = bytebuffer.getFloat(16);
                 float v = bytebuffer.getFloat(20);
                 Vector4f vector4f = new Vector4f(f, f1, f2, 1.0F);
