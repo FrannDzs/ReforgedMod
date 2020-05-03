@@ -19,6 +19,17 @@ public enum DependencyType {
             return ModList.get().isLoaded(dependency.getId());
         }
     },
+    LIB {
+        @Override
+        public boolean isAvailable(Dependency dependency) {
+            try {
+                Class.forName(dependency.getId());
+                return true;
+            } catch (ClassNotFoundException e) {
+                return false;
+            }
+        }
+    },
     RESOURCEPACK {
         @Override
         public boolean isAvailable(Dependency dependency) {
