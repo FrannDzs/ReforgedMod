@@ -1,7 +1,7 @@
 [
   {
-    "type": "MOD",
-    "id": "optifine",
+    "type": "LIB",
+    "id": "net.optifine.Config",
     "name": "Optifine",
     "url": "https://optifine.net/downloads"
   },
