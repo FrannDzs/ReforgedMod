@@ -9,7 +9,7 @@ public class Dependency {
 
     public Dependency(DependencyType type, String id, String displayName, String url) {
         this.type = type;
-        this.id = id.toLowerCase();
+        this.id = id;
         this.url = url;
         this.displayName = displayName;
     }
