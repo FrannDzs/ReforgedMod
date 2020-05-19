@@ -37,7 +37,16 @@ public class ItemList implements Sorter<ItemStack>, Comparator<ItemStack> {
     private void fill(NonNullList<ItemStack> items) {
         for (Map.Entry<String, Entry> e : index.entrySet()) {
             if (!contains(items, e.getKey())) {
-                e.getValue().stack.get().fillItemGroup(ItemGroup.SEARCH, items);
+                // record size before attempting to add items
+                int size = items.size();
+
+                Item item = e.getValue().stack.get();
+                item.fillItemGroup(ItemGroup.SEARCH, items);
+
+                // manually add item if fillItemGroup doesn't work for this item type (debug stick)
+                if (items.size() == size) {
+                    items.add(new ItemStack(item));
+                }
             }
         }
     }
