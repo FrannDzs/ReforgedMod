@@ -7,13 +7,12 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.fluid.Fluid;
 
+// MUST ONLY BE USED ON THE CLIENT
 public class RenderLayerHelper {
 
-    private static final RenderLayerHelper instance = new RenderLayerHelper();
-
-    public void register(Block block, RenderLayer layer) {
+    public static void register(Block block, RenderLayer layer) {
         if (layer != RenderLayer.SOLID && layer != RenderLayer.UNDEFINED) {
-            RenderType type = layer.getRenderType();
+            RenderType type = getType(layer);
             if (type == null) {
                 return;
             }
@@ -22,9 +21,9 @@ public class RenderLayerHelper {
         }
     }
 
-    public void register(Fluid fluid, RenderLayer layer) {
+    public static void register(Fluid fluid, RenderLayer layer) {
         if (layer != RenderLayer.SOLID && layer != RenderLayer.UNDEFINED) {
-            RenderType type = layer.getRenderType();
+            RenderType type = getType(layer);
             if (type == null) {
                 return;
             }
@@ -33,7 +32,17 @@ public class RenderLayerHelper {
         }
     }
 
-    public static RenderLayerHelper getInstance() {
-        return instance;
+    private static RenderType getType(RenderLayer layer) {
+        switch (layer) {
+            case SOLID:
+                return RenderType.solid();
+            case CUTOUT:
+                return RenderType.cutout();
+            case TRANSLUCENT:
+                return RenderType.translucent();
+            case CUTOUT_MIPPED:
+                return RenderType.cutoutMipped();
+        }
+        return null;
     }
 }

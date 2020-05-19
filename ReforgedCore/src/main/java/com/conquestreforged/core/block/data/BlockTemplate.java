@@ -75,13 +75,13 @@ public class BlockTemplate {
 
     public void registerRenders(Block block, Props props) {
         if (props.getRenderLayer() != RenderLayer.UNDEFINED) {
-            RenderLayerHelper.getInstance().register(block, props.getRenderLayer());
+            RenderLayerHelper.register(block, props.getRenderLayer());
             return;
         }
 
         if (render != null) {
             RenderLayer layer = render.value();
-            RenderLayerHelper.getInstance().register(block, layer);
+            RenderLayerHelper.register(block, layer);
         }
     }
 

@@ -43,15 +43,15 @@ public class PaletteSettings extends Screen {
         dispose();
         super.init(mc, width, height);
         if (!Environment.isProduction() && test) {
-            add(right, new ColorPicker("Highlight Color", highlightColor, c -> {
+            add(right, new ColorPicker2("Highlight Color", highlightColor, c -> {
                 highlightColor = c;
                 config.set("highlight_color", ColorUtils.toHex(c));
             }));
-            add(right, new ColorPicker("Hovered Color", hoveredColor, c -> {
+            add(right, new ColorPicker2("Hovered Color", hoveredColor, c -> {
                 hoveredColor = c;
                 config.set("hovered_color", ColorUtils.toHex(c));
             }));
-            add(right, new ColorPicker("Selected Color", selectedColor, c -> {
+            add(right, new ColorPicker2("Selected Color", selectedColor, c -> {
                 selectedColor = c;
                 config.set("selected_color", ColorUtils.toHex(c));
             }));
