@@ -3,7 +3,7 @@ package com.conquestreforged.client.gui.search.query;
 /**
  * @author dags <dags@dags.me>
  */
-public class Result<T> implements Comparable<Result> {
+public class Result<T> implements Comparable<Result<T>> {
 
     private static final Result<?> EMPTY = new Result<>(null, Integer.MAX_VALUE, Integer.MAX_VALUE);
 
@@ -30,8 +30,11 @@ public class Result<T> implements Comparable<Result> {
     }
 
     @Override
-    public int compareTo(Result result) {
+    public int compareTo(Result<T> result) {
         if (this.rank == result.rank) {
+            if (this.score == result.score) {
+                return Integer.compare(this.result.hashCode(), result.result.hashCode());
+            }
             return Double.compare(this.score, result.score);
         }
         return Integer.compare(this.rank, result.rank);

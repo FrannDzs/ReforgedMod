@@ -1,11 +1,11 @@
 package com.conquestreforged.client.gui;
 
 import com.conquestreforged.client.gui.render.Render;
+import com.conquestreforged.client.utils.CreativeUtils;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.inventory.CreativeCraftingListener;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.StringTextComponent;
 
@@ -103,14 +103,7 @@ public abstract class PickerScreen<T> extends Screen {
         }
 
         T option = options.get(index);
-        int slot = minecraft.player.inventory.getSlotFor(stack);
-        ItemStack stack = createItemStack(this.stack, option);
-
-        CreativeCraftingListener listener = new CreativeCraftingListener(minecraft);
-        minecraft.player.container.addListener(listener);
-        minecraft.player.inventory.setInventorySlotContents(slot, stack);
-        minecraft.player.container.detectAndSendChanges();
-        minecraft.player.container.removeListener(listener);
+        CreativeUtils.replaceItemStack(stack, createItemStack(this.stack, option));
     }
 
     private void renderOption(int cx, int cy, int di) {

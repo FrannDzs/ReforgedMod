@@ -1,13 +1,10 @@
 package com.conquestreforged.client.gui.search.query;
 
-import net.minecraft.item.Item;
-import net.minecraft.tags.Tag;
-
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -62,20 +59,19 @@ public class Index<T> {
 
     public static class Builder<T> {
 
-        private final Map<Integer, Entry<T>> entries = new HashMap<>();
+        private final List<Entry<T>> entries = new LinkedList<>();
 
-        public Builder<T> with(T value, int uid, String text, List<Tag<Item>> tags) {
+        public Builder<T> with(T value, String text, Collection<String> tags) {
             StringBuilder tagBuilder = new StringBuilder();
-            for (Tag tag : tags) {
-                tagBuilder.append('#').append(tag.getId().getPath());
+            for (String tag : tags) {
+                tagBuilder.append('#').append(tag);
             }
-            Entry<T> entry = new Entry<>(value, text, tagBuilder.toString());
-            entries.put(uid, entry);
+            entries.add(new Entry<>(value, text, tagBuilder.toString()));
             return this;
         }
 
         public Index<T> build() {
-            return new Index<>(Collections.unmodifiableList(new LinkedList<>(entries.values())));
+            return new Index<>(Collections.unmodifiableList(new ArrayList<>(entries)));
         }
     }
 }
