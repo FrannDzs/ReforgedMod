@@ -3,8 +3,8 @@ package com.conquestreforged.core.block.properties;
 import net.minecraft.util.IStringSerializable;
 
 public enum BidirectionalShape implements IStringSerializable {
-    NORTHSOUTH("northsouth"),
-    EASTWEST("eastwest");
+    NORTH_SOUTH("northsouth"),
+    EAST_WEST("eastwest");
 
     private final String name;
 
