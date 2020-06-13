@@ -5,6 +5,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 
 public abstract class Shape extends Block {
@@ -20,12 +21,20 @@ public abstract class Shape extends Block {
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
-        return getShape(state);
+        if (this.blocksMovement == false) {
+            return VoxelShapes.empty();
+        } else {
+            return getShape(state);
+        }
     }
 
     @Override
     public VoxelShape getRaytraceShape(BlockState state, IBlockReader worldIn, BlockPos pos) {
-        return getShape(state);
+        if (this.blocksMovement == false) {
+            return VoxelShapes.empty();
+        } else {
+            return getShape(state);
+        }
     }
 
     public abstract VoxelShape getShape(BlockState state);

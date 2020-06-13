@@ -6,16 +6,17 @@ import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
 
 import javax.annotation.Nonnull;
 
-public abstract class DirectionalShape extends Shape {
+public abstract class HorizontalDirectionalShape extends Shape {
 
-    public static final DirectionProperty DIRECTION = BlockStateProperties.FACING;
+    public static final DirectionProperty DIRECTION = BlockStateProperties.HORIZONTAL_FACING;
 
-    public DirectionalShape(Properties builder) {
+    public HorizontalDirectionalShape(Properties builder) {
         super(builder);
     }
 
@@ -32,7 +33,8 @@ public abstract class DirectionalShape extends Shape {
     @Nonnull
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context) {
-        return this.getDefaultState().with(DIRECTION, context.getNearestLookingDirection().getOpposite());
+        Direction facing = context.getPlacementHorizontalFacing().getOpposite();
+        return super.getStateForPlacement(context).with(DIRECTION, facing);
     }
 
     @Override

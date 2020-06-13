@@ -9,18 +9,14 @@ import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.util.Direction;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
 
 import javax.annotation.Nonnull;
 
-/**
- * A directional, non full-cube shape that can be waterlogged
- */
 public abstract class WaterloggedDirectionalShape extends Shape implements Waterloggable {
 
-    public static final DirectionProperty DIRECTION = BlockStateProperties.HORIZONTAL_FACING;
+    public static final DirectionProperty DIRECTION = BlockStateProperties.FACING;
 
     public WaterloggedDirectionalShape(Properties builder) {
         super(builder);
@@ -39,11 +35,8 @@ public abstract class WaterloggedDirectionalShape extends Shape implements Water
     @Nonnull
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context) {
-        Direction facing = context.getPlacementHorizontalFacing().getOpposite();
         IFluidState fluid = context.getWorld().getFluidState(context.getPos());
-        return super.getStateForPlacement(context)
-                .with(DIRECTION, facing)
-                .with(WATERLOGGED, fluid.getFluid() == Fluids.WATER);
+        return this.getDefaultState().with(DIRECTION, context.getNearestLookingDirection().getOpposite()).with(WATERLOGGED, fluid.getFluid() == Fluids.WATER);
     }
 
     @Override
