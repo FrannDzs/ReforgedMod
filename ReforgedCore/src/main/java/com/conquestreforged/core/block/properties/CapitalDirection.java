@@ -19,6 +19,7 @@ public enum CapitalDirection implements IStringSerializable {
         return this.name;
     }
 
+    @Override
     public String getName() {
         return this.name;
     }
