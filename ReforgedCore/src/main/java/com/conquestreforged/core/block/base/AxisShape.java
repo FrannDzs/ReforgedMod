@@ -17,6 +17,7 @@ public abstract class AxisShape extends Shape {
         super(builder);
     }
 
+    @Override
     public BlockState rotate(BlockState state, Rotation rot) {
         switch(rot) {
             case COUNTERCLOCKWISE_90:
@@ -34,11 +35,13 @@ public abstract class AxisShape extends Shape {
         }
     }
 
+    @Override
     protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
         builder.add(AXIS);
         addProperties(builder);
     }
 
+    @Override
     public BlockState getStateForPlacement(BlockItemUseContext context) {
         return this.getDefaultState().with(AXIS, context.getFace().getAxis());
     }
