@@ -18,6 +18,7 @@ public enum ArchShape implements IStringSerializable {
         return this.name;
     }
 
+    @Override
     public String getName() {
         return this.name;
     }

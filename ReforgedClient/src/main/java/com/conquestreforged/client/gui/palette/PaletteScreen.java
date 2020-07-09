@@ -26,6 +26,8 @@ public class PaletteScreen extends CustomCreativeScreen<PaletteContainer> {
     private final Screen previous;
     private final PaletteSettings settings = new PaletteSettings();
 
+    private Slot hovered = null;
+
     public PaletteScreen(PlayerEntity player, PlayerInventory inventory, PaletteContainer container) {
         this(null, player, inventory, container);
     }
@@ -113,6 +115,7 @@ public class PaletteScreen extends CustomCreativeScreen<PaletteContainer> {
         ItemStack display = playerInventory.getItemStack();
         if (display.isEmpty()) {
             Slot slot = getContainer().getClosestSlot(mouseX - guiLeft, mouseY - guiTop, true);
+            hovered = slot;
             if (slot == null) {
                 return;
             }
@@ -129,6 +132,16 @@ public class PaletteScreen extends CustomCreativeScreen<PaletteContainer> {
 
         String text = display.getDisplayName().getFormattedText();
         drawCenteredString(minecraft.fontRenderer, text, left, top, color);
+    }
+
+    @Override
+    public boolean charTyped(char c, int code) {
+        if (c >= '1' && c <= '9' && hovered != null && hovered.getHasStack()) {
+            container.getHotbar().getInventory().setInventorySlotContents(c - '1', hovered.getStack());
+            super.sendChanges();
+            return true;
+        }
+        return super.charTyped(c, code);
     }
 
     @Override
