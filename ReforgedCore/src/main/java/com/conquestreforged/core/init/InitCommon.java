@@ -2,6 +2,7 @@ package com.conquestreforged.core.init;
 
 import com.conquestreforged.core.block.BlockStats;
 import com.conquestreforged.core.block.data.BlockDataRegistry;
+import com.conquestreforged.core.data.BlockDump;
 import com.conquestreforged.core.init.dev.Environment;
 import com.conquestreforged.core.item.family.FamilyRegistry;
 import com.conquestreforged.core.util.cache.Cache;
@@ -33,6 +34,8 @@ public class InitCommon {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void common(FMLCommonSetupEvent event) {
         if (!Environment.isProduction()) {
+            BlockDump.run();
+
             BlockStats stats = new BlockStats();
             Log.info("Block Stats:");
             Log.info("(Total) Blocks: {}, States: {}", stats.totalBlocks, stats.totalStates);
