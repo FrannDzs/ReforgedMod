@@ -48,7 +48,7 @@ public class VanillaProps {
     }
 
     public static Props plants() {
-        return Props.create(Blocks.GRASS).group(ItemGroup.DECORATIONS);
+        return Props.create(Blocks.GRASS).group(ItemGroup.DECORATIONS).strength(0.0D, 0.0D);
     }
 
     public static Props earth() {
