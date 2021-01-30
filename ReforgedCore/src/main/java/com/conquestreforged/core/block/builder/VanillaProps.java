@@ -72,6 +72,10 @@ public class VanillaProps {
         return Props.create(Blocks.OAK_LEAVES).group(ItemGroup.BUILDING_BLOCKS).foliageColor();
     }
 
+    public static Props leafLike() {
+        return Props.create(Blocks.OAK_LEAVES).group(ItemGroup.BUILDING_BLOCKS);
+    }
+
     /**
      * Stone props but uses grass color
      */
