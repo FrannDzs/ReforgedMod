@@ -73,7 +73,7 @@ public class VanillaProps {
     }
 
     public static Props leafLike() {
-        return Props.create(Blocks.OAK_LEAVES).group(ItemGroup.BUILDING_BLOCKS);
+        return Props.create(Blocks.GRASS).group(ItemGroup.BUILDING_BLOCKS);
     }
 
     /**
