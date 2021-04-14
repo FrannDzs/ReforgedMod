@@ -11,8 +11,16 @@ public class VanillaProps {
         return Props.create(Blocks.STONE).group(ItemGroup.BUILDING_BLOCKS);
     }
 
+    public static Props mosaic() {
+        return Props.create(BlockMaterials.ROCK_SPECIAL);
+    }
+
     public static Props wood() {
         return planks();
+    }
+
+    public static Props woodLike() {
+        return Props.create(BlockMaterials.WOOD_SPECIAL);
     }
 
     public static Props bricks() {
