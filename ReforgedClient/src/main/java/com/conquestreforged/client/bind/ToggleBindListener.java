@@ -33,7 +33,7 @@ public class ToggleBindListener implements BindListener {
                 Channels.TOGGLE.sendToServer(toggle);
 
                 // display client toggle state
-                Minecraft.getInstance().ingameGUI.setOverlayMessage(Integer.toString(toggle.getIndex()), false);
+                Minecraft.getInstance().ingameGUI.setOverlayMessage("You are now on Toggle #" + toggle.getIndex() + ". To return to default placement press \"B\" until you reach 0 again", true);
             });
         }
     }
