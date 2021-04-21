@@ -43,38 +43,29 @@ public class TutorialRenderEvent {
         if (event.getGui() instanceof MainMenuScreen) {
             List<Dependency> missing = dependencies.getMissingDependencies();
             DependencyScreen screen2 = new DependencyScreen(event.getGui(), section, missing);
+            IntroScreen screen1 = new IntroScreen(screen2, section);
+            IntroScreen screen3 = new IntroScreen(event.getGui(), section);
 
-            if (Tutorials.intro) {
-                hasRenderedIntro = true;
-            }
-
-            if (section.getOrElse("ignore_intro", false)) {
-                hasRenderedIntro = true;
-            }
-
-            if (Tutorials.dependencies) {
-                IntroScreen screen1 = new IntroScreen(event.getGui(), section);
-                //Minecraft.getInstance().displayGuiScreen(screen1);
-            } else {
-                IntroScreen screen1 = new IntroScreen(screen2, section);
-                Minecraft.getInstance().displayGuiScreen(screen1);
-                if (Tutorials.intro) {
-                    //Minecraft.getInstance().displayGuiScreen(screen2);
-                }
-            }
-
-            if (Tutorials.dependencies && Tutorials.intro) {
+            if ((section.getOrElse("ignore_dependencies", false) && section.getOrElse("ignore_intro", false))
+                    || missing.isEmpty() && Tutorials.intro
+                    || (Tutorials.dependencies && Tutorials.intro)
+            ) {
                 MinecraftForge.EVENT_BUS.unregister(this);
-                hasRenderedDependency = true;
-            } else if (section.getOrElse("ignore_dependencies", false) && section.getOrElse("ignore_intro", false)) {
-                MinecraftForge.EVENT_BUS.unregister(this);
-                hasRenderedDependency = true;
-            }
-
-            if (missing.isEmpty() && Tutorials.intro) {
                 return;
             }
 
+            if (!Tutorials.dependencies) {
+                if (section.getOrElse("ignore_dependencies", false) || missing.isEmpty()) {
+                    Minecraft.getInstance().displayGuiScreen(screen3);
+                    if (Tutorials.intro) {
+                        MinecraftForge.EVENT_BUS.unregister(this);
+                    }
+                } else if (section.getOrElse("ignore_intro", false)) {
+                    Minecraft.getInstance().displayGuiScreen(screen2);
+                } else {
+                    Minecraft.getInstance().displayGuiScreen(screen1);
+                }
+            }
         }
     }
 }

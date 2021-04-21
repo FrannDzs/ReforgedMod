@@ -29,12 +29,13 @@ public class IntroScreen extends Screen {
     public void onClose() {
         section.set("ignore_intro", check.isChecked());
         section.save();
-        Tutorials.intro = true;
+
         Minecraft.getInstance().displayGuiScreen(screen);
     }
 
     @Override
     public void init(Minecraft mc, int width, int height) {
+        Tutorials.intro = true;
         super.init(mc, width, height);
 
         int center = width / 2;
