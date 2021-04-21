@@ -22,6 +22,8 @@ public class TutorialRenderEvent {
 
     private final ConfigSection section;
     private final DependencyList dependencies = DependencyList.load();
+    private boolean hasRenderedIntro = false;
+    private boolean hasRenderedDependency = false;
 
     public TutorialRenderEvent(ConfigSection section) {
         this.section = section;
@@ -39,41 +41,40 @@ public class TutorialRenderEvent {
     @SubscribeEvent
     public void render(GuiScreenEvent.InitGuiEvent.Post event) {
         if (event.getGui() instanceof MainMenuScreen) {
-            if (Tutorials.dependencies && Tutorials.intro) {
-                MinecraftForge.EVENT_BUS.unregister(this);
-                return;
-            }
-
-            if (section.getOrElse("ignore_dependencies", false) && section.getOrElse("ignore_intro", false)) {
-                MinecraftForge.EVENT_BUS.unregister(this);
-                return;
-            }
-
             List<Dependency> missing = dependencies.getMissingDependencies();
-            if (missing.isEmpty()) {
-                return;
-            }
-
             DependencyScreen screen2 = new DependencyScreen(event.getGui(), section, missing);
-            Minecraft.getInstance().displayGuiScreen(screen2);
 
             if (Tutorials.intro) {
-                MinecraftForge.EVENT_BUS.unregister(this);
-                return;
+                hasRenderedIntro = true;
             }
 
             if (section.getOrElse("ignore_intro", false)) {
-                MinecraftForge.EVENT_BUS.unregister(this);
-                return;
+                hasRenderedIntro = true;
             }
 
             if (Tutorials.dependencies) {
                 IntroScreen screen1 = new IntroScreen(event.getGui(), section);
-                Minecraft.getInstance().displayGuiScreen(screen1);
+                //Minecraft.getInstance().displayGuiScreen(screen1);
             } else {
                 IntroScreen screen1 = new IntroScreen(screen2, section);
                 Minecraft.getInstance().displayGuiScreen(screen1);
+                if (Tutorials.intro) {
+                    //Minecraft.getInstance().displayGuiScreen(screen2);
+                }
             }
+
+            if (Tutorials.dependencies && Tutorials.intro) {
+                MinecraftForge.EVENT_BUS.unregister(this);
+                hasRenderedDependency = true;
+            } else if (section.getOrElse("ignore_dependencies", false) && section.getOrElse("ignore_intro", false)) {
+                MinecraftForge.EVENT_BUS.unregister(this);
+                hasRenderedDependency = true;
+            }
+
+            if (missing.isEmpty() && Tutorials.intro) {
+                return;
+            }
+
         }
     }
 }
