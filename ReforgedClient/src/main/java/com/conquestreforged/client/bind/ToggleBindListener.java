@@ -1,5 +1,6 @@
 package com.conquestreforged.client.bind;
 
+import com.conquestreforged.client.BindManager;
 import com.conquestreforged.client.Secrets;
 import com.conquestreforged.client.gui.state.BlockStateScreen;
 import com.conquestreforged.client.gui.state.PropertyFilter;
@@ -33,7 +34,11 @@ public class ToggleBindListener implements BindListener {
                 Channels.TOGGLE.sendToServer(toggle);
 
                 // display client toggle state
-                Minecraft.getInstance().ingameGUI.setOverlayMessage("You are now on Toggle #" + toggle.getIndex() + ". To return to default placement press \"B\" until you reach 0 again", true);
+                if (toggle.getIndex() == 0) {
+                    Minecraft.getInstance().ingameGUI.setOverlayMessage("You are now on Toggle #0. This is for default placement mechanics", true);
+                } else {
+                    Minecraft.getInstance().ingameGUI.setOverlayMessage("You are now on Toggle #" + toggle.getIndex() + ". To return to default placement press \"" + BindManager.getBlockToggleBind().getLocalizedName().toUpperCase() + "\" until you reach 0 again", true);
+                }
             });
         }
     }

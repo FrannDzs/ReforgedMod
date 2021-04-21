@@ -17,13 +17,14 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 public class BindManager {
 
     private static KeyBinding palette;
+    private static KeyBinding blockToggle;
 
     @SubscribeEvent
     public static void init(FMLClientSetupEvent event) {
         Log.info("Registering keybinds");
         String category = "key.category.conquest";
         Translations.getInstance().add(category, "Conquest Reforged");
-        Bindings.create("Block Toggle", "key.keyboard.b", category, new ToggleBindListener());
+        blockToggle = Bindings.create("Block Toggle", "key.keyboard.b", category, new ToggleBindListener());
         Bindings.create("Search", "key.keyboard.unknown", category, new SearchBindListener());
         palette = Bindings.create("Palette GUI", "key.keyboard.c", category)
                 .addListener(new PaletteBindListener())
@@ -32,5 +33,9 @@ public class BindManager {
 
     public static KeyBinding getPaletteBind() {
         return palette;
+    }
+
+    public static KeyBinding getBlockToggleBind() {
+        return blockToggle;
     }
 }

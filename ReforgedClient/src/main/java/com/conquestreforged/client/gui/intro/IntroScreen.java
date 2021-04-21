@@ -1,5 +1,6 @@
 package com.conquestreforged.client.gui.intro;
 
+import com.conquestreforged.client.BindManager;
 import com.conquestreforged.client.tutorial.Tutorials;
 import com.conquestreforged.core.config.section.ConfigSection;
 import net.minecraft.client.Minecraft;
@@ -13,6 +14,7 @@ public class IntroScreen extends Screen {
     private final Screen screen;
     private final ConfigSection section;
     private final CheckboxButton check = new CheckboxButton(0, 0, 0, 0, "Do not show again", false);
+
 
     public IntroScreen(Screen parent, ConfigSection section) {
         super(new StringTextComponent("Intro"));
@@ -56,11 +58,11 @@ public class IntroScreen extends Screen {
         String[] message = new String[]{"Welcome to the Conquest Reforged 1.15.2 Alpha!",
                 "This is an intro to keybindings to make your building process smoother.",
                 "",
-                "\"V\" - (Creative Mode only) opens block palette wheel for selecting shape variants of a certain texture",
+                String.format("\"%s\" - (Creative Mode only) opens block palette wheel for selecting shape variants of a certain texture", BindManager.getPaletteBind().getLocalizedName().toUpperCase()),
                 "This is to quickly find vertical slabs, stairs, etc.",
                 "Make sure that you're hovering over a block with your cursor or that you have a block in hand.",
                 "",
-                "\"B\" - pressing this cycles through the block placement toggles 0-7.",
+                String.format("\"%s\" - pressing this cycles through the block placement toggles 0-7.", BindManager.getBlockToggleBind().getLocalizedName().toUpperCase()),
                 "This is for placing different shape variant sizes (slabs, layers, arches, vert slabs, etc)."
         };
 
