@@ -3,13 +3,23 @@ package com.conquestreforged.client.gui.intro;
 import com.conquestreforged.client.BindManager;
 import com.conquestreforged.client.tutorial.Tutorials;
 import com.conquestreforged.core.config.section.ConfigSection;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.gui.widget.button.CheckboxButton;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 
+import static net.minecraft.util.text.TextFormatting.GOLD;
+
 public class IntroScreen extends Screen {
+
+    private static final ResourceLocation LOGO = new ResourceLocation("conquest:textures/gui/intro/logosmall.png");
+    private static final int LOGO_HEIGHT = 100;
+    private static final int LOGO_WIDTH = 100;
 
     private final Screen screen;
     private final ConfigSection section;
@@ -55,18 +65,25 @@ public class IntroScreen extends Screen {
     public void render(int mx, int my, float ticks) {
         renderBackground();
 
-        String[] message = new String[]{"Welcome to the Conquest Reforged 1.15.2 Alpha!",
-                "This is an intro to keybindings to make your building process smoother.",
+        ITextComponent paletteKeyLetter = new StringTextComponent(BindManager.getPaletteBind().getLocalizedName().toUpperCase()).applyTextStyles(GOLD);
+        ITextComponent toggleKeyLetter = new StringTextComponent(BindManager.getBlockToggleBind().getLocalizedName().toUpperCase()).applyTextStyles(GOLD);
+        ITextComponent welcomeString = new StringTextComponent("Welcome to the Conquest Reforged 1.15.2 Alpha!").applyTextStyles(GOLD);
+
+        String[] message = new String[]{welcomeString.getFormattedText(),
+                "This screen will introduce you to keybinds for making building faster.",
                 "",
-                String.format("\"%s\" - (Creative Mode only) opens block palette wheel for selecting shape variants of a certain texture", BindManager.getPaletteBind().getLocalizedName().toUpperCase()),
-                "This is to quickly find vertical slabs, stairs, etc.",
-                "Make sure that you're hovering over a block with your cursor or that you have a block in hand.",
+                "\"" + paletteKeyLetter.getFormattedText() + "\" - (Creative Mode only) shows texture shape variants in the block palette.",
+                "Works while hovering over a block in the creative menu or when selected in the hotbar.",
                 "",
-                String.format("\"%s\" - pressing this cycles through the block placement toggles 0-7.", BindManager.getBlockToggleBind().getLocalizedName().toUpperCase()),
-                "This is for placing different shape variant sizes (slabs, layers, arches, vert slabs, etc)."
+                "\"" + toggleKeyLetter.getFormattedText() + "\" - cycles through and locks blockstates while building.",
+                "Used for blocks with varying sizes (slabs, layers, vert stairs, arches, etc)."
         };
 
         int dist = 15;
+
+        RenderSystem.enableTexture();
+        Minecraft.getInstance().getTextureManager().bindTexture(LOGO);
+        AbstractGui.blit(getImageLeft(50), 15, 50, 50, 0, 0, LOGO_WIDTH, LOGO_HEIGHT, LOGO_WIDTH, LOGO_HEIGHT);
 
         for(int i = 0; i < message.length; i++) {
             int titleWidth = font.getStringWidth(message[i]);
@@ -74,10 +91,11 @@ public class IntroScreen extends Screen {
             font.drawStringWithShadow(message[i], width / 2F - titleOffset , 70 + i * dist, 0xFFFFFF);
         }
 
-        //font.wrapFormattedStringToWidth(message, 200);
-        //font.drawStringWithShadow(message, (width / 2F) - titleOffset,  200, 0xFFFFFF);
-
         super.render(mx, my, ticks);
     }
 
+    private int getImageLeft(int imageWidth) {
+        // find the left (x) pos of the image so that it is centered on screen
+        return (width / 2) - (imageWidth / 2);
+    }
 }
