@@ -67,6 +67,7 @@ public class IntroScreen extends Screen {
 
         ITextComponent paletteKeyLetter = new StringTextComponent(BindManager.getPaletteBind().getLocalizedName().toUpperCase()).applyTextStyles(GOLD);
         ITextComponent toggleKeyLetter = new StringTextComponent(BindManager.getBlockToggleBind().getLocalizedName().toUpperCase()).applyTextStyles(GOLD);
+        ITextComponent blockstateSelectorKeyLetter = new StringTextComponent("CTRL+MIDDLE-MOUSE-BUTTON").applyTextStyles(GOLD);
         ITextComponent welcomeString = new StringTextComponent("Welcome to the Conquest Reforged 1.15.2 Alpha!").applyTextStyles(GOLD);
 
         String[] message = new String[]{welcomeString.getFormattedText(),
@@ -76,14 +77,17 @@ public class IntroScreen extends Screen {
                 "Works while hovering over a block in the creative menu or when selected in the hotbar.",
                 "",
                 "\"" + toggleKeyLetter.getFormattedText() + "\" - cycles through and locks blockstates while building.",
-                "Used for blocks with varying sizes (slabs, layers, vert stairs, arches, etc)."
+                "Used for blocks with varying sizes (slabs, layers, vert stairs, arches, etc).",
+                "",
+                "\"" + blockstateSelectorKeyLetter.getFormattedText() + "\" - (Creative Mode only) press while looking at a block",
+                "This gives the exact shape you're looking at as a block item in your hotbar."
         };
 
-        int dist = 15;
+        int dist = 12;
 
         RenderSystem.enableTexture();
         Minecraft.getInstance().getTextureManager().bindTexture(LOGO);
-        AbstractGui.blit(getImageLeft(50), 15, 50, 50, 0, 0, LOGO_WIDTH, LOGO_HEIGHT, LOGO_WIDTH, LOGO_HEIGHT);
+        AbstractGui.blit(getImageLeft(35), 15, 35, 35, 0, 0, LOGO_WIDTH, LOGO_HEIGHT, LOGO_WIDTH, LOGO_HEIGHT);
 
         for(int i = 0; i < message.length; i++) {
             int titleWidth = font.getStringWidth(message[i]);
