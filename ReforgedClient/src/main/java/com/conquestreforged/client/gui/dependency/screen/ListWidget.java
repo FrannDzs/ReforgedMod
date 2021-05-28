@@ -56,7 +56,7 @@ public class ListWidget extends ExtendedList<ListWidget.Entry> {
             button.x = left + paddingLeft - dx;
             button.y = top + paddingTop;
             button.setWidth(buttonWidth);
-            button.setHeight(entryHeight);
+            button.setHeight(20);
             button.render(mouseX, mouseY, partialTicks);
         }
     }

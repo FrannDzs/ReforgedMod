@@ -26,7 +26,7 @@ public class BindManager {
         Translations.getInstance().add(category, "Conquest Reforged");
         blockToggle = Bindings.create("Block Toggle", "key.keyboard.b", category, new ToggleBindListener());
         Bindings.create("Search", "key.keyboard.unknown", category, new SearchBindListener());
-        palette = Bindings.create("Palette GUI", "key.keyboard.c", category)
+        palette = Bindings.create("Palette GUI", "key.keyboard.v", category)
                 .addListener(new PaletteBindListener())
                 .addListener(new PaintingBindListener());
     }

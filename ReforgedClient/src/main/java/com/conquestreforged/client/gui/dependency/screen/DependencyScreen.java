@@ -67,15 +67,22 @@ public class DependencyScreen extends Screen {
         int listTop = paddingTop + imageHeight;
         int listBottom = listTop + TITLE_HEIGHT + LIST_HEIGHT;
 
-        listWidget = new ListWidget(this, imageWidth, listTop, TITLE_HEIGHT, listBottom);
-        listWidget.setLeftPos(center - (imageWidth / 2));
-        children.add(listWidget);
+        //listWidget = new ListWidget(this, imageWidth, listTop, TITLE_HEIGHT, listBottom);
+        //listWidget.setLeftPos(center - (imageWidth / 2));
+        //children.add(listWidget);
+
+        int buttonHeightDifference = 94;
 
         for (Dependency dependency : missing) {
-            Button button = createButton(dependency);
-            listWidget.add(button);
-            children.add(button);
+            addButton(createButton(dependency, height - buttonHeightDifference, center));
+            buttonHeightDifference -= 24;
         }
+
+        //for (Dependency dependency : missing) {
+        //    Button button = createButton(dependency);
+        //    listWidget.add(button);
+        //    addButton(button);
+        //}
 
         addButton(new Button(center - 50, height - 24, 100, 20, "Continue", b -> onClose()));
 
@@ -90,7 +97,7 @@ public class DependencyScreen extends Screen {
     public void render(int mx, int my, float ticks) {
         renderBackground();
 
-        listWidget.render(mx, my, ticks);
+        //listWidget.render(mx, my, ticks);
 
         int imageHeight = getImageHeight();
         int imageWidth = getImageWidth(imageHeight);
@@ -138,8 +145,8 @@ public class DependencyScreen extends Screen {
         return paddingTop;
     }
 
-    private static Button createButton(Dependency dependency) {
-        return new Button(0, 0, 0, 0, dependency.getDisplayName(), btn -> {
+    private static Button createButton(Dependency dependency, int heightIn, int center) {
+        return new Button(center - 85, heightIn, 170, 20, dependency.getDisplayName(), btn -> {
             try {
                 Util.getOSType().openURL(new URL(dependency.getURL()));
             } catch (MalformedURLException e) {
