@@ -29,7 +29,7 @@ public class DevClientInit {
         Log.debug("Registering client resources");
 
         IResourceManager resourceManager = Minecraft.getInstance().getResourceManager();
-        Consumer<IPackFinder> resourcePacks = Minecraft.getInstance().getResourcePackList()::addPackFinder;
+        Consumer<IPackFinder> resourcePacks = Minecraft.getInstance().getResourcePackRepository()::addPackFinder;
 
         BlockDataRegistry.getInstance().getNamespaces().forEach(namespace -> {
             VirtualResourcepack.Builder builder = VirtualResourcepack.builder(namespace).type(ResourcePackType.CLIENT_RESOURCES);

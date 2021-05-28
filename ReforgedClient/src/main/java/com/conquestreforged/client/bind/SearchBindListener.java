@@ -9,8 +9,8 @@ public class SearchBindListener implements BindListener {
 
     @Override
     public void onPress(BindEvent e) {
-        if (e.inGame && !e.inGui && e.player.map(p -> p.abilities.isCreativeMode).orElse(false)) {
-            Minecraft.getInstance().displayGuiScreen(new SearchScreen());
+        if (e.inGame && !e.inGui && e.player.map(p -> p.abilities.instabuild).orElse(false)) {
+            Minecraft.getInstance().setScreen(new SearchScreen());
         }
     }
 }

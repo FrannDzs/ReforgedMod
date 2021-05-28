@@ -27,7 +27,7 @@ public abstract class BlockProps<T extends BlockProps<T>> {
 
     private DyeColor dyeColor = null;
     private SoundType sound = null;
-    private ItemGroup group = ItemGroup.SEARCH;
+    private ItemGroup group = ItemGroup.TAB_SEARCH;
     private Integer light = null;
     private Float resistance = null;
     private Float hardness = null;
@@ -134,33 +134,36 @@ public abstract class BlockProps<T extends BlockProps<T>> {
     }
 
     public MaterialColor color() {
-        return color == null ? MaterialColor.BLACK : color;
+        return color == null ? MaterialColor.COLOR_BLACK : color;
     }
 
     public Block.Properties toProperties() throws InitializationException {
         Block.Properties builder = createBuilder();
         applyNonNull(sound, builder::sound);
-        applyNonNull(light, builder::lightValue);
-        applyNonNull(slipperiness, builder::slipperiness);
-        applyNonNull(solid, false, builder::func_226896_b_);
-        applyNonNull(randomTick, true, builder::tickRandomly);
-        applyNonNull(variableOpacity, true, builder::variableOpacity);
-        applyNonNull(blocksMovement, false, builder::doesNotBlockMovement);
+        applyNonNull(light, builder::lightLevel);
+        applyNonNull(slipperiness, builder::friction);
+        //applyNonNull(solid, false, builder::func_226896_b_);
+        applyNonNull(randomTick, true, builder::randomTicks);
+
+        //todo check dynamicshapes/variableopacity
+        applyNonNull(variableOpacity, true, builder::dynamicShape);
+        applyNonNull(blocksMovement, false, builder::noCollission);
         if (hardness != null && resistance != null) {
-            builder.hardnessAndResistance(hardness, resistance);
+            builder.strength(hardness, resistance);
         }
         return builder;
     }
+
 
     private Block.Properties createBuilder() throws InitializationException {
         Block.Properties props;
 
         if (block != null) {
-            props = Block.Properties.from(block);
+            props = Block.Properties.copy(block);
         } else if (color != null && material != null) {
-            props = Block.Properties.create(material, color);
+            props = Block.Properties.of(material, color);
         } else if (material != null) {
-            props = Block.Properties.create(material);
+            props = Block.Properties.of(material);
         } else {
             throw new InitializationException("Block.Builder requires a Material");
         }
@@ -179,4 +182,8 @@ public abstract class BlockProps<T extends BlockProps<T>> {
             consumer.accept(value);
         }
     }
+
+    //todo finish this i guess?
+    protected abstract <T> void applyNonNull(Integer light, Consumer<T> lightLevel);
+
 }

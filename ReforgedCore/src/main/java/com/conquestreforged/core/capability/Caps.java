@@ -7,6 +7,7 @@ import net.minecraftforge.common.util.NonNullFunction;
 import net.minecraftforge.common.util.NonNullSupplier;
 
 import javax.annotation.Nullable;
+import java.util.function.Supplier;
 
 /**
  * Helper functions for retrieving capabilities
@@ -17,7 +18,7 @@ public class Caps {
      * Get the capability value from the World in the given context
      */
     public static <C, V> V forWorld(ItemUseContext context, Capability<C> capability, NonNullFunction<C, V> getter, V def) {
-        return get(context.getWorld(), capability, getter, def);
+        return get(context.getLevel(), capability, getter, def);
     }
 
     /**
@@ -31,7 +32,7 @@ public class Caps {
      * Get the capability value from the Item in the given context
      */
     public static <C, V> V forItem(ItemUseContext context, Capability<C> capability, NonNullFunction<C, V> getter, V def) {
-        return get(context.getItem(), capability, getter, def);
+        return get(context.getItemInHand(), capability, getter, def);
     }
 
     /**
@@ -51,6 +52,7 @@ public class Caps {
         if (provider == null) {
             return def.get();
         }
-        return provider.getCapability(capability).map(getter).orElseGet(def);
+        //i dont even know what casting this does lol
+        return provider.getCapability(capability).map(getter).orElseGet((Supplier<? extends V>) def);
     }
 }

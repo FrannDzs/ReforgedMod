@@ -8,6 +8,8 @@ import com.conquestreforged.core.item.group.sort.Sorter;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -22,7 +24,7 @@ public abstract class ConquestItemGroup extends ItemGroup {
     private static final String pathFormat = "/assets/%s/groups/%s.txt";
 
     private final int index;
-    private final String translationKey;
+    private final ITextComponent translationKey;
     private final Sorter<ItemStack> sorter;
     private List<ItemStack> cached = Collections.emptyList();
 
@@ -30,13 +32,13 @@ public abstract class ConquestItemGroup extends ItemGroup {
         super(-1, label);
         String namespace = Context.getInstance().getNamespace();
         this.index = index;
-        this.translationKey = Translations.getKey("itemGroup", namespace, label);
+        this.translationKey = new TranslationTextComponent(Translations.getKey("itemGroup", namespace, label));
         this.sorter = getItemSorter(namespace, label);
-        Translations.getInstance().add(translationKey, Translations.translate(label));
+        Translations.getInstance().add(translationKey.getString(), Translations.translate(label));
     }
 
     @Override
-    public String getTranslationKey() {
+    public ITextComponent getDisplayName() {
         return translationKey;
     }
 
@@ -49,7 +51,7 @@ public abstract class ConquestItemGroup extends ItemGroup {
     }
 
     @Override
-    public final void fill(NonNullList<ItemStack> items) {
+    public final void fillItemList(NonNullList<ItemStack> items) {
         if (cached.isEmpty()) {
             NonNullList<ItemStack> list = NonNullList.create();
             populate(list);

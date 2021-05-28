@@ -32,7 +32,7 @@ public interface BlockFactory {
             BlockData data = new BlockData(block, template, name, props);
             BlockDataRegistry.getInstance().register(data);
             if (!getProps().hasParent()) {
-                getProps().parent(data.getBlock().getDefaultState());
+                getProps().parent(data.getBlock().defaultBlockState());
             }
             family.add(data.getBlock());
         }

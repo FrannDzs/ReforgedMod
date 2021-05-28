@@ -22,11 +22,11 @@ public abstract class AxisShape extends Shape {
         switch(rot) {
             case COUNTERCLOCKWISE_90:
             case CLOCKWISE_90:
-                switch(state.get(AXIS)) {
+                switch(state.getValue(AXIS)) {
                     case X:
-                        return state.with(AXIS, Direction.Axis.Z);
+                        return state.setValue(AXIS, Direction.Axis.Z);
                     case Z:
-                        return state.with(AXIS, Direction.Axis.X);
+                        return state.setValue(AXIS, Direction.Axis.X);
                     default:
                         return state;
                 }
@@ -36,14 +36,14 @@ public abstract class AxisShape extends Shape {
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
         builder.add(AXIS);
         addProperties(builder);
     }
 
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context) {
-        return this.getDefaultState().with(AXIS, context.getFace().getAxis());
+        return this.defaultBlockState().setValue(AXIS, context.getClickedFace().getAxis());
     }
 
     protected void addProperties(StateContainer.Builder<Block, BlockState> builder) {

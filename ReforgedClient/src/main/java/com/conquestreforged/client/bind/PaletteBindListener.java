@@ -16,11 +16,11 @@ public class PaletteBindListener implements BindListener {
             return;
         }
 
-        e.player.map(PlayerEntity::getHeldItemMainhand).flatMap(Palette::getPalette).ifPresent(palette -> {
+        e.player.map(PlayerEntity::getMainHandItem).flatMap(Palette::getPalette).ifPresent(palette -> {
             PlayerEntity player = e.player.get();
             PaletteContainer container = new PaletteContainer(player.inventory, palette);
             PaletteScreen screen = new PaletteScreen(player, player.inventory, container);
-            Minecraft.getInstance().displayGuiScreen(screen);
+            Minecraft.getInstance().setScreen(screen);
         });
     }
 }

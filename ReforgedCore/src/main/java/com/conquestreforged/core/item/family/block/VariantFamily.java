@@ -10,7 +10,7 @@ public class VariantFamily extends BlockFamily {
     private static final VariantFamily EMPTY = new VariantFamily();
 
     private VariantFamily() {
-        super(ItemGroup.SEARCH, TypeList.EMPTY);
+        super(ItemGroup.TAB_SEARCH, TypeList.EMPTY);
     }
 
     public VariantFamily(ItemGroup group, TypeList type) {
@@ -19,7 +19,7 @@ public class VariantFamily extends BlockFamily {
 
     @Override
     public void addRootItem(ItemGroup group, NonNullList<ItemStack> list) {
-        if (group == ItemGroup.SEARCH || group == getGroup()) {
+        if (group == ItemGroup.TAB_SEARCH || group == getGroup()) {
             list.add(new ItemStack(getRoot()));
         }
     }

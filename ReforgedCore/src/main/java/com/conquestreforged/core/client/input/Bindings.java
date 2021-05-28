@@ -18,19 +18,19 @@ public class Bindings {
     private static final List<EventBinding> bindings = new LinkedList<>();
 
     public static KeyBinding createBasic(String description, String input, String category) {
-        KeyBinding binding = new KeyBinding(description, KeyConflictContext.UNIVERSAL, InputMappings.getInputByName(input), category);
+        KeyBinding binding = new KeyBinding(description, KeyConflictContext.UNIVERSAL, InputMappings.getKey(input), category);
         ClientRegistry.registerKeyBinding(binding);
         return binding;
     }
 
     public static EventBinding create(String description, String input, String category) {
-        EventBinding binding = new EventBinding(description, InputMappings.getInputByName(input), category);
+        EventBinding binding = new EventBinding(description, InputMappings.getKey(input), category);
         bindings.add(binding);
         return binding;
     }
 
     public static EventBinding create(String description, String input, String category, BindListener listener) {
-        EventBinding binding = new EventBinding(description, InputMappings.getInputByName(input), category);
+        EventBinding binding = new EventBinding(description, InputMappings.getKey(input), category);
         binding.addListener(listener);
         bindings.add(binding);
         return binding;

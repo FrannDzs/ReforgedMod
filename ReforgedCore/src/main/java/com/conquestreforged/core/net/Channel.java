@@ -9,9 +9,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.dimension.Dimension;
-import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -94,20 +91,22 @@ public class Channel {
         send(PacketDistributor.ALL.with(() -> null), message);
     }
 
+    //todo below never used apparently?
+
     // send a server -> client message to all players in the given world
-    public <T> void send(IWorld world, T message) {
-        send(world.getDimension(), message);
-    }
+    //public <T> void send(IWorld world, T message) {
+    //    send(world.dimensionType(), message);
+    //}
 
     // send a server -> client message to all players in the given dimension
-    public <T> void send(Dimension dimension, T message) {
-        send(dimension.getType(), message);
-    }
+    //public <T> void send(Dimension dimension, T message) {
+    //    send(dimension.type(), message);
+    //}
 
     // send a server -> client message to all players in the given dimension
-    public <T> void send(DimensionType dimension, T message) {
-        send(PacketDistributor.DIMENSION.with(() -> dimension), message);
-    }
+    //public <T> void send(DimensionType dimension, T message) {
+    //    send(PacketDistributor.DIMENSION.with(() -> dimension), message);
+    //}
 
     // send a message to the given packet target - may be in either direction depending on the target type
     public <T> void send(PacketDistributor.PacketTarget target, T message) {

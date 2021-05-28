@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 public class Props extends BlockProps<Props> implements BlockFactory {
 
@@ -75,6 +76,12 @@ public class Props extends BlockProps<Props> implements BlockFactory {
     @Override
     public Props getProps() {
         return this;
+    }
+
+    //TODO something with light?
+    @Override
+    protected <T> void applyNonNull(Integer light, Consumer<T> lightLevel) {
+
     }
 
     @Override

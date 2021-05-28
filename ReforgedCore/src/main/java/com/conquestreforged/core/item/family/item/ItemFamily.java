@@ -10,7 +10,7 @@ import net.minecraft.util.NonNullList;
 
 public class ItemFamily extends Family<Item> {
 
-    public static final ItemFamily EMPTY = new ItemFamily(ItemGroup.SEARCH);
+    public static final ItemFamily EMPTY = new ItemFamily(ItemGroup.TAB_SEARCH);
 
     public ItemFamily(ItemGroup group) {
         super(group, new OptimizedList<>());
@@ -23,7 +23,7 @@ public class ItemFamily extends Family<Item> {
 
     @Override
     protected void addItem(ItemGroup group, NonNullList<ItemStack> list, Item item) {
-        item.fillItemGroup(item.getGroup(), list);
+        item.fillItemCategory(item.getItemCategory(), list);
     }
 
     @Override

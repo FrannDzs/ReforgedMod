@@ -11,6 +11,7 @@ import com.conquestreforged.core.client.input.BindListener;
 import com.conquestreforged.core.net.Channels;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.StringTextComponent;
 
 public class ToggleBindListener implements BindListener {
 
@@ -21,10 +22,10 @@ public class ToggleBindListener implements BindListener {
         }
 
         if (Secrets.useStatePicker()) {
-            ItemStack stack = e.player.get().getHeldItemMainhand();
+            ItemStack stack = e.player.get().getMainHandItem();
             StateUtils.getOrDefault(stack)
                     .flatMap(s -> BlockStateScreen.of(stack, s, PropertyFilter.INSTANCE))
-                    .ifPresent(Minecraft.getInstance()::displayGuiScreen);
+                    .ifPresent(Minecraft.getInstance()::setScreen);
         } else {
             e.player.get().getCapability(Capabilities.TOGGLE).ifPresent(toggle -> {
                 // increment the toggle value 0-8
@@ -35,9 +36,9 @@ public class ToggleBindListener implements BindListener {
 
                 // display client toggle state
                 if (toggle.getIndex() == 0) {
-                    Minecraft.getInstance().ingameGUI.setOverlayMessage("You are now on Toggle #0. This is for default placement mechanics", true);
+                    Minecraft.getInstance().gui.setOverlayMessage(new StringTextComponent("You are now on Toggle #0. This is for default placement mechanics"), true);
                 } else {
-                    Minecraft.getInstance().ingameGUI.setOverlayMessage("You are now on Toggle #" + toggle.getIndex() + ". To return to default placement press \"" + BindManager.getBlockToggleBind().getLocalizedName().toUpperCase() + "\" until you reach 0 again", true);
+                    Minecraft.getInstance().gui.setOverlayMessage(new StringTextComponent("You are now on Toggle #" + toggle.getIndex() + ". To return to default placement press \"" + BindManager.getBlockToggleBind().getName().toUpperCase() + "\" until you reach 0 again"), true);
                 }
             });
         }

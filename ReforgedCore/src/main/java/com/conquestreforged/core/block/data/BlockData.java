@@ -36,7 +36,7 @@ public class BlockData {
     public Item getItem() throws InitializationException {
         if (item == null) {
             Item.Properties properties = new Item.Properties();
-            properties.group(props.group());
+            properties.tab(props.group());
 
             try {
                 Class<? extends Item> type = ItemTypeCache.getInstance().get(block.getClass());

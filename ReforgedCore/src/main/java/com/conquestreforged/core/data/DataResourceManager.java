@@ -2,9 +2,10 @@ package com.conquestreforged.core.data;
 
 import net.minecraft.resources.IResource;
 import net.minecraft.resources.IResourceManager;
+import net.minecraft.resources.IResourcePack;
 import net.minecraft.resources.ResourcePackType;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.model.generators.ExistingFileHelper;
+import net.minecraftforge.common.data.ExistingFileHelper;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -12,6 +13,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 public class DataResourceManager implements IResourceManager {
 
@@ -24,7 +26,7 @@ public class DataResourceManager implements IResourceManager {
     }
 
     @Override
-    public Set<String> getResourceNamespaces() {
+    public Set<String> getNamespaces() {
         return Collections.emptySet();
     }
 
@@ -51,12 +53,18 @@ public class DataResourceManager implements IResourceManager {
     }
 
     @Override
-    public List<IResource> getAllResources(ResourceLocation location) throws IOException {
+    public List<IResource> getResources(ResourceLocation location) throws IOException {
         return Collections.emptyList();
     }
 
     @Override
-    public Collection<ResourceLocation> getAllResourceLocations(String path, Predicate<String> filter) {
+    public Collection<ResourceLocation> listResources(String path, Predicate<String> filter) {
         return Collections.emptyList();
+    }
+
+    //todo unsure about this one
+    @Override
+    public Stream<IResourcePack> listPacks() {
+        return Stream.of();
     }
 }

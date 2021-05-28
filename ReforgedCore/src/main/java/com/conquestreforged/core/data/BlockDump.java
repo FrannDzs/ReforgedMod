@@ -2,7 +2,7 @@ package com.conquestreforged.core.data;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.state.IProperty;
+import net.minecraft.state.Property;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.io.BufferedWriter;
@@ -24,7 +24,7 @@ public class BlockDump {
                             appendBlock(block, blocks);
                             blocks.append('\n');
 
-                            for (BlockState state : block.getStateContainer().getValidStates()) {
+                            for (BlockState state : block.getStateDefinition().getPossibleStates()) {
                                 appendState(state, states);
                                 states.append('\n');
                             }
@@ -53,7 +53,7 @@ public class BlockDump {
         if (!state.getProperties().isEmpty()) {
             writer.append('[');
             boolean first = true;
-            for (Map.Entry<IProperty<?>, ?> e : state.getValues().entrySet()) {
+            for (Map.Entry<Property<?>, ?> e : state.getValues().entrySet()) {
                 if (!first) {
                     writer.append(',');
                 }

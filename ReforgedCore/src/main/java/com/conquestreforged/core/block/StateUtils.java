@@ -8,7 +8,7 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.state.IProperty;
+import net.minecraft.state.Property;
 import net.minecraft.state.StateContainer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -18,7 +18,7 @@ import java.util.Optional;
 public class StateUtils {
 
     public static Optional<BlockState> getOrDefault(ItemStack stack) {
-        return toItemBlock(stack.getItem()).map(item -> fromStack(stack, item).orElse(item.getBlock().getDefaultState()));
+        return toItemBlock(stack.getItem()).map(item -> fromStack(stack, item).orElse(item.getBlock().defaultBlockState()));
     }
 
     public static Optional<BlockState> fromStack(ItemStack stack) {
@@ -28,26 +28,26 @@ public class StateUtils {
     public static Optional<BlockState> fromStack(ItemStack stack, BlockItem item) {
         CompoundNBT stackTag = stack.getTag();
         if (stackTag == null) {
-            return Optional.of(item.getBlock().getDefaultState());
+            return Optional.of(item.getBlock().defaultBlockState());
         }
 
         CompoundNBT stateTag = stackTag.getCompound("BlockStateTag");
         if (stateTag.isEmpty()) {
-            return Optional.of(item.getBlock().getDefaultState());
+            return Optional.of(item.getBlock().defaultBlockState());
         }
 
-        BlockState state = item.getBlock().getDefaultState();
-        StateContainer<Block, BlockState> container = item.getBlock().getStateContainer();
+        BlockState state = item.getBlock().defaultBlockState();
+        StateContainer<Block, BlockState> container = item.getBlock().getStateDefinition();
 
-        for (String key : stateTag.keySet()) {
-            IProperty<?> property = container.getProperty(key);
+        for (String key : stateTag.getAllKeys()) {
+            Property<?> property = container.getProperty(key);
             if (property != null) {
-                String s1 = stateTag.get(key).getString();
+                String s1 = stateTag.get(key).getAsString();
                 state = StateUtils.with(state, property, s1);
             }
         }
 
-        if (state == item.getBlock().getDefaultState()) {
+        if (state == item.getBlock().defaultBlockState()) {
             return Optional.empty();
         }
 
@@ -70,7 +70,7 @@ public class StateUtils {
             throw new InitializationException("invalid block " + input);
         }
 
-        BlockState state = block.getDefaultState();
+        BlockState state = block.defaultBlockState();
         for (int i = nameEnd + 1; i < input.length(); i++) {
             int keyStart = i;
             int keyEnd = indexOf(input, keyStart, '=');
@@ -104,14 +104,14 @@ public class StateUtils {
     }
 
     private static BlockState with(BlockState state, String key, String value) {
-        IProperty<? extends Comparable> property = state.getBlock().getStateContainer().getProperty(key);
+        Property<? extends Comparable> property = state.getBlock().getStateDefinition().getProperty(key);
         if (property == null) {
             return state;
         }
         return with(state, property, value);
     }
 
-    public static <T extends Comparable<T>> BlockState with(BlockState state, IProperty<T> property, String value) {
-        return property.parseValue(value).map(t -> state.with(property, t)).orElse(state);
+    public static <T extends Comparable<T>> BlockState with(BlockState state, Property<T> property, String value) {
+        return property.getValue(value).map(t -> state.setValue(property, t)).orElse(state);
     }
 }

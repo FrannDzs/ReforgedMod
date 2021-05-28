@@ -41,7 +41,7 @@ public class ItemList implements Sorter<ItemStack>, Comparator<ItemStack> {
                 int size = items.size();
 
                 Item item = e.getValue().stack.get();
-                item.fillItemGroup(ItemGroup.SEARCH, items);
+                item.fillItemCategory(ItemGroup.TAB_SEARCH, items);
 
                 // manually add item if fillItemGroup doesn't work for this item type (debug stick)
                 if (items.size() == size) {

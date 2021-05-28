@@ -11,8 +11,9 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.state.IProperty;
+import net.minecraft.state.Property;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.text.StringTextComponent;
 
 import java.util.Collection;
 import java.util.Map;
@@ -24,28 +25,28 @@ public class ItemUtils {
 
     public static ItemStack fromState(BlockState state) {
         ItemStack stack = new ItemStack(state.getBlock());
-        CompoundNBT data = stack.getOrCreateChildTag(BLOCK_STATE_TAG);
-        for (Map.Entry<IProperty<?>, ?> e : state.getValues().entrySet()) {
+        CompoundNBT data = stack.getOrCreateTagElement(BLOCK_STATE_TAG);
+        for (Map.Entry<Property<?>, ?> e : state.getValues().entrySet()) {
             data.putString(e.getKey().getName(), e.getValue().toString());
         }
         return stack;
     }
 
-    public static ItemStack fromState(BlockState state, IProperty<?> property) {
-        String value = state.get(property).toString();
+    public static ItemStack fromState(BlockState state, Property<?> property) {
+        String value = state.getValue(property).toString();
         ItemStack stack = new ItemStack(state.getBlock());
-        stack.getOrCreateChildTag(BLOCK_STATE_TAG).putString(property.getName(), value);
-        stack.setDisplayName(stack.getDisplayName().appendText(property.getName() + "=" + value));
+        stack.getOrCreateTagElement(BLOCK_STATE_TAG).putString(property.getName(), value);
+        stack.setHoverName(new StringTextComponent(stack.getDisplayName() + (property.getName() + "=" + value)));
         return stack;
     }
 
-    public static ItemStack fromState(BlockState state, Collection<IProperty<?>> properties) {
+    public static ItemStack fromState(BlockState state, Collection<Property<?>> properties) {
         StringBuilder name = new StringBuilder("[");
         ItemStack stack = new ItemStack(state.getBlock());
-        CompoundNBT stateTag = stack.getOrCreateChildTag(BLOCK_STATE_TAG);
-        for (IProperty<?> property : properties) {
-            if (state.has(property)) {
-                String value = state.get(property).toString();
+        CompoundNBT stateTag = stack.getOrCreateTagElement(BLOCK_STATE_TAG);
+        for (Property<?> property : properties) {
+            if (state.hasProperty(property)) {
+                String value = state.getValue(property).toString();
                 stateTag.putString(property.getName(), value);
                 if (name.length() > 1) {
                     name.append(',');
@@ -55,7 +56,7 @@ public class ItemUtils {
         }
         if (name.length() > 1) {
             name.append("]");
-            stack.setDisplayName(stack.getDisplayName().appendText(name.toString()));
+            stack.setHoverName(new StringTextComponent(stack.getDisplayName() + name.toString()));
         }
         return stack;
     }
@@ -70,7 +71,7 @@ public class ItemUtils {
 
     public static NonNullList<ItemStack> getFamilyItems(ItemStack stack, TypeFilter filter) {
         NonNullList<ItemStack> items = NonNullList.create();
-        getFamily(stack).addAllItems(ItemGroup.SEARCH, items, filter);
+        getFamily(stack).addAllItems(ItemGroup.TAB_SEARCH, items, filter);
         if (items.isEmpty()) {
             items.add(stack);
         }

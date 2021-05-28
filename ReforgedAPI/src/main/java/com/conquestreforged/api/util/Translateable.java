@@ -15,7 +15,7 @@ public interface Translateable {
 
     default String getDisplayName() {
         String lookup = getTranslationKey();
-        String translation = I18n.format(lookup);
+        String translation = I18n.get(lookup);
         if (translation.equals(lookup)) {
             return getName();
         }
@@ -24,7 +24,7 @@ public interface Translateable {
 
     default String getDisplayName(String parent) {
         String lookup = getTranslationKey(parent);
-        String translation = I18n.format(lookup);
+        String translation = I18n.get(lookup);
         if (translation.equals(lookup)) {
             return getName();
         }

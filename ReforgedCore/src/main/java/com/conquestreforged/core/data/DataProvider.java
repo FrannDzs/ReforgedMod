@@ -39,18 +39,18 @@ public class DataProvider implements IDataProvider {
 
     @Override
     @SuppressWarnings("UnstableApiUsage")
-    public void act(DirectoryCache cache) throws IOException {
+    public void run(DirectoryCache cache) throws IOException {
         Queue<FileHash> queue = new ConcurrentLinkedQueue<>();
         IResourceManager resourceManager = resourcepack.getResourceManager();
 
         resourcepack.forEach((filepath, resource) -> ForkJoinPool.commonPool().submit(() -> {
             Path path = dataGenerator.getOutputFolder().resolve(filepath);
-            String previousHash = cache.getPreviousHash(path);
+            String previousHash = cache.getHash(path);
             Files.createDirectories(path.getParent());
             try (BufferedWriter writer = Files.newBufferedWriter(path)) {
                 JsonElement element = resource.getJson(resourceManager);
                 String json = GSON.toJson(element);
-                String hash = IDataProvider.HASH_FUNCTION.hashUnencodedChars(json).toString();
+                String hash = IDataProvider.SHA1.hashUnencodedChars(json).toString();
                 if (hash.equals(previousHash) && Files.exists(path)) {
                     return null;
                 }
@@ -68,13 +68,13 @@ public class DataProvider implements IDataProvider {
                 continue;
             }
             count++;
-            cache.recordHash(hash.getPath(), hash.getHash());
+            cache.putNew(hash.getPath(), hash.getHash());
         }
 
         Log.info(MARKER, "Flushing remaining file hashes");
         for (FileHash hash : queue) {
             count++;
-            cache.recordHash(hash.getPath(), hash.getHash());
+            cache.putNew(hash.getPath(), hash.getHash());
         }
 
         Log.info(MARKER, "Generated {} data files", count);

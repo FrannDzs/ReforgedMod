@@ -4,8 +4,8 @@ import com.conquestreforged.core.block.properties.BidirectionalShape;
 import com.conquestreforged.core.block.properties.Waterloggable;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.fluid.IFluidState;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.StateContainer;
@@ -28,10 +28,10 @@ public abstract class WaterloggedBidirectionalShape extends Shape implements Wat
 
     @Override
     public BlockState rotate(BlockState state, Rotation rot) {
-        if (state.get(DIRECTION) == BidirectionalShape.NORTH_SOUTH) {
-            return state.with(DIRECTION, BidirectionalShape.EAST_WEST);
+        if (state.getValue(DIRECTION) == BidirectionalShape.NORTH_SOUTH) {
+            return state.setValue(DIRECTION, BidirectionalShape.EAST_WEST);
         } else {
-            return state.with(DIRECTION, BidirectionalShape.NORTH_SOUTH);
+            return state.setValue(DIRECTION, BidirectionalShape.NORTH_SOUTH);
         }
     }
 
@@ -44,27 +44,25 @@ public abstract class WaterloggedBidirectionalShape extends Shape implements Wat
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context) {
         BidirectionalShape facing = BidirectionalShape.EAST_WEST;
-        if (context.getPlacementHorizontalFacing() == Direction.NORTH || context.getPlacementHorizontalFacing() == Direction.SOUTH) {
+        if (context.getHorizontalDirection() == Direction.NORTH || context.getHorizontalDirection() == Direction.SOUTH) {
             facing = BidirectionalShape.NORTH_SOUTH;
         }
-        IFluidState fluid = context.getWorld().getFluidState(context.getPos());
+        FluidState fluid = context.getLevel().getFluidState(context.getClickedPos());
         return super.getStateForPlacement(context)
-                .with(DIRECTION, facing)
-                .with(WATERLOGGED, fluid.getFluid() == Fluids.WATER);
+                .setValue(DIRECTION, facing)
+                .setValue(WATERLOGGED, fluid.getType() == Fluids.WATER);
     }
 
     @Override
-    public IFluidState getFluidState(BlockState state) {
-        return Waterloggable.getFluidState(state);
+    public FluidState getFluidState(BlockState state) {
+        return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
     }
 
     @Override
-    protected final void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+    protected final void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
         builder.add(DIRECTION, WATERLOGGED);
         addProperties(builder);
     }
 
-    protected void addProperties(StateContainer.Builder<Block, BlockState> builder) {
-
-    }
+    protected void addProperties(StateContainer.Builder<Block, BlockState> builder) {}
 }

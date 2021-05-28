@@ -20,7 +20,7 @@ public class BlockPicker {
 
     @SubscribeEvent
     public static void onPick(InputEvent.ClickInputEvent event) {
-        if (event.getKeyBinding() != Minecraft.getInstance().gameSettings.keyBindPickBlock) {
+        if (event.getKeyBinding() != Minecraft.getInstance().options.keyPickItem) {
             return;
         }
 
@@ -29,24 +29,24 @@ public class BlockPicker {
         }
 
         PlayerEntity player = Minecraft.getInstance().player;
-        if (player == null || !player.abilities.isCreativeMode) {
+        if (player == null || !player.abilities.instabuild) {
             return;
         }
 
-        RayTraceResult result = Minecraft.getInstance().objectMouseOver;
+        RayTraceResult result = Minecraft.getInstance().hitResult;
         if (result == null || result.getType() != RayTraceResult.Type.BLOCK) {
             return;
         }
 
-        BlockPos pos = ((BlockRayTraceResult) result).getPos();
-        BlockState state = player.world.getBlockState(pos);
+        BlockPos pos = ((BlockRayTraceResult) result).getBlockPos();
+        BlockState state = player.level.getBlockState(pos);
         if (state.hasTileEntity()) {
             return;
         }
 
         ItemStack stack = ItemUtils.fromState(state);
-        player.inventory.setPickedItemStack(stack);
-        Minecraft.getInstance().playerController.sendSlotPacket(player.getHeldItem(Hand.MAIN_HAND), 36 + player.inventory.currentItem);
+        player.inventory.setPickedItem(stack);
+        Minecraft.getInstance().gameMode.handleCreativeModeItemAdd(player.getItemInHand(Hand.MAIN_HAND), 36 + player.inventory.selected);
         event.setCanceled(true);
     }
 }

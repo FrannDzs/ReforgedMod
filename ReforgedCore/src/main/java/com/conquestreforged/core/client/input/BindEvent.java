@@ -16,7 +16,8 @@ public class BindEvent {
     public BindEvent(KeyBinding binding) {
         this.binding = binding;
         this.inGame = Minecraft.getInstance().player != null;
-        this.inGui = Minecraft.getInstance().currentScreen != null;
+        //currentScreen = screen?
+        this.inGui = Minecraft.getInstance().screen != null;
         this.player = Optional.ofNullable(Minecraft.getInstance().player);
     }
 }

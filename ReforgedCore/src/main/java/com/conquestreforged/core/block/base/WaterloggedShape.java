@@ -3,8 +3,8 @@ package com.conquestreforged.core.block.base;
 import com.conquestreforged.core.block.properties.Waterloggable;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.fluid.IFluidState;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.StateContainer;
 
@@ -19,21 +19,21 @@ public abstract class WaterloggedShape extends Shape implements Waterloggable {
 
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context) {
-        IFluidState fluid = context.getWorld().getFluidState(context.getPos());
+        FluidState fluid = context.getLevel().getFluidState(context.getClickedPos());
         BlockState base = super.getStateForPlacement(context);
         if (base == null) {
-            base = getDefaultState();
+            base = defaultBlockState();
         }
-        return base.with(WATERLOGGED, fluid.getFluid() == Fluids.WATER);
+        return base.setValue(WATERLOGGED, fluid.getType() == Fluids.WATER);
     }
 
     @Override
-    public IFluidState getFluidState(BlockState state) {
-        return Waterloggable.getFluidState(state);
+    public FluidState getFluidState(BlockState state) {
+        return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
     }
 
     @Override
-    protected final void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+    protected final void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
         builder.add(WATERLOGGED);
         addProperties(builder);
     }

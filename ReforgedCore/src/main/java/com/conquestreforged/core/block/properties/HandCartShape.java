@@ -19,7 +19,7 @@ public enum HandCartShape implements IStringSerializable {
     }
 
     @Override
-    public String getName() {
+    public String getSerializedName() {
         return this.name;
     }
 }

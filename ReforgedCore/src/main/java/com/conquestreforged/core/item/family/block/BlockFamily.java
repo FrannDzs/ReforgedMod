@@ -17,7 +17,7 @@ public class BlockFamily extends Family<Block> {
     public static final BlockFamily EMPTY = new BlockFamily();
 
     private BlockFamily() {
-        super(ItemGroup.SEARCH, BlockFamily.BY_NAME, Collections.emptyList());
+        super(ItemGroup.TAB_SEARCH, BlockFamily.BY_NAME, Collections.emptyList());
     }
 
     public BlockFamily(ItemGroup group, TypeList order) {
@@ -31,7 +31,7 @@ public class BlockFamily extends Family<Block> {
 
     @Override
     protected void addItem(ItemGroup group, NonNullList<ItemStack> list, Block block) {
-        block.fillItemGroup(group, list);
+        block.fillItemCategory(group, list);
     }
 
     @Override

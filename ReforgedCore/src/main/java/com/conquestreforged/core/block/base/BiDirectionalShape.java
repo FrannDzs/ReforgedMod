@@ -25,10 +25,10 @@ public abstract class BiDirectionalShape extends Shape {
 
     @Override
     public BlockState rotate(BlockState state, Rotation rot) {
-        if (state.get(DIRECTION) == BidirectionalShape.NORTH_SOUTH) {
-            return state.with(DIRECTION, BidirectionalShape.EAST_WEST);
+        if (state.getValue(DIRECTION) == BidirectionalShape.NORTH_SOUTH) {
+            return state.setValue(DIRECTION, BidirectionalShape.EAST_WEST);
         } else {
-            return state.with(DIRECTION, BidirectionalShape.NORTH_SOUTH);
+            return state.setValue(DIRECTION, BidirectionalShape.NORTH_SOUTH);
         }
     }
 
@@ -41,14 +41,14 @@ public abstract class BiDirectionalShape extends Shape {
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context) {
         BidirectionalShape facing = BidirectionalShape.EAST_WEST;
-        if (context.getPlacementHorizontalFacing() == Direction.NORTH || context.getPlacementHorizontalFacing() == Direction.SOUTH) {
+        if (context.getHorizontalDirection() == Direction.NORTH || context.getHorizontalDirection() == Direction.SOUTH) {
             facing = BidirectionalShape.NORTH_SOUTH;
         }
-        return super.getStateForPlacement(context).with(DIRECTION, facing);
+        return super.getStateForPlacement(context).setValue(DIRECTION, facing);
     }
 
     @Override
-    protected final void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+    protected final void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
         builder.add(DIRECTION);
         addProperties(builder);
     }

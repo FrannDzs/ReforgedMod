@@ -27,7 +27,7 @@ public class VirtualMeta implements VirtualResource {
     }
 
     public PackMetadataSection toMetadata() {
-        return PackMetadataSection.SERIALIZER.deserialize(toJson());
+        return PackMetadataSection.SERIALIZER.fromJson(toJson());
     }
 
     @Override

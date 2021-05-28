@@ -6,11 +6,7 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public abstract class Family<T> implements OptionalValue, Comparator<T> {
 
@@ -107,7 +103,7 @@ public abstract class Family<T> implements OptionalValue, Comparator<T> {
     }
 
     public void addAllItems(ItemGroup group, NonNullList<ItemStack> list, TypeFilter filter) {
-        if (group == ItemGroup.SEARCH || group == this.group) {
+        if (group == ItemGroup.TAB_SEARCH || group == this.group) {
             for (T t : members) {
                 if (filter.test(t)) {
                     addItem(group, list, t);
@@ -117,7 +113,7 @@ public abstract class Family<T> implements OptionalValue, Comparator<T> {
     }
 
     public void addRootItem(ItemGroup group, NonNullList<ItemStack> list) {
-        if (group == ItemGroup.SEARCH || group == this.group) {
+        if (group == ItemGroup.TAB_SEARCH || group == this.group) {
             addItem(group, list, getRoot());
         }
     }

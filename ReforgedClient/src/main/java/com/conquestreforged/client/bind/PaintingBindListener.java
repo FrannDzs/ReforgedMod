@@ -21,7 +21,7 @@ public class PaintingBindListener implements BindListener {
             return;
         }
 
-        e.player.map(PlayerEntity::getHeldItemMainhand).ifPresent(stack -> {
+        e.player.map(PlayerEntity::getMainHandItem).ifPresent(stack -> {
             if (stack.getItem() instanceof PaintingHolder) {
                 PaintingHolder holder = (PaintingHolder) stack.getItem();
                 Art<?> art = holder.getArt(stack);
@@ -30,7 +30,7 @@ public class PaintingBindListener implements BindListener {
                     return;
                 }
                 PaintingScreen<?> screen = new PaintingScreen<>(stack, type, art);
-                Minecraft.getInstance().displayGuiScreen(screen);
+                Minecraft.getInstance().setScreen(screen);
                 return;
             }
 
@@ -39,7 +39,7 @@ public class PaintingBindListener implements BindListener {
                 Art<?> art = VanillaArt.fromName(name);
                 Painting type = VanillaPainting.INSTANCE;
                 PaintingScreen<?> screen = new PaintingScreen<>(stack, type, art);
-                Minecraft.getInstance().displayGuiScreen(screen);
+                Minecraft.getInstance().setScreen(screen);
             }
         });
     }

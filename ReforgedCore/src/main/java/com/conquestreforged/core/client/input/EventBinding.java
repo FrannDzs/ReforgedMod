@@ -31,7 +31,7 @@ public class EventBinding extends KeyBinding {
     }
 
     public boolean checkPressed() {
-        boolean pressed = super.isPressed();
+        boolean pressed = super.consumeClick();
         if (pressed) {
             BindEvent event = new BindEvent(this);
             listeners.forEach(l -> l.onPress(event));
@@ -40,7 +40,7 @@ public class EventBinding extends KeyBinding {
     }
 
     public boolean checkHeld() {
-        boolean down = super.isKeyDown();
+        boolean down = super.isDown();
         if (down) {
             BindEvent event = new BindEvent(this);
             listeners.forEach(l -> l.onHold(event));

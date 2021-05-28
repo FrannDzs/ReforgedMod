@@ -5,17 +5,17 @@ import com.conquestreforged.core.item.ItemUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
-import net.minecraft.state.IProperty;
+import net.minecraft.state.Property;
 import net.minecraft.util.NonNullList;
 
 public interface PropertyVariant {
 
-    IProperty<?> getVariantProperty();
+    Property<?> getVariantProperty();
 
     static <B extends Block & PropertyVariant> void fillGroup(B block, NonNullList<ItemStack> stacks) {
-        IProperty<?> property = block.getVariantProperty();
-        for (Object value : property.getAllowedValues()) {
-            BlockState state = StateUtils.with(block.getDefaultState(), property, value.toString());
+        Property<?> property = block.getVariantProperty();
+        for (Object value : property.getPossibleValues()) {
+            BlockState state = StateUtils.with(block.defaultBlockState(), property, value.toString());
             ItemStack stack = ItemUtils.fromState(state, property);
             stacks.add(stack);
         }

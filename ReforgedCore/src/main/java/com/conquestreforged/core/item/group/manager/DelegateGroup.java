@@ -5,6 +5,7 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -15,75 +16,69 @@ public class DelegateGroup extends ItemGroup {
     private final ItemGroup group;
 
     DelegateGroup(ItemGroup group) {
-        super(-1, group.getTabLabel());
+        super(-1, group.getRecipeFolderName());
         this.group = group;
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
-    public String getTabLabel() {
-        return group.getTabLabel();
-    }
-
-    @Override
-    public String getPath() {
-        return group.getPath();
+    public String getRecipeFolderName() {
+        return group.getRecipeFolderName();
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public String getTranslationKey() {
-        return group.getTranslationKey();
+    public ITextComponent getDisplayName() {
+        return group.getDisplayName();
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public ItemStack getIcon() {
-        return group.getIcon();
+    public ItemStack getIconItem() {
+        return group.getIconItem();
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public ItemStack createIcon() {
-        return group.createIcon();
+    public ItemStack makeIcon() {
+        return group.makeIcon();
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public String getBackgroundImageName() {
-        return group.getBackgroundImageName();
+    public String getBackgroundSuffix() {
+        return group.getBackgroundSuffix();
     }
 
     @Override
-    public ItemGroup setBackgroundImageName(String texture) {
-        return group.setBackgroundImageName(texture);
+    public ItemGroup setBackgroundSuffix(String texture) {
+        return group.setBackgroundSuffix(texture);
     }
 
     @Override
-    public ItemGroup setTabPath(String pathIn) {
-        return group.setTabPath(pathIn);
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public boolean drawInForegroundOfTab() {
-        return group.drawInForegroundOfTab();
-    }
-
-    @Override
-    public ItemGroup setNoTitle() {
-        return group.setNoTitle();
+    public ItemGroup setRecipeFolderName(String pathIn) {
+        return group.setRecipeFolderName(pathIn);
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public boolean hasScrollbar() {
-        return group.hasScrollbar();
+    public boolean showTitle() {
+        return group.showTitle();
     }
 
     @Override
-    public ItemGroup setNoScrollbar() {
-        return group.setNoScrollbar();
+    public ItemGroup hideTitle() {
+        return group.hideTitle();
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public boolean canScroll() {
+        return group.canScroll();
+    }
+
+    @Override
+    public ItemGroup hideScroll() {
+        return group.hideScroll();
     }
 
     @Override
@@ -94,8 +89,8 @@ public class DelegateGroup extends ItemGroup {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public boolean isOnTopRow() {
-        return super.isOnTopRow();
+    public boolean isTopRow() {
+        return super.isTopRow();
     }
 
     @Override
@@ -105,27 +100,27 @@ public class DelegateGroup extends ItemGroup {
     }
 
     @Override
-    public EnchantmentType[] getRelevantEnchantmentTypes() {
-        return group.getRelevantEnchantmentTypes();
+    public EnchantmentType[] getEnchantmentCategories() {
+        return group.getEnchantmentCategories();
     }
 
     @Override
-    public ItemGroup setRelevantEnchantmentTypes(EnchantmentType... types) {
-        return group.setRelevantEnchantmentTypes(types);
+    public ItemGroup setEnchantmentCategories(EnchantmentType... types) {
+        return group.setEnchantmentCategories(types);
     }
 
     @Override
-    public boolean hasRelevantEnchantmentType(@Nullable EnchantmentType enchantmentType) {
-        return group.hasRelevantEnchantmentType(enchantmentType);
+    public boolean hasEnchantmentCategory(@Nullable EnchantmentType enchantmentType) {
+        return group.hasEnchantmentCategory(enchantmentType);
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void fill(NonNullList<ItemStack> items) {
-        if (group == ItemGroup.HOTBAR) {
+    public void fillItemList(NonNullList<ItemStack> items) {
+        if (group == ItemGroup.TAB_HOTBAR) {
             return;
         }
-        group.fill(items);
+        group.fillItemList(items);
     }
 
     @Override

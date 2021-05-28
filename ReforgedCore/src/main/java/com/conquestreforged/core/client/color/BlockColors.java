@@ -12,28 +12,28 @@ public class BlockColors {
 
     public static final IBlockColor GRASS = (state, reader, pos, tint) -> {
         if (reader != null && pos != null) {
-            return BiomeColors.func_228358_a_(reader, pos);
+            return BiomeColors.getAverageGrassColor(reader, pos);
         }
         return defaultGrassColor();
     };
 
     public static final IBlockColor FOLIAGE = (state, reader, pos, tint) -> {
         if (reader != null && pos != null) {
-            return BiomeColors.func_228361_b_(reader, pos);
+            return BiomeColors.getAverageFoliageColor(reader, pos);
         }
         return defaultFoliageColor();
     };
 
     public static final IBlockColor WATER = (state, reader, pos, tint) -> {
         if (reader != null && pos != null) {
-            return BiomeColors.getWaterColor(reader, pos);
+            return BiomeColors.getAverageWaterColor(reader, pos);
         }
         return defaultWaterColor();
     };
 
     public static IItemColor toItemColor(net.minecraft.client.renderer.color.BlockColors colors) {
         return (stack, tint) -> {
-            BlockState state = ((BlockItem) stack.getItem()).getBlock().getDefaultState();
+            BlockState state = ((BlockItem) stack.getItem()).getBlock().defaultBlockState();
             return colors.getColor(state, null, null, tint);
         };
     }
@@ -48,7 +48,7 @@ public class BlockColors {
     }
 
     private static int defaultFoliageColor() {
-        return FoliageColors.getDefault();
+        return FoliageColors.getDefaultColor();
     }
 
     private static int defaultWaterColor() {

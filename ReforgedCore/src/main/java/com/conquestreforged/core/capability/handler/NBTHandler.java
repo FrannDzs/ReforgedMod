@@ -17,7 +17,7 @@ public interface NBTHandler<T> extends CapabilityHandler<T> {
     @Override
     default T decode(PacketBuffer buffer) {
         T value = create();
-        CompoundNBT root = buffer.readCompoundTag();
+        CompoundNBT root = buffer.readNbt();
         readNBT(getCapability(), value, null, root);
         return value;
     }
@@ -26,6 +26,6 @@ public interface NBTHandler<T> extends CapabilityHandler<T> {
     default void encode(T message, PacketBuffer buffer) {
         CompoundNBT root = new CompoundNBT();
         writeNBT(getCapability(), message, null);
-        buffer.writeCompoundTag(root);
+        buffer.writeNbt(root);
     }
 }

@@ -35,13 +35,13 @@ public abstract class TaggedGroup<T extends TaggedGroup> extends ConquestItemGro
 
     public void addTaggedBlocks(NonNullList<ItemStack> items) {
         for (Tag<Block> tag : this.blocks) {
-            tag.getAllElements().forEach(block -> block.fillItemGroup(this, items));
+            tag.getValues().forEach(block -> block.fillItemCategory(this, items));
         }
     }
 
     public void addTaggedItems(NonNullList<ItemStack> items) {
         for (Tag<Item> tag : this.items) {
-            tag.getAllElements().forEach(item -> item.fillItemGroup(this, items));
+            tag.getValues().forEach(item -> item.fillItemCategory(this, items));
         }
     }
 }

@@ -14,7 +14,7 @@ public class DeferredFamily<T extends IForgeRegistryEntry<?>> extends Family<T> 
     private final FamilyRegistry<T> registry;
 
     DeferredFamily(ResourceLocation name, T empty, FamilyRegistry<T> registry) {
-        super(ItemGroup.SEARCH, new OptimizedList<>());
+        super(ItemGroup.TAB_SEARCH, new OptimizedList<>());
         this.name = name;
         this.empty = empty;
         this.registry = registry;

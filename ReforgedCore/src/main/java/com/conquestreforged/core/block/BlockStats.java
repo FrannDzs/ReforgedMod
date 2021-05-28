@@ -17,7 +17,7 @@ public class BlockStats {
         int vb = 0, vs = 0, cb = 0, cs = 0, tb = 0, ts = 0;
         for (Block block : ForgeRegistries.BLOCKS) {
             tb++;
-            ts += block.getStateContainer().getValidStates().size();
+            ts += block.getStateDefinition().getPossibleStates().size();
 
             ResourceLocation name = block.getRegistryName();
             if (name == null) {
@@ -27,12 +27,12 @@ public class BlockStats {
 
             if (name.getNamespace().equals("minecraft")) {
                 vb++;
-                vs += block.getStateContainer().getValidStates().size();
+                vs += block.getStateDefinition().getPossibleStates().size();
                 continue;
             }
             if (name.getNamespace().equals("conquest")) {
                 cb++;
-                cs += block.getStateContainer().getValidStates().size();
+                cs += block.getStateDefinition().getPossibleStates().size();
             }
         }
         this.vanillaBlocks = vb;

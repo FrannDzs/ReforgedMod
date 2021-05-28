@@ -21,22 +21,22 @@ public abstract class DirectionalShape extends Shape {
 
     @Override
     public BlockState rotate(BlockState state, Rotation rot) {
-        return state.with(DIRECTION, rot.rotate(state.get(DIRECTION)));
+        return state.setValue(DIRECTION, rot.rotate(state.getValue(DIRECTION)));
     }
 
     @Override
     public BlockState mirror(BlockState state, Mirror mirrorIn) {
-        return state.rotate(mirrorIn.toRotation(state.get(DIRECTION)));
+        return state.rotate(mirrorIn.getRotation(state.getValue(DIRECTION)));
     }
 
     @Nonnull
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context) {
-        return this.getDefaultState().with(DIRECTION, context.getNearestLookingDirection().getOpposite());
+        return this.defaultBlockState().setValue(DIRECTION, context.getNearestLookingDirection().getOpposite());
     }
 
     @Override
-    protected final void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+    protected final void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
         builder.add(DIRECTION);
         addProperties(builder);
     }

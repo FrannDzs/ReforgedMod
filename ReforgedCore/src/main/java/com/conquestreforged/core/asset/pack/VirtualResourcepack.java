@@ -8,21 +8,10 @@ import net.minecraft.resources.ResourcePack;
 import net.minecraft.resources.ResourcePackType;
 import net.minecraft.util.ResourceLocation;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.Future;
 import java.util.function.BiConsumer;
@@ -54,7 +43,7 @@ public class VirtualResourcepack extends ResourcePack {
     }
 
     @Override
-    protected InputStream getInputStream(String resourcePath) throws IOException {
+    protected InputStream getResource(String resourcePath) throws IOException {
         VirtualResource resource = resources.get(resourcePath);
         if (resource == null) {
             throw new FileNotFoundException(resourcePath);
@@ -63,13 +52,13 @@ public class VirtualResourcepack extends ResourcePack {
     }
 
     @Override
-    protected boolean resourceExists(String resourcePath) {
+    protected boolean hasResource(String resourcePath) {
         return resources.containsKey(resourcePath);
     }
 
     @Override
-    public Collection<ResourceLocation> getAllResourceLocations(ResourcePackType type, String namespace, String path, int maxDepth, Predicate<String> filter) {
-        String prefix = type.getDirectoryName() + "/" + namespace + "/";
+    public Collection<ResourceLocation> getResources(ResourcePackType type, String namespace, String path, int maxDepth, Predicate<String> filter) {
+        String prefix = type.getDirectory() + "/" + namespace + "/";
 
         return resources.keySet().stream()
                 .filter(s -> s.startsWith(prefix))
@@ -93,7 +82,7 @@ public class VirtualResourcepack extends ResourcePack {
     }
 
     @Override
-    public Set<String> getResourceNamespaces(ResourcePackType type) {
+    public Set<String> getNamespaces(ResourcePackType type) {
         return resources.values().stream()
                 .filter(r -> r.getType() == type)
                 .map(VirtualResource::getNamespace)
@@ -101,7 +90,7 @@ public class VirtualResourcepack extends ResourcePack {
     }
 
     @Override
-    public void close() throws IOException {
+    public void close() {
 
     }
 
