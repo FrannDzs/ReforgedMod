@@ -1,5 +1,6 @@
 package com.conquestreforged.core.block.builder;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -45,6 +46,10 @@ public class VanillaProps {
 
     public static Props grass() {
         return Props.create(Blocks.GRASS_BLOCK).group(ItemGroup.TAB_BUILDING_BLOCKS).grassColor();
+    }
+
+    public static Props grassLike() {
+        return Props.create((Material.ORGANIC)).group(ItemGroup.BUILDING_BLOCKS).strength(0.6F, 0.6F).sound(SoundType.PLANT).grassColor();
     }
 
     public static Props glass() {
