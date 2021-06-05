@@ -19,12 +19,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class TextureGroupManager {
@@ -58,7 +53,7 @@ public class TextureGroupManager {
         for (Item item : ForgeRegistries.ITEMS) {
             if (item instanceof BlockItem) {
                 BlockItem blockItem = (BlockItem) item;
-                addState(item, blockItem.getBlock().getDefaultState());
+                addState(item, blockItem.getBlock().defaultBlockState());
             }
         }
     }
@@ -87,7 +82,7 @@ public class TextureGroupManager {
     }
 
     private static Map<String, Integer> getTextures(BlockState state) {
-        IBakedModel model = Minecraft.getInstance().getModelManager().getBlockModelShapes().getModel(state);
+        IBakedModel model = Minecraft.getInstance().getModelManager().getBlockModelShaper().getBlockModel(state);
         return getTextures(state, model);
     }
 
@@ -105,7 +100,7 @@ public class TextureGroupManager {
 
         // add any other textures
         for (BakedQuad quad : quads) {
-            addTexture(quad.func_187508_a(), textures);
+            addTexture(quad.getSprite(), textures);
         }
 
         return textures;

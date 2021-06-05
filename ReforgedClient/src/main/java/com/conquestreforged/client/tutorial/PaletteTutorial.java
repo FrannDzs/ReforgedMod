@@ -42,7 +42,7 @@ public class PaletteTutorial {
                 return;
             }
 
-            Minecraft.getInstance().getToastGui().add(new PaletteToast(tutorials));
+            Minecraft.getInstance().getToasts().addToast(new PaletteToast(tutorials));
         }
     }
 }

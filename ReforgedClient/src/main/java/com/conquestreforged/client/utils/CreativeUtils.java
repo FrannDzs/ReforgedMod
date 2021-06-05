@@ -9,16 +9,16 @@ public class CreativeUtils {
 
     public static boolean replaceItemStack(ItemStack original, ItemStack stack) {
         ClientPlayerEntity player = Minecraft.getInstance().player;
-        if (player == null || !player.abilities.isCreativeMode) {
+        if (player == null || !player.abilities.instabuild) {
             return false;
         }
 
-        int slot = player.inventory.getSlotFor(original);
+        int slot = player.inventory.findSlotMatchingItem(original);
         CreativeCraftingListener listener = new CreativeCraftingListener(Minecraft.getInstance());
-        player.container.addListener(listener);
-        player.inventory.setInventorySlotContents(slot, stack);
-        player.container.detectAndSendChanges();
-        player.container.removeListener(listener);
+        player.inventoryMenu.addSlotListener(listener);
+        player.inventory.setItem(slot, stack);
+        player.inventoryMenu.broadcastChanges();
+        player.inventoryMenu.removeSlotListener(listener);
         return true;
     }
 
@@ -28,18 +28,18 @@ public class CreativeUtils {
 
     public static boolean addItemStack(ItemStack stack, boolean pick) {
         ClientPlayerEntity player = Minecraft.getInstance().player;
-        if (player == null || !player.abilities.isCreativeMode) {
+        if (player == null || !player.abilities.instabuild) {
             return false;
         }
 
-        int slot = player.inventory.getBestHotbarSlot();
+        int slot = player.inventory.getSuitableHotbarSlot();
         CreativeCraftingListener listener = new CreativeCraftingListener(Minecraft.getInstance());
-        player.container.addListener(listener);
-        player.inventory.setInventorySlotContents(slot, stack);
-        player.container.detectAndSendChanges();
-        player.container.removeListener(listener);
+        player.inventoryMenu.addSlotListener(listener);
+        player.inventory.setItem(slot, stack);
+        player.inventoryMenu.broadcastChanges();
+        player.inventoryMenu.removeSlotListener(listener);
         if (pick) {
-            player.inventory.currentItem = slot;
+            player.inventory.selected = slot;
         }
         return true;
     }

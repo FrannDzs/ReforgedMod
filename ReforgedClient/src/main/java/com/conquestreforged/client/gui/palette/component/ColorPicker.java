@@ -1,10 +1,12 @@
 package com.conquestreforged.client.gui.palette.component;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.NativeImage;
+import net.minecraft.util.text.TranslationTextComponent;
 
 import java.awt.*;
 import java.util.function.BiConsumer;
@@ -32,7 +34,7 @@ public class ColorPicker extends Button {
     private final DynamicTexture slider = new DynamicTexture(new NativeImage(sliderWidth, sliderHeight, false));
 
     public ColorPicker(String title, int initial, Consumer<Integer> consumer) {
-        super(0, 0, pickerWidth, titleHeight + pickerHeight + sliderHeight + padding, "", button -> {});
+        super(0, 0, pickerWidth, titleHeight + pickerHeight + sliderHeight + padding, new TranslationTextComponent(""), button -> {});
         this.title = title;
         this.consumer = consumer;
         float[] hsb = new Color(initial).getColorComponents(new float[3]);
@@ -42,22 +44,22 @@ public class ColorPicker extends Button {
     }
 
     @Override
-    public void render(int mx, int my, float ticks) {
+    public void render(MatrixStack matrixStack, int mx, int my, float ticks) {
         if (dirty) {
             renderImage();
         }
 
         int top = y;
         int left = x;
-        Minecraft.getInstance().fontRenderer.drawStringWithShadow("TEST", top, left, 0xFFFFFF);
+        Minecraft.getInstance().font.drawShadow(matrixStack, "TEST", top, left, 0xFFFFFF);
 
         top += 10;
-        picker.bindTexture();
-        AbstractGui.blit(left, top, pickerWidth, pickerHeight, 0, 0, pickerWidth, pickerHeight, pickerWidth, pickerHeight);
+        picker.bind();
+        AbstractGui.blit(matrixStack, left, top, pickerWidth, pickerHeight, 0, 0, pickerWidth, pickerHeight, pickerWidth, pickerHeight);
 
         top += pickerHeight + padding;
-        slider.bindTexture();
-        AbstractGui.blit(left, top, sliderWidth, sliderHeight, 0, 0, sliderWidth, sliderHeight, sliderWidth, sliderHeight);
+        slider.bind();
+        AbstractGui.blit(matrixStack, left, top, sliderWidth, sliderHeight, 0, 0, sliderWidth, sliderHeight, sliderWidth, sliderHeight);
     }
 
     @Override
@@ -101,7 +103,7 @@ public class ColorPicker extends Button {
     }
 
     private boolean click(double mx, double my, int left, int top, DynamicTexture texture, BiConsumer<Float, Float> consumer) {
-        NativeImage image = texture.getTextureData();
+        NativeImage image = texture.getPixels();
         if (image == null) {
             return false;
         }
@@ -122,12 +124,12 @@ public class ColorPicker extends Button {
     private void renderImage() {
         renderColor();
         renderBrightness();
-        picker.updateDynamicTexture();
-        slider.updateDynamicTexture();
+        picker.upload();
+        slider.upload();
     }
 
     private void renderColor() {
-        NativeImage picker = this.picker.getTextureData();
+        NativeImage picker = this.picker.getPixels();
         if (picker == null) {
             return;
         }
@@ -143,14 +145,14 @@ public class ColorPicker extends Button {
                 picker.setPixelRGBA(x, y, rgb);
 
                 if (x == crosshairX || y == crosshairY) {
-                    picker.blendPixel(x, y, lineColor);
+                    //picker.blendPixel(x, y, lineColor);
                 }
             }
         }
     }
 
     private void renderBrightness() {
-        NativeImage slider = this.slider.getTextureData();
+        NativeImage slider = this.slider.getPixels();
         if (slider == null) {
             return;
         }
@@ -163,7 +165,7 @@ public class ColorPicker extends Button {
                 slider.setPixelRGBA(x, y, rgb);
 
                 if (x == slidebarX) {
-                    slider.blendPixel(x, y, lineColor);
+                    //slider.blendPixel(x, y, lineColor);
                 }
             }
         }
@@ -171,6 +173,6 @@ public class ColorPicker extends Button {
 
     private static int getRGB(float hue, float saturation, float brightness) {
         Color rgb = Color.getHSBColor(hue, saturation, brightness);
-        return NativeImage.getCombined(255, rgb.getBlue(), rgb.getGreen(), rgb.getRed());
+        return NativeImage.combine(255, rgb.getBlue(), rgb.getGreen(), rgb.getRed());
     }
 }

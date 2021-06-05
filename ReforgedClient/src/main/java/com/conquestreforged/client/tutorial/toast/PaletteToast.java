@@ -20,7 +20,7 @@ public class PaletteToast extends AbstractToast {
 
     @Override
     public boolean shouldRender(ToastGui gui) {
-        return gui.getMinecraft().currentScreen instanceof ContainerScreen && !Tutorials.openPalette;
+        return gui.getMinecraft().screen instanceof ContainerScreen && !Tutorials.openPalette;
     }
 
     @Override
@@ -37,7 +37,7 @@ public class PaletteToast extends AbstractToast {
 
     @Override
     public String getLine1() {
-        return String.format(line1, BindManager.getPaletteBind().getLocalizedName());
+        return String.format(line1, BindManager.getPaletteBind().getTranslatedKeyMessage());
     }
 
     @Override

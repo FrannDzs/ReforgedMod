@@ -1,5 +1,6 @@
 package com.conquestreforged.client.tutorial.toast;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.toasts.IToast;
 import net.minecraft.client.gui.toasts.ToastGui;
@@ -18,17 +19,17 @@ public abstract class AbstractToast implements IToast {
     }
 
     @Override
-    public Visibility draw(ToastGui toastGui, long delta) {
+    public Visibility render(MatrixStack matrixStack, ToastGui toastGui, long delta) {
         if (shouldRender(toastGui)) {
-            toastGui.getMinecraft().getTextureManager().bindTexture(TEXTURE_TOASTS);
+            toastGui.getMinecraft().getTextureManager().bind(TEXTURE);
             RenderSystem.color3f(1.0F, 1.0F, 1.0F);
-            toastGui.blit(0, 0, 0, 96, 160, 32);
+            toastGui.blit(matrixStack, 0, 0, 0, 96, 160, 32);
 
             if (getLine2().isEmpty()) {
-                toastGui.getMinecraft().fontRenderer.drawString(getLine1(), 5.0F, 12.0F, line1Color);
+                toastGui.getMinecraft().font.draw(matrixStack, getLine1(), 5.0F, 12.0F, line1Color);
             } else {
-                toastGui.getMinecraft().fontRenderer.drawString(getLine1(), 5.0F, 7.0F, line1Color);
-                toastGui.getMinecraft().fontRenderer.drawString(getLine2(), 5.0F, 18.0F, line2Color);
+                toastGui.getMinecraft().font.draw(matrixStack, getLine1(), 5.0F, 7.0F, line1Color);
+                toastGui.getMinecraft().font.draw(matrixStack, getLine2(), 5.0F, 18.0F, line2Color);
             }
         }
         return getVisibility();

@@ -5,6 +5,7 @@ import com.conquestreforged.client.gui.CustomCreativeScreen;
 import com.conquestreforged.client.gui.palette.component.PaletteSettings;
 import com.conquestreforged.client.gui.render.Render;
 import com.conquestreforged.client.tutorial.Tutorials;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
@@ -36,7 +37,7 @@ public class PaletteScreen extends CustomCreativeScreen<PaletteContainer> {
         super(container, inventory, new StringTextComponent("Palette Screen"));
         this.previous = previous;
         this.passEvents = true;
-        player.openContainer = container;
+        player.containerMenu = container;
     }
 
     @Override
@@ -48,78 +49,78 @@ public class PaletteScreen extends CustomCreativeScreen<PaletteContainer> {
         Tutorials.openPalette = true;
     }
 
+    //#setSize gone...replaced with #resize
     @Override
-    public void setSize(int width, int height) {
-        super.setSize(width, height);
+    public void resize(Minecraft minecraft, int width, int height) {
+        super.resize(minecraft, width, height);
         resize(width, height);
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partialTicks) {
-        drawGuiContainerBackgroundLayer(partialTicks, mouseX, mouseY);
+    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+        renderBg(matrixStack, partialTicks, mouseX, mouseY);
 
-        getContainer().updateStyle(settings);
+        getMenu().updateStyle(settings);
 
         setupRender();
         {
-            final int mx = mouseX - guiLeft;
-            final int my = mouseY - guiTop;
+            final int mx = mouseX - leftPos;
+            final int my = mouseY - topPos;
             // render radial slots
-            getContainer().visitRadius(mx, my, (slot, depth) -> {
+            getMenu().visitRadius(mx, my, (slot, depth) -> {
                 float scale = slot.getScale(mx, my, settings);
-                renderSlotBackGround(slot, slot.getStyle(), depth, scale);
+                renderSlotBackGround(matrixStack, slot, slot.getStyle(), depth, scale);
             });
-            getContainer().visitRadius(mx, my, (slot, depth) -> {
+            getMenu().visitRadius(mx, my, (slot, depth) -> {
                 float scale = slot.getScale(mx, my, settings);
                 renderSlot(slot, slot.getStyle(), mx, my, depth, scale);
             });
             // render center slot
-            getContainer().visitCenter(slot -> {
+            getMenu().visitCenter(slot -> {
                 float scale = slot.getScale(mx, my, settings);
                 RenderSystem.enableBlend();
-                renderSlotBackGround(slot, slot.getStyle(), 1F, scale);
+                renderSlotBackGround(matrixStack, slot, slot.getStyle(), 1F, scale);
                 renderSlot(slot, slot.getStyle(), mx, my, 1F, scale);
             });
             // render hotbar
-            getContainer().visitHotbar(slot -> renderSlot(slot, mx, my, 1F, 1F));
+            getMenu().visitHotbar(slot -> renderSlot(slot, mx, my, 1F, 1F));
             // render the dragged item
-            renderDraggedItem(mx, my, 1F, getContainer().getDraggedStyle());
+            renderDraggedItem(mx, my, 1F, getMenu().getDraggedStyle());
         }
         tearDownRender();
 
-        settings.render(mouseX, mouseY, partialTicks);
+        settings.render(matrixStack, mouseX, mouseY, partialTicks);
 
         // render display text
-        drawGuiContainerForegroundLayer(mouseX, mouseY);
+        renderFg(matrixStack, mouseX, mouseY);
     }
 
     @Override
-    public void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
+    public void renderBg(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
         // translucent black background
-        renderBackground();
+        renderBackground(matrixStack);
 
         // Wheel texture
-        Render.drawTexture(WHEEL, guiLeft, guiTop, SIZE, SIZE, 0, 0);
+        Render.drawTexture(WHEEL, matrixStack, leftPos, topPos, SIZE, SIZE, 0, 0);
 
         // Render hotbar texture
-        getContainer().getHotbar().renderBackground(this);
+        getMenu().getHotbar().renderBackground(this, matrixStack);
     }
 
-    @Override
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+    protected void renderFg(MatrixStack matrixStack, int mouseX, int mouseY) {
+        //super.drawGuiContainerForegroundLayer(mouseX, mouseY);
         if (minecraft == null) {
             return;
         }
 
-        ItemStack display = playerInventory.getItemStack();
+        ItemStack display = inventory.getCarried();
         if (display.isEmpty()) {
-            Slot slot = getContainer().getClosestSlot(mouseX - guiLeft, mouseY - guiTop, true);
+            Slot slot = getMenu().getClosestSlot(mouseX - leftPos, mouseY - topPos, true);
             hovered = slot;
             if (slot == null) {
                 return;
             }
-            display = slot.getStack();
+            display = slot.getItem();
         }
 
         if (display.getItem() == Items.AIR) {
@@ -130,14 +131,14 @@ public class PaletteScreen extends CustomCreativeScreen<PaletteContainer> {
         int left = width / 2;
         int color = 0xFFFFFF;
 
-        String text = display.getDisplayName().getFormattedText();
-        drawCenteredString(minecraft.fontRenderer, text, left, top, color);
+        String text = display.getDisplayName().getString();
+        drawCenteredString(matrixStack, minecraft.font, text, left, top, color);
     }
 
     @Override
     public boolean charTyped(char c, int code) {
-        if (c >= '1' && c <= '9' && hovered != null && hovered.getHasStack()) {
-            container.getHotbar().getInventory().setInventorySlotContents(c - '1', hovered.getStack());
+        if (c >= '1' && c <= '9' && hovered != null && hovered.hasItem()) {
+            menu.getHotbar().getInventory().setItem(c - '1', hovered.getItem());
             super.sendChanges();
             return true;
         }
@@ -146,7 +147,7 @@ public class PaletteScreen extends CustomCreativeScreen<PaletteContainer> {
 
     @Override
     protected boolean isContainerSlot(Slot slot) {
-        return slot.inventory == getContainer().getPaletteInventory();
+        return slot.container == getMenu().getPaletteInventory();
     }
 
     @Override
@@ -155,18 +156,18 @@ public class PaletteScreen extends CustomCreativeScreen<PaletteContainer> {
         if (previous != null) {
             previous.init(Minecraft.getInstance(), width, height);
         }
-        Minecraft.getInstance().displayGuiScreen(previous);
+        Minecraft.getInstance().setScreen(previous);
     }
 
     private void resize(int width, int height) {
-        this.xSize = SIZE;
-        this.ySize = SIZE;
-        this.guiLeft = (width - SIZE) / 2;
-        this.guiTop = (height - SIZE) / 2;
-        getContainer().init(this);
+        this.imageWidth = SIZE;
+        this.imageHeight = SIZE;
+        this.leftPos = (width - SIZE) / 2;
+        this.topPos = (height - SIZE) / 2;
+        getMenu().init(this);
     }
 
     public static boolean closesGui(int key) {
-        return key == EXIT || key == BindManager.getPaletteBind().getKey().getKeyCode();
+        return key == EXIT || key == BindManager.getPaletteBind().getKey().getValue();
     }
 }

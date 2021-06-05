@@ -1,10 +1,13 @@
 package com.conquestreforged.client.gui.palette.component;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.INestedGuiEventHandler;
 import net.minecraft.client.gui.IRenderable;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.fml.client.gui.widget.Slider;
 
 import javax.annotation.Nullable;
@@ -30,24 +33,24 @@ public class ColorPicker2 extends Widget implements INestedGuiEventHandler, IRen
     private IGuiEventListener focused;
 
     // (int xPos, int yPos, int width, int height, String prefix, String suf, double minVal, double maxVal, double currentVal, boolean showDec, boolean drawStr, IPressable handler)
-    public ColorPicker2(String name, int color, Consumer<Integer> consumer) {
-        super(0, 0, name);
+    public ColorPicker2(ITextComponent name, int color, Consumer<Integer> consumer) {
+        super(0, 0, 0, 0, name);
         int[] rgb = getComponents(color);
         this.consumer = consumer;
         this.sliders = Arrays.asList(
-                this.red = new Slider(0, 0, "red", 0, 255, rgb[0], NONE, this),
-                this.green = new Slider(0, 0, "red", 0, 255, rgb[1], NONE, this),
-                this.blue = new Slider(0, 0, "red", 0, 255, rgb[2], NONE, this)
+                this.red = new Slider(0, 0, new TranslationTextComponent("red"), 0, 255, rgb[0], NONE, this),
+                this.green = new Slider(0, 0, new TranslationTextComponent("red"), 0, 255, rgb[1], NONE, this),
+                this.blue = new Slider(0, 0, new TranslationTextComponent("red"), 0, 255, rgb[2], NONE, this)
         );
     }
 
     @Override
-    public void render(int mx, int my, float ticks) {
+    public void render(MatrixStack matrixStack, int mx, int my, float ticks) {
         int top = y;
         for (Slider slider : sliders) {
             slider.x = x;
             slider.y = top;
-            slider.render(mx, my, ticks);
+            slider.render(matrixStack, mx, my, ticks);
             top += slider.getHeight() + VERT_SPACING;
         }
     }

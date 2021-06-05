@@ -4,12 +4,13 @@ import com.conquestreforged.core.config.section.ConfigSectionSpec;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.lifecycle.IModBusEvent;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
-public class ConfigBuildEvent extends Event {
+public class ConfigBuildEvent extends Event implements IModBusEvent {
 
     private final ConfigManager manager;
     private final Map<ModConfig.Type, ForgeConfigSpec.Builder> builders = new HashMap<>();

@@ -33,14 +33,14 @@ public class Bounds {
     public void draw(float red, float green, float blue, float opacity, float ticks) {
         RenderSystem.color4f(red, green, blue, opacity);
         Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBuffer();
+        BufferBuilder buffer = tessellator.getBuilder();
         for (List<Point> points : bounds) {
             buffer.begin(GL11.GL_POLYGON, DefaultVertexFormats.POSITION);
             for (Point point : points) {
                 // buffer.pos?
-                buffer.pos(point.x, point.y, 0).endVertex();
+                buffer.vertex(point.x, point.y, 0).endVertex();
             }
-            tessellator.draw();
+            tessellator.end();
         }
     }
 }

@@ -2,6 +2,7 @@ package com.conquestreforged.client.gui;
 
 import com.conquestreforged.client.gui.palette.component.Style;
 import com.conquestreforged.client.gui.render.Render;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
@@ -31,8 +32,8 @@ public abstract class CustomContainerScreen<T extends Container> extends Contain
     }
 
     @Override
-    protected void handleMouseClick(@Nullable Slot slot, int index, int button, ClickType type) {
-        super.handleMouseClick(slot, index, button, type);
+    protected void slotClicked(@Nullable Slot slot, int index, int button, ClickType type) {
+        super.slotClicked(slot, index, button, type);
         onSlotClick(slot, index, button, type);
     }
 
@@ -40,7 +41,7 @@ public abstract class CustomContainerScreen<T extends Container> extends Contain
         isOverSlot = false;
         RenderSystem.enableBlend();
         RenderSystem.pushMatrix();
-        RenderSystem.translatef(guiLeft, guiTop, 0.0F);
+        RenderSystem.translatef(leftPos, topPos, 0.0F);
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.enableRescaleNormal();
         RenderSystem.glMultiTexCoord2f(33986, 240.0F, 240.0F);
@@ -54,27 +55,27 @@ public abstract class CustomContainerScreen<T extends Container> extends Contain
 
     public void renderDraggedItem(int mx, int my, float depth, Style style) {
         int zlevel = 250;
-        ItemStack held = playerInventory.getItemStack();
+        ItemStack held = inventory.getCarried();
         if (!held.isEmpty()) {
             this.setBlitOffset(zlevel);
-            this.itemRenderer.zLevel = zlevel;
+            this.itemRenderer.blitOffset = zlevel;
             RenderSystem.pushMatrix();
             RenderSystem.translatef(mx, my, zlevel);
             RenderSystem.enableDepthTest();
 
             Render.drawItemStackHighlight(held, -8, -8, style);
 
-            this.itemRenderer.renderItemAndEffectIntoGUI(playerInventory.player, held, -8, -8);
-            this.itemRenderer.renderItemOverlayIntoGUI(font, held, -8, -8, null);
+            this.itemRenderer.renderAndDecorateItem(inventory.player, held, -8, -8);
+            this.itemRenderer.renderGuiItemDecorations(font, held, -8, -8, null);
             RenderSystem.popMatrix();
             this.setBlitOffset(0);
-            this.itemRenderer.zLevel = 0F;
+            this.itemRenderer.blitOffset = 0F;
         }
     }
 
-    public void renderSlotBackGround(Slot slot, Style style, float depth, float scale) {
-        int x = slot.xPos + 8;
-        int y = slot.yPos + 8;
+    public void renderSlotBackGround(MatrixStack matrixStack, Slot slot, Style style, float depth, float scale) {
+        int x = slot.x + 8;
+        int y = slot.y + 8;
 
         RenderSystem.pushMatrix();
         RenderSystem.translatef(x, y, 1);
@@ -82,11 +83,11 @@ public abstract class CustomContainerScreen<T extends Container> extends Contain
 
         // set z-level
         this.setBlitOffset(0);
-        this.itemRenderer.zLevel = 0;
+        this.itemRenderer.blitOffset = 0;
 
         if (style != null && style.background != null) {
-            Minecraft.getInstance().getTextureManager().bindTexture(style.background);
-            AbstractGui.blit(-8, -6, 16, 16, 0, 0, 72, 72, 72, 72);
+            Minecraft.getInstance().getTextureManager().bind(style.background);
+            AbstractGui.blit(matrixStack, -8, -6, 16, 16, 0, 0, 72, 72, 72, 72);
         }
 
         RenderSystem.popMatrix();
@@ -97,10 +98,10 @@ public abstract class CustomContainerScreen<T extends Container> extends Contain
     }
 
     public void renderSlot(Slot slot, Style style, int mx, int my, float depth, float scale) {
-        int x = slot.xPos + 8;
-        int y = slot.yPos + 8;
+        int x = slot.x + 8;
+        int y = slot.y + 8;
         int zlevel = depth == 1 ? 60 : 0;
-        ItemStack itemstack = slot.getStack();
+        ItemStack itemstack = slot.getItem();
 
         RenderSystem.pushMatrix();
         RenderSystem.disableBlend();
@@ -109,7 +110,7 @@ public abstract class CustomContainerScreen<T extends Container> extends Contain
 
         // set z-level
         this.setBlitOffset(zlevel);
-        this.itemRenderer.zLevel = zlevel;
+        this.itemRenderer.blitOffset = zlevel;
 
         if (style != null) {
             if (!isOverSlot && isMouseOver(slot, mx, my, 11, scale)) {
@@ -121,18 +122,18 @@ public abstract class CustomContainerScreen<T extends Container> extends Contain
         }
 
         // draw item
-        this.itemRenderer.renderItemAndEffectIntoGUI(playerInventory.player, itemstack, -8, -8);
-        this.itemRenderer.renderItemOverlayIntoGUI(font, itemstack, -8, -8, null);
+        this.itemRenderer.renderAndDecorateItem(inventory.player, itemstack, -8, -8);
+        this.itemRenderer.renderGuiItemDecorations(font, itemstack, -8, -8, null);
 
         RenderSystem.popMatrix();
 
-        this.itemRenderer.zLevel = 0.0F;
+        this.itemRenderer.blitOffset = 0.0F;
         this.setBlitOffset(0);
     }
 
     public static boolean isMouseOver(Slot slot, int mx, int my, int size, float scale) {
         float delta = size * scale;
-        return mx >= slot.xPos - delta && mx <= slot.xPos + delta && my >= slot.yPos - delta && my <= slot.yPos + delta;
+        return mx >= slot.x - delta && mx <= slot.x + delta && my >= slot.y - delta && my <= slot.y + delta;
     }
 
 }

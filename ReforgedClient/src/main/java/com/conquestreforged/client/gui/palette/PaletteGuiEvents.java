@@ -24,7 +24,7 @@ public class PaletteGuiEvents {
     public static void onKeyPress(GuiScreenEvent.KeyboardKeyPressedEvent.Pre event) {
         if (event.getGui() instanceof ContainerScreen) {
             PlayerEntity player = Minecraft.getInstance().player;
-            if (player == null || !player.abilities.isCreativeMode) {
+            if (player == null || !player.abilities.instabuild) {
                 return;
             }
 
@@ -32,8 +32,8 @@ public class PaletteGuiEvents {
             if (screen instanceof CreativeScreen) {
                 // ignore search tab in creative inventory
                 CreativeScreen creativeScreen = (CreativeScreen) screen;
-                int tabIndex = creativeScreen.getSelectedTabIndex();
-                if (tabIndex == ItemGroup.SEARCH.getIndex()) {
+                int tabIndex = creativeScreen.getSelectedTab();
+                if (tabIndex == ItemGroup.TAB_SEARCH.getId()) {
                     return;
                 }
             }
@@ -47,24 +47,24 @@ public class PaletteGuiEvents {
                 }
 
                 // open creative gui regardless if was there previously
-                if (event.getKeyCode() == Minecraft.getInstance().gameSettings.keyBindInventory.getKey().getKeyCode()) {
+                if (event.getKeyCode() == Minecraft.getInstance().options.keyInventory.getKey().getValue()) {
                     event.setCanceled(true);
-                    Minecraft.getInstance().displayGuiScreen(new CreativeScreen(player));
+                    Minecraft.getInstance().setScreen(new CreativeScreen(player));
                     return;
                 }
             }
 
             // ignore everything else
-            if (event.getKeyCode() != BindManager.getPaletteBind().getKey().getKeyCode()) {
+            if (event.getKeyCode() != BindManager.getPaletteBind().getKey().getValue()) {
                 return;
             }
 
             Slot slot = screen.getSlotUnderMouse();
-            if (slot == null || !slot.getHasStack()) {
+            if (slot == null || !slot.hasItem()) {
                 return;
             }
 
-            ItemStack stack = slot.getStack();
+            ItemStack stack = slot.getItem();
             Optional<IInventory> palette = Palette.getPalette(stack);
             if (!palette.isPresent()) {
                 return;
@@ -73,14 +73,14 @@ public class PaletteGuiEvents {
             event.setCanceled(true);
             PaletteContainer container = new PaletteContainer(player.inventory, palette.get());
             PaletteScreen paletteScreen = new PaletteScreen(screen, player, player.inventory, container);
-            Minecraft.getInstance().displayGuiScreen(paletteScreen);
+            Minecraft.getInstance().setScreen(paletteScreen);
         }
     }
 
     @SubscribeEvent
     public static void onRender(RenderGameOverlayEvent.Pre event) {
         if (event.getType() == RenderGameOverlayEvent.ElementType.HOTBAR) {
-            if (Minecraft.getInstance().currentScreen instanceof PaletteScreen) {
+            if (Minecraft.getInstance().screen instanceof PaletteScreen) {
                 event.setCanceled(true);
             }
         }

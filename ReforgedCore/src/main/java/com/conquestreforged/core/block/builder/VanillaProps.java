@@ -1,6 +1,5 @@
 package com.conquestreforged.core.block.builder;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -32,8 +31,9 @@ public class VanillaProps {
         return Props.create(Blocks.OAK_PLANKS).group(ItemGroup.TAB_BUILDING_BLOCKS);
     }
 
+    //TODO taking props from logs block forces axis prop...recreate log material -- OAK PLANKS PLACEHOLDER
     public static Props logs() {
-        return Props.create(Blocks.OAK_LOG).group(ItemGroup.TAB_BUILDING_BLOCKS);
+        return Props.create(Blocks.OAK_PLANKS).group(ItemGroup.TAB_BUILDING_BLOCKS);
     }
 
     public static Props sand() {
@@ -49,7 +49,7 @@ public class VanillaProps {
     }
 
     public static Props grassLike() {
-        return Props.create((Material.ORGANIC)).group(ItemGroup.BUILDING_BLOCKS).strength(0.6F, 0.6F).sound(SoundType.PLANT).grassColor();
+        return Props.create((Material.GRASS)).group(ItemGroup.TAB_BUILDING_BLOCKS).strength(0.6F, 0.6F).sound(SoundType.GRASS).grassColor();
     }
 
     public static Props glass() {

@@ -3,34 +3,28 @@ package com.conquestreforged.client.gui.state;
 import com.conquestreforged.client.gui.PickerScreen;
 import com.conquestreforged.client.gui.render.Render;
 import com.conquestreforged.core.item.ItemUtils;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
-import net.minecraft.state.IProperty;
+import net.minecraft.state.Property;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Predicate;
 
 public class BlockStateScreen extends PickerScreen<BlockState> {
 
-    private final Collection<IProperty<?>> properties;
+    private final Collection<Property<?>> properties;
 
-    public BlockStateScreen(ItemStack stack, BlockState state, List<BlockState> states, Collection<IProperty<?>> properties) {
+    public BlockStateScreen(ItemStack stack, BlockState state, List<BlockState> states, Collection<Property<?>> properties) {
         super("State Selector", stack, state, states);
         this.properties = properties;
     }
 
     @Override
     public boolean match(BlockState a, BlockState b) {
-        for (IProperty<?> property : properties) {
-            if (!a.get(property).equals(b.get(property))) {
+        for (Property<?> property : properties) {
+            if (!a.getValue(property).equals(b.getValue(property))) {
                 return false;
             }
         }
@@ -60,17 +54,17 @@ public class BlockStateScreen extends PickerScreen<BlockState> {
     @Override
     public String getDisplayName(BlockState option) {
         StringBuilder sb = new StringBuilder();
-        for (IProperty<?> property : properties) {
+        for (Property<?> property : properties) {
             if (sb.length() > 0) {
                 sb.append(", ");
             }
-            sb.append(property.getName()).append('=').append(option.get(property));
+            sb.append(property.getName()).append('=').append(option.getValue(property));
         }
         return sb.toString();
     }
 
     @Override
-    public void render(BlockState option, int x, int y, int width, int height, float scale) {
+    public void render(BlockState option, MatrixStack matrixStack, int x, int y, int width, int height, float scale) {
         RenderSystem.pushMatrix();
         RenderSystem.translatef(x + (width / 2F), y + (height / 2F), 0);
         RenderSystem.scalef(scale, scale, 1);
@@ -90,13 +84,13 @@ public class BlockStateScreen extends PickerScreen<BlockState> {
      * @param state  the BLockState derrived from the provided ItemStack
      * @param filter a filter of IProperties to ignore (true == ignore!)
      */
-    public static Optional<BlockStateScreen> of(ItemStack stack, BlockState state, Predicate<IProperty<?>> filter) {
-        Map<IProperty<?>, Object> defaults = new HashMap<>();
-        Set<IProperty<?>> properties = new HashSet<>();
+    public static Optional<BlockStateScreen> of(ItemStack stack, BlockState state, Predicate<Property<?>> filter) {
+        Map<Property<?>, Object> defaults = new HashMap<>();
+        Set<Property<?>> properties = new HashSet<>();
 
-        for (IProperty<?> property : state.getProperties()) {
+        for (Property<?> property : state.getProperties()) {
             if (filter.test(property)) {
-                Object defValue = state.get(property);
+                Object defValue = state.getValue(property);
                 defaults.put(property, defValue);
             } else {
                 properties.add(property);
@@ -104,9 +98,9 @@ public class BlockStateScreen extends PickerScreen<BlockState> {
         }
 
         List<BlockState> states = new ArrayList<>();
-        for (BlockState candidate : state.getBlock().getStateContainer().getValidStates()) {
+        for (BlockState candidate : state.getBlock().getStateDefinition().getPossibleStates()) {
             boolean valid = true;
-            for (Map.Entry<IProperty<?>, Comparable<?>> e : candidate.getValues().entrySet()) {
+            for (Map.Entry<Property<?>, Comparable<?>> e : candidate.getValues().entrySet()) {
                 Object defValue = defaults.get(e.getKey());
                 if (defValue != null && !defValue.equals(e.getValue())) {
                     valid = false;

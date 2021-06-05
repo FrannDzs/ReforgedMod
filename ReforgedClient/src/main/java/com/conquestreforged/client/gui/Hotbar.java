@@ -1,6 +1,7 @@
 package com.conquestreforged.client.gui;
 
 import com.conquestreforged.client.gui.render.Render;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerInventory;
@@ -29,7 +30,7 @@ public class Hotbar {
         return getSlotSize() - 1;
     }
 
-    public void renderBackground(Screen screen) {
+    public void renderBackground(Screen screen, MatrixStack matrixStack) {
         int u = 0;
         int v = 0;
         int uMax = 182;
@@ -37,7 +38,7 @@ public class Hotbar {
         int left = (screen.width / 2) - (uMax / 2);
         int top = screen.height - vMax;
         RenderSystem.enableBlend();
-        Render.drawTexture(HOTBAR, left, top, screen.getBlitOffset(), u, v, uMax, vMax);
+        Render.drawTexture(HOTBAR, matrixStack, left, top, screen.getBlitOffset(), u, v, uMax, vMax);
         RenderSystem.disableBlend();
     }
 

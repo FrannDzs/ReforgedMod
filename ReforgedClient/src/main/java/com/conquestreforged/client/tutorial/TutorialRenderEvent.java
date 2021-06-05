@@ -56,14 +56,14 @@ public class TutorialRenderEvent {
 
             if (!Tutorials.intro) {
                 if (section.getOrElse("ignore_intro", false)) {
-                    Minecraft.getInstance().displayGuiScreen(dependencyScreen);
+                    Minecraft.getInstance().setScreen(dependencyScreen);
                     if (Tutorials.dependencies) {
                         MinecraftForge.EVENT_BUS.unregister(this);
                     }
                 } else if (section.getOrElse("ignore_dependencies", false) || missing.isEmpty()) {
-                    Minecraft.getInstance().displayGuiScreen(introScreen);
+                    Minecraft.getInstance().setScreen(introScreen);
                 } else {
-                    Minecraft.getInstance().displayGuiScreen(dependencyScreen2);
+                    Minecraft.getInstance().setScreen(dependencyScreen2);
                 }
             }
         }

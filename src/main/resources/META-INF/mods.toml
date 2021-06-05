@@ -1,5 +1,6 @@
 modLoader="javafml"
-loaderVersion="[25,)"
+loaderVersion="[36,)"
+license="All rights reserved"
 [[mods]]
 modId="conquest"
 displayName="${name}"

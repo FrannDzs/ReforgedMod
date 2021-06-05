@@ -1,6 +1,7 @@
 package com.conquestreforged.client.gui.search;
 
 import com.conquestreforged.client.utils.CreativeUtils;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
@@ -71,7 +72,7 @@ public class SearchList implements IGuiEventListener {
         }
     }
 
-    public void render(int mx, int my, int width, int height, float tick) {
+    public void render(MatrixStack matrixStack, int mx, int my, int width, int height, float tick) {
         hovered = null;
         for (Slot slot : slots) {
             if (slot.col == 0 && slot.stack.isEmpty()) {
@@ -80,17 +81,17 @@ public class SearchList implements IGuiEventListener {
             if (!slot.fitsOnScreen(width, height)) {
                 break;
             }
-            slot.render(mx, my);
+            slot.render(matrixStack, mx, my);
         }
 
         if (hovered == null) {
             return;
         }
 
-        String name = hovered.stack.getDisplayName().getFormattedText();
-        int nameWidth = Minecraft.getInstance().fontRenderer.getStringWidth(name);
+        String name = hovered.stack.getDisplayName().getString();
+        int nameWidth = Minecraft.getInstance().font.width(name);
         int left = width / 2 - nameWidth / 2;
-        Minecraft.getInstance().fontRenderer.drawString(name, left, height - 32, 0xFFFFFF);
+        Minecraft.getInstance().font.draw(matrixStack, name, left, height - 32, 0xFFFFFF);
     }
 
     @Override
@@ -136,19 +137,19 @@ public class SearchList implements IGuiEventListener {
             return right < width && bottom < height - 32;
         }
 
-        private void render(double mx, double my) {
+        private void render(MatrixStack matrixStack, double mx, double my) {
             float top = top();
             float left = left();
             RenderSystem.pushMatrix();
             RenderSystem.translatef(left, top, 0);
             RenderSystem.scalef(scale, scale, scale);
-            fill(0, 0, slotSize, slotSize, 0x55000000);
+            fill(matrixStack, 0, 0, slotSize, slotSize, 0x55000000);
             if (mouseOver(mx, my)) {
                 hovered = this;
-                fill(1, 1, slotSize-1, slotSize-1, 0x55999999);
+                fill(matrixStack, 1, 1, slotSize-1, slotSize-1, 0x55999999);
             }
             if (!stack.isEmpty()) {
-                Minecraft.getInstance().getItemRenderer().renderItemIntoGUI(stack, stackPad, stackPad);
+                Minecraft.getInstance().getItemRenderer().renderGuiItem(stack, stackPad, stackPad);
             }
             RenderSystem.popMatrix();
         }
@@ -160,7 +161,7 @@ public class SearchList implements IGuiEventListener {
                     return false;
                 }
                 if (CreativeUtils.addItemStack(stack.copy(), true)) {
-                    Minecraft.getInstance().displayGuiScreen(null);
+                    Minecraft.getInstance().setScreen(null);
                     return true;
                 }
             }

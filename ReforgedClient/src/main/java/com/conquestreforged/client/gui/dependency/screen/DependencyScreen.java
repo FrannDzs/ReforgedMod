@@ -3,6 +3,7 @@ package com.conquestreforged.client.gui.dependency.screen;
 import com.conquestreforged.client.gui.dependency.Dependency;
 import com.conquestreforged.client.tutorial.Tutorials;
 import com.conquestreforged.core.config.section.ConfigSection;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
@@ -12,6 +13,7 @@ import net.minecraft.client.gui.widget.button.CheckboxButton;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -31,9 +33,7 @@ public class DependencyScreen extends Screen {
     private final Screen screen;
     private final ConfigSection section;
     private final List<Dependency> missing;
-    private final CheckboxButton check = new CheckboxButton(0, 0, 0, 0, "Do not show again", false);
-
-    private ListWidget listWidget;
+    private final CheckboxButton check = new CheckboxButton(0, 0, 0, 0, new TranslationTextComponent("conquest.dependency.checkbox"), false);
 
     public DependencyScreen(Screen parent, ConfigSection section, List<Dependency> missing) {
         super(new StringTextComponent("Dependencies"));
@@ -49,9 +49,9 @@ public class DependencyScreen extends Screen {
 
     @Override
     public void onClose() {
-        section.set("ignore_dependencies", check.isChecked());
+        section.set("ignore_dependencies", check.selected());
         section.save();
-        Minecraft.getInstance().displayGuiScreen(screen);
+        Minecraft.getInstance().setScreen(screen);
     }
 
     @Override
@@ -84,7 +84,7 @@ public class DependencyScreen extends Screen {
         //    addButton(button);
         //}
 
-        addButton(new Button(center - 50, height - 24, 100, 20, "Continue", b -> onClose()));
+        addButton(new Button(center - 50, height - 24, 100, 20, new TranslationTextComponent("conquest.dependency.close"), b -> onClose()));
 
         check.setWidth(20);
         check.setHeight(20);
@@ -94,8 +94,8 @@ public class DependencyScreen extends Screen {
     }
 
     @Override
-    public void render(int mx, int my, float ticks) {
-        renderBackground();
+    public void render(MatrixStack matrixStack, int mx, int my, float ticks) {
+        renderBackground(matrixStack);
 
         //listWidget.render(mx, my, ticks);
 
@@ -105,15 +105,15 @@ public class DependencyScreen extends Screen {
         int paddingTop = getPaddingTop(imageHeight);
 
         RenderSystem.enableTexture();
-        Minecraft.getInstance().getTextureManager().bindTexture(CTM);
-        AbstractGui.blit(imageLeft, paddingTop, imageWidth, imageHeight, 0, 0, CTM_WIDTH, CTM_HEIGHT, CTM_WIDTH, CTM_HEIGHT);
+        Minecraft.getInstance().getTextureManager().bind(CTM);
+        AbstractGui.blit(matrixStack, imageLeft, paddingTop, imageWidth, imageHeight, 0, 0, CTM_WIDTH, CTM_HEIGHT, CTM_WIDTH, CTM_HEIGHT);
 
         String message = "Missing Dependencies:";
-        int titleWidth = font.getStringWidth(message);
+        int titleWidth = font.width(message);
         int titleOffset = titleWidth / 2;
-        font.drawStringWithShadow(message, (width / 2F) - titleOffset, paddingTop + imageHeight + 8, 0xFFFFFF);
+        font.drawShadow(matrixStack, message, (width / 2F) - titleOffset, paddingTop + imageHeight + 8, 0xFFFFFF);
 
-        super.render(mx, my, ticks);
+        super.render(matrixStack, mx, my, ticks);
     }
 
     private int getImageHeight() {
@@ -146,9 +146,9 @@ public class DependencyScreen extends Screen {
     }
 
     private static Button createButton(Dependency dependency, int heightIn, int center) {
-        return new Button(center - 85, heightIn, 170, 20, dependency.getDisplayName(), btn -> {
+        return new Button(center - 85, heightIn, 170, 20, new TranslationTextComponent(dependency.getDisplayName()), btn -> {
             try {
-                Util.getOSType().openURL(new URL(dependency.getURL()));
+                Util.getPlatform().openUrl(new URL(dependency.getURL()));
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }

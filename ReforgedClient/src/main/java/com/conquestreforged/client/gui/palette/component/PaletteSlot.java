@@ -31,7 +31,7 @@ public class PaletteSlot extends Slot {
     }
 
     public boolean isMouseOver(int mx, int my) {
-        return mx >= xPos - 11 && mx <= xPos + 11 && my >= yPos - 11 && my <= yPos + 11;
+        return mx >= x - 11 && mx <= x + 11 && my >= y - 11 && my <= y + 11;
     }
 
     public ResourceLocation getBackground() {
@@ -39,23 +39,23 @@ public class PaletteSlot extends Slot {
     }
 
     @Override
-    public ItemStack getStack() {
-        return super.getStack().copy();
+    public ItemStack getItem() {
+        return super.getItem().copy();
     }
 
     @Override
-    public void putStack(ItemStack stack) {
+    public void set(ItemStack stack) {
 //        super.putStack(stack);
     }
 
     @Override
-    public ItemStack decrStackSize(int amount) {
-        return getStack();
+    public ItemStack remove(int amount) {
+        return getItem();
     }
 
     public float getScale(int mx, int my, PaletteSettings settings) {
         if (!style.fixedScale) {
-            float d2 = Point.distance2(xPos, yPos, mx, my);
+            float d2 = Point.distance2(x, y, mx, my);
             float radius = PaletteContainer.RADIUS;
             float rad2 = radius * radius;
             float alpha = (rad2 - d2) / rad2;

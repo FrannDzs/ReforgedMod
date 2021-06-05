@@ -1,7 +1,7 @@
 package com.conquestreforged.client.gui.dependency;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.ClientResourcePackInfo;
+import net.minecraft.resources.ResourcePackInfo;
 import net.minecraftforge.fml.ModList;
 
 import java.io.IOException;
@@ -33,9 +33,9 @@ public enum DependencyType {
     RESOURCEPACK {
         @Override
         public boolean isAvailable(Dependency dependency) {
-            for (ClientResourcePackInfo pack : Minecraft.getInstance().getResourcePackList().getEnabledPacks()) {
+            for (ResourcePackInfo pack : Minecraft.getInstance().getResourcePackRepository().getSelectedPacks()) {
                 try {
-                    Object packId = pack.getResourcePack().getMetadata(PackIdDeserializer.INSTANCE);
+                    Object packId = pack.open().getMetadataSection(PackIdDeserializer.INSTANCE);
                     if (dependency.getId().equalsIgnoreCase(packId + "")) {
                         return true;
                     }

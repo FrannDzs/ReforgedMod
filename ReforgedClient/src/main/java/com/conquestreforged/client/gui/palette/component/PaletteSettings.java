@@ -6,10 +6,12 @@ import com.conquestreforged.core.config.ConfigBuildEvent;
 import com.conquestreforged.core.config.section.ConfigSection;
 import com.conquestreforged.core.config.section.ConfigSectionSpec;
 import com.conquestreforged.core.init.dev.Environment;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -43,15 +45,15 @@ public class PaletteSettings extends Screen {
         dispose();
         super.init(mc, width, height);
         if (!Environment.isProduction() && test) {
-            add(right, new ColorPicker2("Highlight Color", highlightColor, c -> {
+            add(right, new ColorPicker2(new TranslationTextComponent("Highlight Color"), highlightColor, c -> {
                 highlightColor = c;
                 config.set("highlight_color", ColorUtils.toHex(c));
             }));
-            add(right, new ColorPicker2("Hovered Color", hoveredColor, c -> {
+            add(right, new ColorPicker2(new TranslationTextComponent("Hovered Color"), hoveredColor, c -> {
                 hoveredColor = c;
                 config.set("hovered_color", ColorUtils.toHex(c));
             }));
-            add(right, new ColorPicker2("Selected Color", selectedColor, c -> {
+            add(right, new ColorPicker2(new TranslationTextComponent("Selected Color"), selectedColor, c -> {
                 selectedColor = c;
                 config.set("selected_color", ColorUtils.toHex(c));
             }));
@@ -61,10 +63,10 @@ public class PaletteSettings extends Screen {
     }
 
     @Override
-    public void render(int mx, int my, float ticks) {
+    public void render(MatrixStack matrixStack, int mx, int my, float ticks) {
         left.tick();
         right.tick();
-        super.render(mx, my, ticks);
+        super.render(matrixStack, mx, my, ticks);
     }
 
     @Override
@@ -92,6 +94,7 @@ public class PaletteSettings extends Screen {
         super.addButton(widget);
         panel.add(widget);
     }
+
 
     @SubscribeEvent
     public static void config(ConfigBuildEvent event) {

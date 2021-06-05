@@ -2,6 +2,7 @@ package com.conquestreforged.client.gui.search;
 
 import com.conquestreforged.client.gui.search.query.Index;
 import com.conquestreforged.client.gui.search.query.Result;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.screen.Screen;
@@ -12,6 +13,7 @@ import net.minecraft.item.Items;
 import net.minecraft.util.LazyValue;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Collection;
@@ -30,16 +32,16 @@ public class SearchScreen extends Screen implements Consumer<String> {
 
     public SearchScreen() {
         super(new StringTextComponent("search"));
-        this.search = new TextFieldWidget(Minecraft.getInstance().fontRenderer, 0, 0, 200, 20, "Search");
+        this.search = new TextFieldWidget(Minecraft.getInstance().font, 0, 0, 200, 20, new TranslationTextComponent("Search"));
         this.search.setResponder(this);
-        this.itemIndex = index.getValue();
+        this.itemIndex = index.get();
         this.searchList = new SearchList(5, 6);
     }
 
     @Override
     public boolean mouseClicked(double mx, double my, int button) {
         if (!super.mouseClicked(mx, my, button)) {
-            Minecraft.getInstance().displayGuiScreen(null);
+            Minecraft.getInstance().setScreen(null);
             return false;
         }
         return true;
@@ -61,11 +63,11 @@ public class SearchScreen extends Screen implements Consumer<String> {
     }
 
     @Override
-    public void render(int mx, int my, float ticks) {
+    public void render(MatrixStack matrixStack, int mx, int my, float ticks) {
         update();
-        super.renderBackground();
-        super.render(mx, my, ticks);
-        searchList.render(mx, my, width, height, ticks);
+        super.renderBackground(matrixStack);
+        super.render(matrixStack, mx, my, ticks);
+        searchList.render(matrixStack, mx, my, width, height, ticks);
     }
 
     @Override
@@ -86,7 +88,7 @@ public class SearchScreen extends Screen implements Consumer<String> {
         int guiHeight = search.getHeight() + pad + searchList.getHeight();
 
         setFocused(search);
-        search.setFocused2(true);
+        search.setFocus(true);
         search.x = centerX - search.getWidth() / 2;
         search.y = Math.max(10, centerY - guiHeight / 2);
 
@@ -97,8 +99,8 @@ public class SearchScreen extends Screen implements Consumer<String> {
 
     private void check() {
         ClientPlayerEntity player = Minecraft.getInstance().player;
-        if (player == null || !player.abilities.isCreativeMode) {
-            Minecraft.getInstance().displayGuiScreen(null);
+        if (player == null || !player.abilities.instabuild) {
+            Minecraft.getInstance().setScreen(null);
         }
     }
 
@@ -109,7 +111,7 @@ public class SearchScreen extends Screen implements Consumer<String> {
                 continue;
             }
             ItemStack stack = new ItemStack(item);
-            builder.with(stack, stack.getDisplayName().getFormattedText(), getTags(item));
+            builder.with(stack, stack.getDisplayName().getString(), getTags(item));
         }
         return builder.build();
     }

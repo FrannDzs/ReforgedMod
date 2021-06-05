@@ -2,6 +2,7 @@ package com.conquestreforged.client.gui;
 
 import com.conquestreforged.client.gui.render.Render;
 import com.conquestreforged.client.utils.CreativeUtils;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
@@ -44,7 +45,7 @@ public abstract class PickerScreen<T> extends Screen {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
-        Minecraft.getInstance().displayGuiScreen(null);
+        Minecraft.getInstance().setScreen(null);
         return super.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
@@ -54,29 +55,29 @@ public abstract class PickerScreen<T> extends Screen {
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partialTicks) {
-        renderBackground();
+    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+        renderBackground(matrixStack);
 
         int centerX = width / 2;
         int centerY = height / 2;
 
-        GlStateManager.enableAlphaTest();
-        GlStateManager.enableTexture();
+        GlStateManager._enableAlphaTest();
+        GlStateManager._enableTexture();
 
         int maxWidth = (options.size()) / 2;
         int size = Math.min(maxWidth, getSize());
         for (int i = size, visited = 0; i >= 0; i--) {
             if (i == 0) {
-                renderOption(centerX, centerY, i);
+                renderOption(matrixStack, centerX, centerY, i);
             } else {
-                renderOption(centerX, centerY, +i);
+                renderOption(matrixStack, centerX, centerY, +i);
                 if (++visited >= (options.size() - 1)) {
                     continue;
                 }
-                renderOption(centerX, centerY, -i);
+                renderOption(matrixStack, centerX, centerY, -i);
             }
         }
-        drawLabel(centerX, centerY);
+        drawLabel(matrixStack, centerX, centerY);
     }
 
     @Override
@@ -106,7 +107,7 @@ public abstract class PickerScreen<T> extends Screen {
         CreativeUtils.replaceItemStack(stack, createItemStack(this.stack, option));
     }
 
-    private void renderOption(int cx, int cy, int di) {
+    private void renderOption(MatrixStack matrixStack, int cx, int cy, int di) {
         int index = this.index + di;
 
         if (index < 0) {
@@ -147,11 +148,11 @@ public abstract class PickerScreen<T> extends Screen {
         RenderSystem.color4f(alpha, alpha, alpha, 1F);
         RenderSystem.pushMatrix();
         RenderSystem.translatef(0, 0, scale * 50);
-        render(option, tl, tt, tw, th, scale);
+        render(option, matrixStack, tl, tt, tw, th, scale);
         RenderSystem.popMatrix();
     }
 
-    private void drawLabel(int centerX, int centerY) {
+    private void drawLabel(MatrixStack matrixStack, int centerX, int centerY) {
         if (index < 0 || index >= options.size()) {
             return;
         }
@@ -167,15 +168,15 @@ public abstract class PickerScreen<T> extends Screen {
         float position = ((float) index) / (options.size() - 1);
         int posLeft = barLeft + Math.round(position * barWidth) - 1;
         int posRight = posLeft + 2;
-        fillGradient(barLeft, barTop, barRight, barBottom, 0x44000000, 0x44000000);
-        fillGradient(posLeft, barTop, posRight, barBottom, 0x66FFFFFF, 0x66FFFFFF);
+        fillGradient(matrixStack, barLeft, barTop, barRight, barBottom, 0x44000000, 0x44000000);
+        fillGradient(matrixStack, posLeft, barTop, posRight, barBottom, 0x66FFFFFF, 0x66FFFFFF);
 
         T option = options.get(index);
         String text = getDisplayName(option);
-        int width = font.getStringWidth(text);
+        int width = font.width(text);
         float top = barTop + 15;
         float left = centerX - (width / 2F);
-        font.drawStringWithShadow(text, left, top, 0xFFFFFF);
+        font.drawShadow(matrixStack, text, left, top, 0xFFFFFF);
     }
 
     private int indexOf(T value, List<T> options) {
@@ -201,7 +202,7 @@ public abstract class PickerScreen<T> extends Screen {
 
     public abstract String getDisplayName(T option);
 
-    public abstract void render(T option, int x, int y, int width, int height, float scale);
+    public abstract void render(T option, MatrixStack matrixStack, int x, int y, int width, int height, float scale);
 
     public abstract ItemStack createItemStack(ItemStack original, T value);
 }
