@@ -13,6 +13,7 @@ import net.minecraft.client.gui.widget.button.CheckboxButton;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 
 public class IntroScreen extends Screen {
@@ -65,21 +66,17 @@ public class IntroScreen extends Screen {
     public void render(MatrixStack matrixStack, int mx, int my, float ticks) {
         renderBackground(matrixStack);
 
-        ITextComponent paletteKeyLetter = new StringTextComponent(BindManager.getPaletteBind().getTranslatedKeyMessage().toString().toUpperCase())/*.applyTextStyles(GOLD)*/;
-        ITextComponent toggleKeyLetter = new StringTextComponent(BindManager.getBlockToggleBind().getTranslatedKeyMessage().toString().toUpperCase())/*.applyTextStyles(GOLD)*/;
-        ITextComponent blockstateSelectorKeyLetter = new StringTextComponent("CTRL+MIDDLE-MOUSE-BUTTON")/*.applyTextStyles(GOLD)*/;
-        ITextComponent welcomeString = new StringTextComponent("Welcome to the Conquest Reforged 1.15.2 Alpha!")/*.applyTextStyles(GOLD)*/;
+        ITextComponent paletteKeyLetter = new StringTextComponent(BindManager.getPaletteBind().getTranslatedKeyMessage().getString().toUpperCase()).withStyle(TextFormatting.GOLD);
+        ITextComponent blockstateSelectorKeyLetter = new StringTextComponent("CTRL+MIDDLE-MOUSE-BUTTON").withStyle(TextFormatting.GOLD);
+        ITextComponent welcomeString = new StringTextComponent("Welcome to the Conquest Reforged 1.15.2 Alpha!").withStyle(TextFormatting.GOLD);
 
-        String[] message = new String[]{welcomeString.getString(),
+        String[] message = new String[]{welcomeString.getContents(),
                 "This screen will introduce you to keybinds for making building faster.",
                 "",
-                "\"" + paletteKeyLetter.getString() + "\" - (Creative Mode only) shows texture shape variants in the block palette.",
+                "\"" + paletteKeyLetter.getContents() + "\" - (Creative Mode only) shows texture shape variants in the block palette.",
                 "Works while hovering over a block in the creative menu or when selected in the hotbar.",
                 "",
-                "\"" + toggleKeyLetter.getString() + "\" - cycles through and locks blockstates while building.",
-                "Used for blocks with varying sizes (slabs, layers, vert stairs, arches, etc).",
-                "",
-                "\"" + blockstateSelectorKeyLetter.getString() + "\" - (Creative Mode only) press while looking at a block",
+                "\"" + blockstateSelectorKeyLetter.getContents() + "\" - (Creative Mode only) press while looking at a block",
                 "This gives the exact shape you're looking at as a block item in your hotbar."
         };
 
