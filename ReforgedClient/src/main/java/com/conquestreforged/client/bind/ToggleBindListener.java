@@ -35,9 +35,9 @@ public class ToggleBindListener implements BindListener {
 
                 // display client toggle state
                 if (toggle.getIndex() == 0) {
-                    Minecraft.getInstance().ingameGUI.setOverlayMessage("You are now on Toggle #0. This is for default placement mechanics", true);
+                    Minecraft.getInstance().ingameGUI.setOverlayMessage("You are now on Toggle #0. This is for default placement mechanics", false);
                 } else {
-                    Minecraft.getInstance().ingameGUI.setOverlayMessage("You are now on Toggle #" + toggle.getIndex() + ". To return to default placement press \"" + BindManager.getBlockToggleBind().getLocalizedName().toUpperCase() + "\" until you reach 0 again", true);
+                    Minecraft.getInstance().ingameGUI.setOverlayMessage("You are now on Toggle #" + toggle.getIndex() + ". To return to default placement press \"" + BindManager.getBlockToggleBind().getLocalizedName().toUpperCase() + "\" until you reach 0 again", false);
                 }
             });
         }

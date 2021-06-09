@@ -66,7 +66,7 @@ public class IntroScreen extends Screen {
         renderBackground();
 
         ITextComponent paletteKeyLetter = new StringTextComponent(BindManager.getPaletteBind().getLocalizedName().toUpperCase()).applyTextStyles(GOLD);
-        ITextComponent toggleKeyLetter = new StringTextComponent(BindManager.getBlockToggleBind().getLocalizedName().toUpperCase()).applyTextStyles(GOLD);
+        //ITextComponent toggleKeyLetter = new StringTextComponent(BindManager.getBlockToggleBind().getLocalizedName().toUpperCase()).applyTextStyles(GOLD);
         ITextComponent blockstateSelectorKeyLetter = new StringTextComponent("CTRL+MIDDLE-MOUSE-BUTTON").applyTextStyles(GOLD);
         ITextComponent welcomeString = new StringTextComponent("Welcome to the Conquest Reforged 1.15.2 Alpha!").applyTextStyles(GOLD);
 
@@ -76,9 +76,9 @@ public class IntroScreen extends Screen {
                 "\"" + paletteKeyLetter.getFormattedText() + "\" - (Creative Mode only) shows texture shape variants in the block palette.",
                 "Works while hovering over a block in the creative menu or when selected in the hotbar.",
                 "",
-                "\"" + toggleKeyLetter.getFormattedText() + "\" - cycles through and locks blockstates while building.",
-                "Used for blocks with varying sizes (slabs, layers, vert stairs, arches, etc).",
-                "",
+                //"\"" + toggleKeyLetter.getFormattedText() + "\" - cycles through and locks blockstates while building.",
+                //"Used for blocks with varying sizes (slabs, layers, vert stairs, arches, etc).",
+                //"",
                 "\"" + blockstateSelectorKeyLetter.getFormattedText() + "\" - (Creative Mode only) press while looking at a block",
                 "This gives the exact shape you're looking at as a block item in your hotbar."
         };
