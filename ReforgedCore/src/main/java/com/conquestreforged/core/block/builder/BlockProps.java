@@ -144,7 +144,7 @@ public abstract class BlockProps<T extends BlockProps<T>> {
         applyNonNull(sound, builder::sound);
         applyNonNull(light, builder::lightLevel);
         applyNonNull(slipperiness, builder::friction);
-        //applyNonNull(solid, false, builder::func_226896_b_);
+        applyNonNull(solid, false, builder::noOcclusion);
         applyNonNull(randomTick, true, builder::randomTicks);
 
         //todo check dynamicshapes/variableopacity
