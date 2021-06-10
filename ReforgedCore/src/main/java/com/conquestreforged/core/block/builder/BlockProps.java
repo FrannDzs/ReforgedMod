@@ -2,6 +2,7 @@ package com.conquestreforged.core.block.builder;
 
 import com.conquestreforged.core.block.factory.InitializationException;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
@@ -9,6 +10,7 @@ import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemGroup;
 
 import java.util.function.Consumer;
+import java.util.function.ToIntFunction;
 
 /**
  * Basically just a wrapper around Block.Properties
@@ -28,7 +30,7 @@ public abstract class BlockProps<T extends BlockProps<T>> {
     private DyeColor dyeColor = null;
     private SoundType sound = null;
     private ItemGroup group = ItemGroup.TAB_SEARCH;
-    private Integer light = null;
+    private ToIntFunction<BlockState> light = null;
     private Float resistance = null;
     private Float hardness = null;
     private Float slipperiness = null;
@@ -84,9 +86,9 @@ public abstract class BlockProps<T extends BlockProps<T>> {
         return getProps();
     }
 
-    public T light(int light) {
+    public T light(ToIntFunction<BlockState> light) {
         this.light = light;
-        return getProps();
+        return (T) this;
     }
 
     public T strength(double hardness, double resistance) {
