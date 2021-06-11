@@ -68,7 +68,7 @@ public class IntroScreen extends Screen {
         ITextComponent paletteKeyLetter = new StringTextComponent(BindManager.getPaletteBind().getLocalizedName().toUpperCase()).applyTextStyles(GOLD);
         //ITextComponent toggleKeyLetter = new StringTextComponent(BindManager.getBlockToggleBind().getLocalizedName().toUpperCase()).applyTextStyles(GOLD);
         ITextComponent blockstateSelectorKeyLetter = new StringTextComponent("CTRL+MIDDLE-MOUSE-BUTTON").applyTextStyles(GOLD);
-        ITextComponent welcomeString = new StringTextComponent("Welcome to the Conquest Reforged 1.15.2 Alpha!").applyTextStyles(GOLD);
+        ITextComponent welcomeString = new StringTextComponent("Welcome to the Conquest Reforged 1.15.2 Beta!").applyTextStyles(GOLD);
 
         String[] message = new String[]{welcomeString.getFormattedText(),
                 "This screen will introduce you to keybinds for making building faster.",
