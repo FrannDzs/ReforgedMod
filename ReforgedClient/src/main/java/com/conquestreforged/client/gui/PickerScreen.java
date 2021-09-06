@@ -8,6 +8,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.StringTextComponent;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.List;
 
@@ -50,6 +51,16 @@ public abstract class PickerScreen<T> extends Screen {
 
     @Override
     public boolean keyPressed(int typedChar, int keyCode, int what) {
+        if (typedChar == GLFW.GLFW_KEY_LEFT) {
+            if (--index < 0) {
+                index = options.size() - 1;
+            }
+        }
+        if (typedChar == GLFW.GLFW_KEY_RIGHT) {
+            if (++index >= options.size()) {
+                index = 0;
+            }
+        }
         return super.keyPressed(typedChar, keyCode, what);
     }
 
