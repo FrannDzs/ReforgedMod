@@ -47,7 +47,7 @@ public class TutorialRenderEvent {
             DependencyScreen dependencyScreen2 = new DependencyScreen(introScreen, section, missing);
 
             if ((section.getOrElse("ignore_dependencies", false) && section.getOrElse("ignore_intro", false))
-                    || missing.isEmpty() && Tutorials.intro
+                    || (missing.isEmpty() && Tutorials.intro)
                     || (Tutorials.dependencies && Tutorials.intro)
             ) {
                 MinecraftForge.EVENT_BUS.unregister(this);
@@ -56,8 +56,10 @@ public class TutorialRenderEvent {
 
             if (!Tutorials.intro) {
                 if (section.getOrElse("ignore_intro", false)) {
-                    Minecraft.getInstance().setScreen(dependencyScreen);
-                    if (Tutorials.dependencies) {
+                    if (!missing.isEmpty()) {
+                        Minecraft.getInstance().setScreen(dependencyScreen);
+                    }
+                    if (Tutorials.dependencies || missing.isEmpty()) {
                         MinecraftForge.EVENT_BUS.unregister(this);
                     }
                 } else if (section.getOrElse("ignore_dependencies", false) || missing.isEmpty()) {
